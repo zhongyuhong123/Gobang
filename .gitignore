@@ -1,0 +1,59 @@
+# 操作系统生成的文件
+.DS_Store
+Thumbs.db
+
+# IDE生成的文件和目录
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# 构建生成的文件和目录
+target/
+dist/
+build/
+*.jar
+*.war
+*.ear
+
+# 依赖目录
+node_modules/
+
+# 日志文件
+logs/
+*.log
+*.log.*
+
+# 环境配置文件
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# 数据库文件
+*.sql
+*.sql.gz
+*.dump
+*.bak
+
+# 临时文件
+*.tmp
+*.temp
+.cache/
+
+# Maven相关
+.mvn/
+
+# Gradle相关（如果使用）
+.gradle/
+
+# Spring Boot相关
+spring-boot-devtools.properties
+spring-boot-devtools.yml
+
+# 代码覆盖率报告
+jacoco/
+coverage/

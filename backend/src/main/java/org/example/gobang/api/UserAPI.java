@@ -14,6 +14,43 @@ import javax.servlet.http.HttpSession;
 @RestController
 public class UserAPI {
 
+    // 内部类，用于统一API响应格式
+    private static class ApiResponse {
+        private boolean status;
+        private String message;
+        private Object data;
+
+        public ApiResponse(boolean status, String message, Object data) {
+            this.status = status;
+            this.message = message;
+            this.data = data;
+        }
+
+        public boolean isStatus() {
+            return status;
+        }
+
+        public void setStatus(boolean status) {
+            this.status = status;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
+
+        public Object getData() {
+            return data;
+        }
+
+        public void setData(Object data) {
+            this.data = data;
+        }
+    }
+
     @Resource
     public UserMapper userMapper;
 
@@ -23,17 +60,14 @@ public class UserAPI {
         //根据username去数据库中查找，如果能查到并密码一致则成功登入
         User user = userMapper.selectByName(username);
         System.out.println("[login] user="+user);
-//        System.out.println("找到的username�?+user.getUserName());
-//        System.out.println("找到的password�?+user.getPassword());
-//        System.out.println("输入的："+password);
         if(user==null || !user.getPassword().equals(password)){
             System.out.println("登入失败!");
-            return new User();//登入失败
+            return new ApiResponse(false, "用户名或密码错误", null);
         }
         //这里true含义：如果为true，会话存在直接返回，不存在则创建一�?
         HttpSession session = req.getSession(true);
         session.setAttribute("user", user);
-        return user;
+        return new ApiResponse(true, "登录成功", user);
     }
 
     @PostMapping("/register")
@@ -44,9 +78,9 @@ public class UserAPI {
             user.setUsername(username);
             user.setPassword(password);
             userMapper.insert(user);
-            return user;
+            return new ApiResponse(true, "注册成功", user);
         }catch (org.springframework.dao.DuplicateKeyException e){
-            return new User();
+            return new ApiResponse(false, "用户名已存在", null);
         }
     }
 
@@ -58,9 +92,9 @@ public class UserAPI {
             User user = (User) httpSession.getAttribute("user");
             //拿着这个user对象，去数据库中找，找到最新的数据
             User newUser = userMapper.selectByName(user.getUsername());
-            return newUser;
+            return new ApiResponse(true, "获取用户信息成功", newUser);
         }catch (NullPointerException e){
-            return new User();
+            return new ApiResponse(false, "用户未登录", null);
         }
     }
 }

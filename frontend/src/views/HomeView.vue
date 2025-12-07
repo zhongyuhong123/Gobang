@@ -44,16 +44,22 @@ export default {
     const findMatch = () => {
       // TODO: 实现匹配功能
       ElMessage.info('匹配功能开发中')
+      // 临时直接进入游戏页面
+      router.push('/game')
     }
 
     const createRoom = () => {
       // TODO: 实现创建房间功能
       ElMessage.info('创建房间功能开发中')
+      // 临时直接进入游戏页面
+      router.push('/game')
     }
 
     const joinRoom = () => {
       // TODO: 实现加入房间功能
       ElMessage.info('加入房间功能开发中')
+      // 临时直接进入游戏页面
+      router.push('/game')
     }
 
     return {
