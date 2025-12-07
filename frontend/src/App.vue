@@ -1,5 +1,8 @@
 <template>
   <div id="app">
+    <!-- 背景图案 -->
+    <div class="bg-pattern"></div>
+    <!-- 主要内容区域 -->
     <router-view />
   </div>
 </template>
@@ -18,10 +21,12 @@ export default {
 }
 
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Arial', 'Microsoft YaHei', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  color: var(--text-primary);
+  min-height: 100vh;
+  position: relative;
 }
 </style>

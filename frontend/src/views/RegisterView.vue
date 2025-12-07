@@ -1,21 +1,29 @@
 <template>
   <div class="register-container">
-    <div class="register-form">
-      <h2>五子棋注册</h2>
-      <el-form :model="registerForm" :rules="registerRules" ref="registerFormRef">
+    <div class="bg-pattern"></div>
+    <div class="register-form game-card">
+      <div class="logo">
+        <div class="chess-piece"></div>
+      </div>
+      <h2 class="game-title">Come 下棋</h2>
+        <h3 class="subtitle">创建新账号，开启棋艺之旅</h3>
+      <el-form :model="registerForm" :rules="registerRules" ref="registerFormRef" label-position="top">
         <el-form-item prop="username">
-          <el-input v-model="registerForm.username" placeholder="用户名"></el-input>
+          <el-input v-model="registerForm.username" placeholder="用户名" prefix-icon="User"></el-input>
         </el-form-item>
         <el-form-item prop="password">
-          <el-input v-model="registerForm.password" type="password" placeholder="密码"></el-input>
+          <el-input v-model="registerForm.password" type="password" placeholder="密码" prefix-icon="Lock"></el-input>
         </el-form-item>
         <el-form-item prop="confirmPassword">
-          <el-input v-model="registerForm.confirmPassword" type="password" placeholder="确认密码"></el-input>
+          <el-input v-model="registerForm.confirmPassword" type="password" placeholder="确认密码" prefix-icon="Lock"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="handleRegister" class="register-button">注册</el-button>
-          <el-button @click="$router.push('/')" class="login-button">返回登录</el-button>
+          <el-button type="primary" @click="handleRegister" class="game-button register-button">注册</el-button>
         </el-form-item>
+        <div class="login-link">
+          <span>已有账号？</span>
+          <el-button type="text" @click="$router.push('/')" class="login-button">立即登录</el-button>
+        </div>
       </el-form>
     </div>
   </div>
@@ -39,6 +47,14 @@ export default {
 
     const registerFormRef = ref(null)
 
+    const validateConfirmPassword = (rule, value, callback) => {
+      if (value !== registerForm.value.password) {
+        callback(new Error('两次输入密码不一致'))
+      } else {
+        callback()
+      }
+    }
+
     const registerRules = {
       username: [
         { required: true, message: '请输入用户名', trigger: 'blur' },
@@ -52,14 +68,6 @@ export default {
         { required: true, message: '请确认密码', trigger: 'blur' },
         { validator: validateConfirmPassword, trigger: 'blur' }
       ]
-    }
-
-    const validateConfirmPassword = (rule, value, callback) => {
-      if (value !== registerForm.value.password) {
-        callback(new Error('两次输入密码不一致'))
-      } else {
-        callback()
-      }
     }
 
     const handleRegister = async () => {
@@ -99,23 +107,72 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #f5f5f5;
+  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+  position: relative;
+  overflow: hidden;
 }
 
 .register-form {
   width: 400px;
-  padding: 30px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  max-width: 90%;
+  position: relative;
+  z-index: 1;
+}
+
+.logo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.chess-piece {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, var(--black-stone), var(--white-stone));
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5), 0 0 60px rgba(82, 196, 26, 0.3);
+  animation: pulse 2s infinite;
+  border: 3px solid var(--success-color);
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+  font-weight: normal;
 }
 
 .register-button {
   width: 100%;
+  height: 45px;
+  font-size: 16px;
+}
+
+.login-link {
+  margin-top: 1.5rem;
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: 14px;
+}
+
+.login-link span {
+  margin-right: 8px;
 }
 
 .login-button {
-  width: 100%;
-  margin-top: 10px;
+  color: var(--primary-color) !important;
+  font-weight: bold !important;
+  padding: 0 !important;
+}
+
+/* 响应式设计 */
+@media (max-width: 480px) {
+  .register-form {
+    padding: 1.5rem;
+  }
+  
+  .chess-piece {
+    width: 50px;
+    height: 50px;
+  }
 }
 </style>

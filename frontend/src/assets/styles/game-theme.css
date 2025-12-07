@@ -1,0 +1,191 @@
+:root {
+  /* 主色调 */
+  --primary-color: #1890ff;
+  --success-color: #52c41a;
+  --warning-color: #faad14;
+  --error-color: #f5222d;
+  
+  /* 游戏主题色 */
+  --board-color: #f0d9b5;
+  --board-border: #8b4513;
+  --board-line: #8b4513;
+  --black-stone: #000000;
+  --white-stone: #ffffff;
+  
+  /* 背景色 */
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-tertiary: #334155;
+  
+  /* 文本色 */
+  --text-primary: #ffffff;
+  --text-secondary: #cbd5e1;
+  --text-tertiary: #94a3b8;
+  
+  /* 阴影 */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  
+  /* 边框圆角 */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-full: 9999px;
+  
+  /* 过渡动画 */
+  --transition-fast: 150ms ease-in-out;
+  --transition-normal: 300ms ease-in-out;
+  --transition-slow: 500ms ease-in-out;
+}
+
+/* 全局样式重置 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Arial', 'Microsoft YaHei', sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  overflow-x: hidden;
+}
+
+/* 背景图案 */
+.bg-pattern {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(circle at 20% 80%, rgba(24, 144, 255, 0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 20%, rgba(82, 196, 26, 0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 40% 40%, rgba(250, 173, 20, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 0 0 30px rgba(255, 215, 0, 0.6);
+  }
+}
+
+/* 游戏卡片样式 */
+.game-card {
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  padding: 2rem;
+  animation: fadeIn var(--transition-normal);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 游戏按钮样式 */
+.game-button {
+  border-radius: var(--radius-full) !important;
+  font-weight: bold !important;
+  transition: all var(--transition-fast) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+.game-button:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+
+.game-button:active {
+  transform: translateY(0) !important;
+}
+
+/* 输入框样式 */
+.el-input__wrapper {
+  background-color: var(--bg-tertiary) !important;
+  border-radius: var(--radius-md) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.el-input__inner {
+  color: var(--text-primary) !important;
+  background-color: transparent !important;
+}
+
+.el-input__placeholder {
+  color: var(--text-tertiary) !important;
+}
+
+/* 表单样式 */
+.el-form-item__label {
+  color: var(--text-secondary) !important;
+}
+
+/* 标题样式 */
+.game-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  color: var(--text-primary);
+  text-align: center;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  letter-spacing: 2px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .game-card {
+    padding: 1.5rem;
+    margin: 1rem;
+  }
+  
+  .game-title {
+    font-size: 1.5rem;
+  }
+}
