@@ -1,16 +1,16 @@
-package org.example.java_gobang;
+package org.example.gobang;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
 @SpringBootApplication
-public class JavaGobangApplication {
+public class GobangApplication {
 
     public static ConfigurableApplicationContext context;
 
     public static void main(String[] args) {
-        context = SpringApplication.run(JavaGobangApplication.class, args);
+        context = SpringApplication.run(GobangApplication.class, args);
     }
 
 }

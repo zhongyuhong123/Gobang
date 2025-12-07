@@ -1,4 +1,4 @@
-package org.example.java_gobang.model;
+package org.example.gobang.model;
 
 public class User {
     private int userId;

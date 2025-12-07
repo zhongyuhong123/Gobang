@@ -1,6 +1,6 @@
-package org.example.java_gobang.game;
+package org.example.gobang.game;
 
-//客户端连接到游戏房间后，服务器返回的响应。
+//客户端连接到游戏房间后，服务器返回的响应�?
 public class GameReadyResponse {
     private String message;
     private boolean ok;

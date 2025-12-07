@@ -1,12 +1,12 @@
-package org.example.java_gobang.game;
+package org.example.gobang.game;
 
-//这个类表示落子响应
-public class GameResponse {
+//这个类表示落子请�?
+public class GameRequest {
     private String message;
     private int userId;
     private int row;
     private int col;
-    private int winner;
+
 
     public String getMessage() {
         return message;
@@ -38,13 +38,5 @@ public class GameResponse {
 
     public void setCol(int col) {
         this.col = col;
-    }
-
-    public int getWinner() {
-        return winner;
-    }
-
-    public void setWinner(int winner) {
-        this.winner = winner;
     }
 }

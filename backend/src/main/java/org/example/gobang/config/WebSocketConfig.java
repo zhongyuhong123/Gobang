@@ -1,4 +1,4 @@
-package org.example.java_gobang.config;
+package org.example.gobang.config;
 
 import org.example.java_gobang.api.GameAPI;
 import org.example.java_gobang.api.MatchAPI;
