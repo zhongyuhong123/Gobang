@@ -1,8 +1,8 @@
 package org.example.gobang.config;
 
-import org.example.java_gobang.api.GameAPI;
-import org.example.java_gobang.api.MatchAPI;
-import org.example.java_gobang.api.TestAPI;
+import org.example.gobang.api.GameAPI;
+import org.example.gobang.api.MatchAPI;
+import org.example.gobang.api.TestAPI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;

@@ -1,7 +1,7 @@
 package org.example.gobang.api;
 
-import org.example.java_gobang.model.User;
-import org.example.java_gobang.model.UserMapper;
+import org.example.gobang.model.User;
+import org.example.gobang.model.UserMapper;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -23,14 +23,14 @@ public class UserAPI {
         //根据username去数据库中查找，如果能查到并密码一致则成功登入
         User user = userMapper.selectByName(username);
         System.out.println("[login] user="+user);
-//        System.out.println("找到的username�?+user.getUserName());
-//        System.out.println("找到的password�?+user.getPassword());
+//        System.out.println("找到的username�?+user.getUserName());
+//        System.out.println("找到的password�?+user.getPassword());
 //        System.out.println("输入的："+password);
         if(user==null || !user.getPassword().equals(password)){
             System.out.println("登入失败!");
             return new User();//登入失败
         }
-        //这里true含义：如果为true，会话存在直接返回，不存在则创建一�?
+        //这里true含义：如果为true，会话存在直接返回，不存在则创建一�?
         HttpSession session = req.getSession(true);
         session.setAttribute("user", user);
         return user;
