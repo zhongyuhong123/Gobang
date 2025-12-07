@@ -34,8 +34,6 @@ logs/
 .env.production.local
 
 # 数据库文件
-*.sql
-*.sql.gz
 *.dump
 *.bak
 
