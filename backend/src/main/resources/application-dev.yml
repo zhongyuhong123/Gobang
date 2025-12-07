@@ -1,0 +1,355 @@
+# Come 下棋 - 开发环境配置
+# 开发环境配置文件
+
+spring:
+  profiles:
+    active: dev
+  
+  # 应用配置
+  application:
+    name: gobang-game-platform-dev
+  
+  # 数据源配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/java_gobang?useSSL=false&serverTimezone=UTC&characterEncoding=utf8&useUnicode=true&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+    # 连接池配置
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      connection-timeout: 20000
+      idle-timeout: 300000
+      max-lifetime: 1200000
+      connection-test-query: SELECT 1
+  
+  # Redis 配置
+  redis:
+    host: localhost
+    port: 6379
+    password: ""
+    timeout: 2000ms
+    database: 0
+    # 连接池配置
+    lettuce:
+      pool:
+        max-active: 10
+        max-idle: 5
+        min-idle: 2
+        max-wait: 1000ms
+  
+  # 缓存配置
+  cache:
+    type: redis
+    redis:
+      time-to-live: 1800000 # 30分钟
+      cache-null-values: true
+      use-key-prefix: true
+      key-prefix: gobang:dev:cache
+  
+  # 会话配置
+  session:
+    store-type: redis
+    timeout: 3600 # 1小时
+    redis:
+      namespace: gobang:dev:session
+      flush-mode: on-save
+  
+  # 事务配置
+  transaction:
+    default-timeout: 30
+    rollback-on-commit-failure: true
+  
+  # Jackson 配置
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
+      write-date-keys-as-timestamps: false
+    # 开发环境美化输出
+    serialization:
+      indent-output: true
+  
+  # 文件上传配置
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 50MB
+      file-size-threshold: 2MB
+
+# 服务器配置
+server:
+  port: 8080
+  servlet:
+    context-path: /
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  tomcat:
+    threads:
+      max: 100
+      min-spare: 5
+    max-connections: 1000
+    accept-count: 100
+    connection-timeout: 10000ms
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json,application/xml
+    min-response-size: 1024
+
+# 日志配置
+logging:
+  level:
+    root: DEBUG
+    org.example.gobang: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
+    org.mybatis: DEBUG
+    com.zaxxer.hikari: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level [%X{traceId}] %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level [%X{traceId}] %logger{36} - %msg%n"
+  file:
+    name: ${LOG_PATH:./logs}/gobang-dev.log
+    max-size: 50MB
+    max-history: 7
+    total-size-cap: 1GB
+  # 开发环境控制台彩色输出
+  pattern:
+    console: "%clr(%d{yyyy-MM-dd HH:mm:ss}){faint} %clr([%thread]){magenta} %clr(%-5level){cyan} %clr([%X{traceId}]){yellow} %clr(%logger{36}){blue} - %clr(%msg){noline}%n"
+
+# MyBatis Plus 配置
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: true
+    lazy-loading-enabled: true
+    multiple-result-sets-enabled: true
+    use-column-label: true
+    use-generated-keys: true
+    auto-mapping-behavior: partial
+    default-executor-type: reuse
+    default-statement-timeout: 30
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+    banner: false
+  type-aliases-package: org.example.gobang.model
+
+# JWT 配置
+jwt:
+  secret: come-xiaqi-jwt-secret-key-2024-dev-environment
+  expiration: 86400000 # 24小时
+  header: Authorization
+  prefix: Bearer
+  issuer: gobang-platform
+  audience: gobang-users
+
+# 安全配置
+security:
+  # 忽略认证的URL
+  ignored:
+    urls:
+      - "/api/user/login"
+      - "/api/user/register"
+      - "/api/test/**"
+      - "/swagger-ui/**"
+      - "/v3/api-docs/**"
+      - "/actuator/**"
+      - "/ws/**"
+      - "/error"
+  
+  # 加密配置
+  password:
+    encoder:
+      strength: 4 # 开发环境使用较低的BCrypt强度以提高性能
+  
+  # 会话安全
+  session:
+    fixation-protection: true
+    concurrency-control:
+      max-sessions: 10 # 开发环境允许多个会话
+      expired-url: /api/user/login?expired
+    
+  # CSRF保护
+  csrf:
+    enabled: false # 开发环境禁用CSRF以便测试
+
+# WebSocket 配置
+websocket:
+  endpoint: /ws
+  allowed-origins: "*"
+  max-message-size: 65536
+  send-buffer-size: 524288
+  receive-buffer-size: 524288
+  keep-alive: true
+  tcp-no-delay: true
+  so-backlog: 100
+  so-timeout: 30000
+
+# 游戏配置
+game:
+  # 匹配配置
+  match:
+    timeout: 10 # 匹配超时时间（秒）- 开发环境较短
+    max-wait-time: 60 # 最大等待时间（秒）
+    min-players: 2
+    max-players: 2
+  
+  # 游戏房间配置
+  room:
+    max-rooms: 1000 # 最大房间数
+    max-players-per-room: 2
+    idle-timeout: 600 # 房间空闲超时（秒）
+    cleanup-interval: 60 # 清理间隔（秒）
+  
+  # 积分配置
+  score:
+    initial-score: 1000
+    win-score: 10
+    lose-score: -5
+    draw-score: 2
+    max-score-change: 50
+    min-score-change: 1
+  
+  # 游戏时长限制
+  duration:
+    max-game-time: 1800 # 最大游戏时长（秒）
+    warning-time: 300 # 警告时间（秒）
+    force-end-time: 3600 # 强制结束时间（秒）
+
+# 监控配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*" # 开发环境暴露所有端点
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: always
+      show-components: always
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+    env:
+      enabled: true
+    configprops:
+      enabled: true
+    loggers:
+      enabled: true
+    mappings:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    tags:
+      application: ${spring.application.name}
+      environment: development
+
+# 跨域配置
+cors:
+  allowed-origins: "*" # 开发环境允许所有来源
+  allowed-methods: GET,POST,PUT,DELETE,OPTIONS,PATCH
+  allowed-headers: "*"
+  allow-credentials: true
+  max-age: 3600
+
+# 限流配置
+rate-limit:
+  enabled: false # 开发环境禁用限流
+  # 全局限流
+  global:
+    requests: 10000
+    window: 60 # 秒
+  # 用户限流
+  user:
+    requests: 1000
+    window: 60 # 秒
+  # IP限流
+  ip:
+    requests: 500
+    window: 60 # 秒
+
+# 文件存储配置
+storage:
+  # 本地文件存储
+  local:
+    enabled: true
+    base-path: ${STORAGE_PATH:./uploads}
+    max-file-size: 10MB
+  
+  # MinIO 对象存储（可选）
+  minio:
+    enabled: false
+    endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
+    access-key: ${MINIO_ACCESS_KEY:minioadmin}
+    secret-key: ${MINIO_SECRET_KEY:minioadmin}
+    bucket-name: ${MINIO_BUCKET:gobang-dev-files}
+    secure: ${MINIO_SECURE:false}
+
+# 第三方服务配置
+third-party:
+  # 邮件服务
+  email:
+    enabled: false # 开发环境禁用邮件服务
+    host: ${EMAIL_HOST:smtp.gmail.com}
+    port: ${EMAIL_PORT:587}
+    username: ${EMAIL_USERNAME:}
+    password: ${EMAIL_PASSWORD:}
+    protocol: smtp
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+  
+  # 短信服务（可选）
+  sms:
+    enabled: false # 开发环境禁用短信服务
+    provider: ${SMS_PROVIDER:aliyun}
+    access-key: ${SMS_ACCESS_KEY:}
+    secret-key: ${SMS_SECRET_KEY:}
+    sign-name: ${SMS_SIGN_NAME:Come下棋}
+  
+  # 文件存储服务
+  oss:
+    enabled: false # 开发环境禁用OSS
+    provider: ${OSS_PROVIDER:aliyun}
+    endpoint: ${OSS_ENDPOINT:}
+    access-key: ${OSS_ACCESS_KEY:}
+    secret-key: ${OSS_SECRET_KEY:}
+    bucket-name: ${OSS_BUCKET_NAME:}
+
+# 系统配置
+system:
+  # 系统信息
+  name: Come下棋
+  version: 1.0.0-dev
+  environment: development
+  
+  # 维护模式
+  maintenance:
+    enabled: false
+    message: 系统维护中，请稍后再试
+    allow-admin: true
+  
+  # 公告配置
+  announcement:
+    enabled: true
+    content: 欢迎来到Come下棋开发环境！
+    type: info # info, warning, error
+  
+  # 统计配置
+  statistics:
+    enabled: true
+    collect-interval: 60 # 秒
+    retention-days: 7

@@ -1,3 +1,94 @@
+<template>
+  <div class="home-container">
+    <!-- 游戏模式选择 -->
+    <div class="game-modes">
+      <h2 class="section-title">选择游戏模式</h2>
+      <div class="modes-grid">
+        <div class="mode-card gobang" @click="selectGameMode('gobang')">
+          <span class="mode-icon">⚫</span>
+          <h3>五子棋</h3>
+          <p>经典五子棋对战</p>
+        </div>
+        <div class="mode-card military" @click="selectGameMode('military')">
+          <span class="mode-icon">♟️</span>
+          <h3>军棋</h3>
+          <p>策略军棋对决</p>
+        </div>
+        <div class="mode-card chinese-chess" @click="selectGameMode('chinese-chess')">
+          <span class="mode-icon">♜</span>
+          <h3>中国象棋</h3>
+          <p>传统象棋对弈</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 游戏操作区域 -->
+    <div class="game-actions">
+      <div class="placeholder-text" v-if="!selectedGameMode">
+        <div class="chess-icon">♔</div>
+        <h3>请选择游戏模式开始</h3>
+        <p>选择上方的游戏模式来开始您的对弈之旅</p>
+      </div>
+      
+      <div v-else class="game-mode-content">
+        <h3>{{ getGameModeTitle(selectedGameMode) }}</h3>
+        <div class="mode-actions">
+          <button class="btn btn-primary" @click="startQuickMatch">快速匹配</button>
+          <button class="btn btn-secondary" @click="createRoom">创建房间</button>
+          <button class="btn btn-secondary" @click="joinRoom">加入房间</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'HomeView',
+  data() {
+    return {
+      selectedGameMode: null
+    }
+  },
+  methods: {
+    selectGameMode(mode) {
+      this.selectedGameMode = mode
+    },
+    getGameModeTitle(mode) {
+      const titles = {
+        'gobang': '五子棋',
+        'military': '军棋',
+        'chinese-chess': '中国象棋'
+      }
+      return titles[mode] || '未知游戏'
+    },
+    startQuickMatch() {
+      if (!this.selectedGameMode) return
+      this.$message.info('正在为您匹配对手...')
+      // TODO: 调用后端匹配接口
+    },
+    createRoom() {
+      if (!this.selectedGameMode) return
+      this.$message.info('正在创建房间...')
+      // TODO: 调用后端创建房间接口
+    },
+    joinRoom() {
+      if (!this.selectedGameMode) return
+      this.$prompt('请输入房间号', '加入房间', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+      }).then(({ value }) => {
+        this.$message.success(`正在加入房间 ${value}...`)
+        // TODO: 调用后端加入房间接口
+      }).catch(() => {
+        this.$message.info('取消加入房间')
+      })
+    }
+  }
+}
+</script>
+
+<style scoped>
 /* 游戏模式选择 */
 .game-modes {
   margin-bottom: 40px;
@@ -94,3 +185,73 @@
   opacity: 0.6;
   animation: float 3s ease-in-out infinite;
 }
+
+.game-mode-content {
+  text-align: center;
+  padding: 40px;
+  background: rgba(30, 41, 59, 0.8);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(10px);
+}
+
+.game-mode-content h3 {
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin-bottom: 30px;
+}
+
+.mode-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  min-width: 120px;
+}
+
+.btn-primary {
+  background: var(--primary-color);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.home-container {
+  padding: 40px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>

@@ -1,415 +1,286 @@
-# 多棋类在线对战平台 (Multi-board Game Online Platform)
+# Come 下棋 - 多棋类在线对战平台
 
-<div align="center">
-  <a href="https://vuejs.org/" target="_blank">
-    <img src="https://img.shields.io/badge/Vue.js-3.x-4FC08D.svg?style=for-the-badge&logo=vue.js" alt="Vue.js" />
-  </a>
-  <a href="https://spring.io/projects/spring-boot" target="_blank">
-    <img src="https://img.shields.io/badge/Spring%20Boot-3.x-6DB33F.svg?style=for-the-badge&logo=spring-boot" alt="Spring Boot" />
-  </a>
-  <a href="https://www.mysql.com/" target="_blank">
-    <img src="https://img.shields.io/badge/MySQL-8.0-4479A1.svg?style=for-the-badge&logo=mysql" alt="MySQL" />
-  </a>
-  <a href="https://redis.io/" target="_blank">
-    <img src="https://img.shields.io/badge/Redis-7.0-DC382D.svg?style=for-the-badge&logo=redis" alt="Redis" />
-  </a>
-  <a href="https://www.mongodb.com/" target="_blank">
-    <img src="https://img.shields.io/badge/MongoDB-5.0-47A248.svg?style=for-the-badge&logo=mongodb" alt="MongoDB" />
-  </a>
-  <a href="https://www.rabbitmq.com/" target="_blank">
-    <img src="https://img.shields.io/badge/RabbitMQ-3.10-FF6600.svg?style=for-the-badge&logo=rabbitmq" alt="RabbitMQ" />
-  </a>
-  <a href="https://element-plus.org/" target="_blank">
-    <img src="https://img.shields.io/badge/Element%20Plus-2.x-409EFF.svg?style=for-the-badge&logo=element" alt="Element Plus" />
-  </a>
-</div>
+一个支持多种棋类游戏的在线对战平台，包括五子棋、军棋、象棋等。采用前后端分离架构，支持实时对战、用户匹配、积分系统等功能。
 
-<div align="center" style="margin-top: 10px;">
-  <a href="https://opensource.org/licenses/MIT" target="_blank">
-    <img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square" alt="License: MIT" />
-  </a>
-  <a href="https://github.com/yourusername/gobang/stargazers" target="_blank">
-    <img src="https://img.shields.io/github/stars/yourusername/gobang.svg?style=social" alt="GitHub stars" />
-  </a>
-  <a href="https://github.com/yourusername/gobang/network" target="_blank">
-    <img src="https://img.shields.io/github/forks/yourusername/gobang.svg?style=social" alt="GitHub forks" />
-  </a>
-  <img src="https://img.shields.io/badge/Status-Active-green.svg?style=flat-square" alt="Status: Active" />
-  <img src="https://img.shields.io/badge/Maintenance-Yes-green.svg?style=flat-square" alt="Maintenance: Yes" />
-  <img src="https://img.shields.io/badge/Version-2.0.0-blue.svg?style=flat-square" alt="Version: 2.0.0" />
-</div>
+## 🎮 功能特性
 
-## 项目简介
+### 核心功能
+- **多种棋类游戏**: 五子棋、军棋、象棋等
+- **实时对战**: WebSocket 实现实时游戏通信
+- **智能匹配**: 基于积分的智能匹配系统
+- **用户系统**: 注册、登录、用户信息管理
+- **积分系统**: 胜负积分变化、排行榜
+- **游戏回放**: 支持游戏复盘和步骤查看
 
-这是一个基于前后端分离架构的在线多棋类游戏平台，支持五子棋、围棋、飞行棋、象棋、军棋等多种棋类游戏，提供玩家注册登录、创建房间、随机匹配、实时对战、积分系统、排行榜等完整功能，具备商用级别的稳定性和扩展性。
+### 技术特色
+- **前后端分离**: Vue.js + Spring Boot
+- **实时通信**: WebSocket 协议
+- **数据安全**: JWT 认证、密码加密
+- **高并发**: Redis 缓存、连接池优化
+- **可扩展**: 模块化设计、易于添加新棋类
 
-## 技术栈
+## 🏗️ 技术架构
 
-### 前端
-- **框架**: Vue 3 + Vite
+### 前端技术栈
+- **框架**: Vue.js 3 + TypeScript
+- **UI 组件**: Element Plus
 - **状态管理**: Pinia
 - **路由**: Vue Router
-- **UI组件**: Element Plus
-- **网络请求**: Axios
-- **WebSocket**: 原生WebSocket API
-- **实时通信**: Socket.IO
+- **HTTP 客户端**: Axios
+- **WebSocket**: 原生 WebSocket API
+- **构建工具**: Vite
 
-### 后端
-- **框架**: Spring Boot 3.x
-- **持久层**: MyBatis Plus
-- **关系型数据库**: MySQL 8.0
-- **非关系型数据库**: MongoDB
-- **消息队列**: RabbitMQ
-- **实时通信**: WebSocket / Socket.IO
+### 后端技术栈
+- **框架**: Spring Boot 2.7.x
+- **数据库**: MySQL 8.0
 - **缓存**: Redis
-- **安全框架**: Spring Security + JWT
-- **构建工具**: Maven
-- **分布式锁**: Redisson
+- **认证**: Spring Security + JWT
+- **数据访问**: MyBatis Plus
+- **实时通信**: Spring WebSocket
+- **文档**: Swagger/OpenAPI
+- **测试**: JUnit 5 + TestContainers
 
-### 开发工具
-- **IDE**: IntelliJ IDEA / VS Code
-- **版本控制**: Git
-- **CI/CD**: Jenkins
-- **监控**: Prometheus + Grafana
-- **日志**: ELK Stack
+### 部署架构
+- **容器化**: Docker + Docker Compose
+- **负载均衡**: Nginx
+- **监控**: Spring Boot Actuator
+- **日志**: Logback + ELK
 
-### 开发工具
-- **IDE**: IntelliJ IDEA / VS Code
-- **版本控制**: Git
+## 🚀 快速开始
 
-## 项目结构
+### 环境要求
+- **Java**: 11 或更高版本
+- **Node.js**: 14.x 或更高版本
+- **MySQL**: 8.0 或更高版本
+- **Redis**: 6.0 或更高版本
 
-```
-gobang/
-├── backend/                  # 后端代码
-│   ├── src/
-│   │   ├── main/
-│   │   │   ├── java/
-│   │   │   │   └── org/example/gobang/
-│   │   │   │       ├── GobangApplication.java  # 启动类
-│   │   │   │       ├── api/                     # 接口层
-│   │   │   │       ├── config/                  # 配置类
-│   │   │   │       ├── game/                    # 游戏逻辑层
-│   │   │   │       └── model/                   # 数据模型层
-│   │   │   ├── resources/
-│   │   │   │   ├── application.yml              # 配置文件
-│   │   │   │   └── mapper/                      # MyBatis映射文件
-│   │   └── test/                                # 测试代码
-│   └── pom.xml                                  # Maven配置文件
-├── frontend/                 # 前端代码
-│   ├── src/
-│   │   ├── assets/          # 静态资源
-│   │   ├── components/      # Vue组件
-│   │   ├── router/          # 路由配置
-│   │   ├── stores/          # Pinia状态管理
-│   │   ├── views/           # 页面组件
-│   │   └── main.js          # 入口文件
-│   ├── index.html           # HTML模板
-│   ├── package.json         # 依赖配置
-│   └── vite.config.js       # Vite配置
-├── LICENSE
-└── README.md
-```
-
-## 功能模块
-
-### 1. 用户系统
-- 注册/登录
-- 个人信息管理
-- 头像上传
-
-### 2. 游戏大厅
-- 在线用户列表
-- 房间列表
-- 创建房间
-- 加入房间
-
-### 3. 匹配系统
-- 随机匹配
-- 好友邀请
-- 段位匹配
-
-### 4. 游戏核心
-#### 五子棋
-- 15x15标准棋盘
-- 落子逻辑与胜负判断
-- 悔棋与求和功能
-- 实时计时器
-
-#### 围棋
-- 19x19标准棋盘
-- 落子规则与提子逻辑
-- 胜负计算（目数/数子）
-- 悔棋与认输功能
-
-#### 飞行棋
-- 标准飞行棋棋盘
-- 骰子随机系统
-- 跳跃与碰撞规则
-- 多人对战支持
-
-#### 象棋
-- 中国象棋标准棋盘
-- 各棋子走法规则
-- 将军与胜负判断
-- 悔棋功能
-
-#### 军棋
-- 标准军棋棋盘
-- 暗棋与明棋模式
-- 棋子大小规则
-- 军旗夺取机制
-
-### 5. 房间系统
-- 房间创建与管理
-- 房间设置（棋盘大小、时间限制等）
-- 观战功能
-
-### 6. 积分系统
-- 胜负积分计算
-- 段位系统
-- 排行榜
-
-## 架构设计
-
-### 1. 系统架构
-
-```
-┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-│   前端客户端    │     │   后端服务器    │     │    数据库       │
-│  (Vue 3 + Vite) │────▶│ (Spring Boot)   │────▶│   (MySQL)       │
-└─────────────────┘     └─────────────────┘     └─────────────────┘
-        ▲                        ▲
-        │ WebSocket               │
-        └────────────────────────┘
-           实时游戏通信
-```
-
-### 2. 核心流程
-
-#### 用户登录流程
-1. 用户输入用户名和密码
-2. 前端发送请求到后端
-3. 后端验证用户信息
-4. 返回JWT令牌
-5. 前端存储令牌并跳转到游戏大厅
-
-#### 游戏匹配流程
-1. 用户点击匹配按钮
-2. 前端发送匹配请求
-3. 后端匹配系统寻找对手
-4. 匹配成功后创建房间
-5. 通知双方进入游戏房间
-
-#### 游戏对战流程
-1. 玩家A落子
-2. 前端发送落子请求
-3. 后端验证落子合法性
-4. 更新游戏状态
-5. 广播游戏状态给双方
-6. 判断胜负
-
-## 快速开始
-
-### 1. 环境要求
-- JDK 17+
-- MySQL 8.0+
-- MongoDB 5.0+
-- Redis 7.0+
-- RabbitMQ 3.10+
-- Node.js 18+
-- npm 9+
-
-### 2. 数据库配置
-
-#### 创建数据库
-```sql
-CREATE DATABASE `java_gobang` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-```
-
-#### 导入数据
-执行 `backend/src/main/db.sql` 文件中的SQL语句。
-
-### 3. 后端启动
-
+### 1. 克隆项目
 ```bash
+git clone https://github.com/your-username/gobang.git
+cd gobang
+```
+
+### 2. 数据库初始化
+```bash
+# 登录 MySQL
+mysql -u root -p
+
+# 执行数据库初始化脚本
+source database_schema.sql
+```
+
+### 3. 后端配置和启动
+```bash
+# 进入后端目录
 cd backend
+
+# 安装依赖
 mvn clean install
+
+# 配置文件
+# 编辑 src/main/resources/application.yml
+# 修改数据库连接、Redis 配置等
+
+# 启动应用
 mvn spring-boot:run
 ```
 
-### 4. 前端启动
-
+### 4. 前端配置和启动
 ```bash
+# 进入前端目录
 cd frontend
+
+# 安装依赖
 npm install
+
+# 配置文件
+# 编辑 .env 文件，配置 API 地址
+
+# 启动开发服务器
 npm run dev
 ```
 
-### 5. 访问项目
-前端地址: `http://localhost:5173`
-后端地址: `http://localhost:8080`
+### 5. 访问应用
+- **前端地址**: http://localhost:3000
+- **后端地址**: http://localhost:8080
+- **API 文档**: http://localhost:8080/swagger-ui.html
 
-## API接口文档
+## 📖 API 文档
 
-### 用户接口
-- `POST /api/user/register` - 用户注册
-- `POST /api/user/login` - 用户登录
-- `GET /api/user/info` - 获取用户信息
-- `PUT /api/user/update` - 更新用户信息
-- `POST /api/user/avatar` - 上传头像
+详细的 API 文档请参考 [API_DOCUMENTATION.md](API_DOCUMENTATION.md)
 
-### 游戏接口
-- `POST /api/game/create` - 创建房间
-- `GET /api/game/rooms` - 获取房间列表
-- `POST /api/game/join` - 加入房间
-- `POST /api/game/leave` - 离开房间
-- `GET /api/game/info` - 获取游戏信息
-- `POST /api/game/move` - 落子操作
-- `POST /api/game/undo` - 悔棋请求
-- `POST /api/game/surrender` - 认输
+### 主要接口分类
+- **用户管理**: 注册、登录、用户信息
+- **游戏匹配**: 加入匹配、取消匹配
+- **游戏房间**: 创建房间、加入房间、游戏操作
+- **积分系统**: 积分变化、排行榜
+- **系统配置**: 获取配置、系统状态
 
-### 匹配接口
-- `POST /api/match/start` - 开始匹配
-- `POST /api/match/cancel` - 取消匹配
-- `GET /api/match/status` - 获取匹配状态
+## 🗄️ 数据库设计
 
-### 排行榜接口
-- `GET /api/ranking/list` - 获取排行榜
-- `GET /api/ranking/user` - 获取用户排名
+### 核心表结构
+- **user**: 用户信息表
+- **game_room**: 游戏房间表
+- **game_record**: 游戏记录表
+- **game_step**: 游戏步骤表
+- **user_session**: 用户会话表
+- **user_score_log**: 积分变化记录表
+- **system_config**: 系统配置表
 
-### 消息接口
-- `GET /api/message/list` - 获取消息列表
-- `POST /api/message/send` - 发送消息
-- `PUT /api/message/read` - 标记已读
+详细的数据库结构请参考 [database_schema.sql](database_schema.sql)
 
-### WebSocket接口
-- 连接地址: `ws://localhost:8080/ws/game`
-- 消息格式: JSON
-- 支持游戏实时通信、聊天、通知等功能
+## 🔧 配置说明
 
-## 开发规范
-
-### 1. 代码规范
-- 前端: ESLint + Prettier
-- 后端: Alibaba Java Coding Guidelines
-
-### 2. 分支管理
-- `main`: 主分支，用于生产环境
-- `develop`: 开发分支，用于集成测试
-- `feature/*`: 功能分支，用于开发新功能
-- `fix/*`: 修复分支，用于修复bug
-
-### 3. 提交规范
-遵循Conventional Commits规范，格式如下：
-```
-<type>[optional scope]: <description>
-
-[optional body]
-
-[optional footer(s)]
+### 后端配置 (application.yml)
+```yaml
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/java_gobang
+    username: root
+    password: your_password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  
+  redis:
+    host: localhost
+    port: 6379
+    password: your_redis_password
+  
+  jwt:
+    secret: your_jwt_secret_key
+    expiration: 86400000
 ```
 
-类型包括：
-- `feat`: 新功能
-- `fix`: 修复bug
-- `docs`: 文档更新
-- `style`: 代码格式调整
-- `refactor`: 代码重构
-- `test`: 测试代码
-- `chore`: 构建工具或辅助工具的变动
+### 前端配置 (.env)
+```env
+VITE_API_BASE_URL=http://localhost:8080
+VITE_WS_BASE_URL=ws://localhost:8080
+VITE_APP_NAME=Come下棋
+```
 
-## 部署说明
+## 🐳 Docker 部署
 
-### 1. 开发环境
-直接使用快速开始中的命令启动即可。
-
-### 2. 生产环境
-
-#### Docker部署
+### 使用 Docker Compose
 ```bash
 # 构建镜像
 docker-compose build
 
 # 启动服务
 docker-compose up -d
+
+# 查看日志
+docker-compose logs -f
 ```
 
-#### 手动部署
-
-##### 后端部署
+### 单独构建
 ```bash
-cd backend
-mvn clean package -DskipTests
-java -jar target/game-platform-0.0.1-SNAPSHOT.jar
+# 构建后端镜像
+docker build -t gobang-backend ./backend
+
+# 构建前端镜像
+docker build -t gobang-frontend ./frontend
+
+# 运行容器
+docker run -d -p 8080:8080 --name gobang-backend gobang-backend
+docker run -d -p 3000:80 --name gobang-frontend gobang-frontend
 ```
 
-##### 前端部署
+## 🧪 测试
+
+### 后端测试
 ```bash
-cd frontend
-npm run build
-# 将dist目录部署到Nginx或其他静态文件服务器
+# 单元测试
+mvn test
+
+# 集成测试
+mvn verify
+
+# 代码覆盖率
+mvn jacoco:report
 ```
 
-##### 配置文件
-生产环境需要修改以下配置文件：
-- `backend/src/main/resources/application-prod.yml` - 后端生产配置
-- `frontend/.env.production` - 前端生产环境变量
+### 前端测试
+```bash
+# 单元测试
+npm run test
 
-## 监控与维护
+# 端到端测试
+npm run test:e2e
 
-### 1. 监控系统
-- **服务监控**: Prometheus + Grafana
-- **日志收集**: ELK Stack
-- **链路追踪**: Zipkin
-- **性能监控**: JVM监控 + 数据库监控
+# 代码质量检查
+npm run lint
+```
 
-### 2. 日志
-- 后端日志: `logs/game-platform.log`
-- 前端日志: 浏览器控制台 + Sentry错误监控
+## 📊 性能优化
 
-### 3. 常见问题
-- 连接失败: 检查数据库、Redis、RabbitMQ配置和端口占用
-- 匹配超时: 检查WebSocket连接和消息队列状态
-- 游戏卡顿: 检查网络延迟、服务器负载和数据库性能
-- 数据不一致: 检查事务配置和消息队列可靠性
+### 数据库优化
+- 合理设计索引
+- 使用连接池
+- 分表分库策略
+- 读写分离
 
-## 贡献者
+### 缓存策略
+- Redis 缓存热点数据
+- 本地缓存用户会话
+- 游戏状态缓存
+- 排行榜缓存
 
-感谢所有为这个项目做出贡献的开发者！
+### 前端优化
+- 组件懒加载
+- 图片资源优化
+- CDN 加速
+- 代码分割
 
-| 贡献者 | GitHub | 贡献内容 |
-|-------|--------|----------|
-| [Your Name] | [yourusername](https://github.com/yourusername) | 项目发起人，核心功能开发 |
-| [Contributor 1] | [contributor1](https://github.com/contributor1) | 前端组件开发 |
-| [Contributor 2] | [contributor2](https://github.com/contributor2) | 后端API实现 |
-| [Contributor 3] | [contributor3](https://github.com/contributor3) | 游戏逻辑优化 |
+## 🔒 安全考虑
 
-## 项目成员
+### 认证授权
+- JWT Token 认证
+- 密码加密存储
+- 会话管理
+- 权限控制
 
-| 角色 | 姓名 | GitHub | 联系方式 |
-|-----|------|--------|----------|
-| 项目负责人/核心开发 | [Your Name] | [yourusername](https://github.com/yourusername) | [your.email@example.com](mailto:your.email@example.com) |
-| 前端开发 | [Frontend Dev] | [frontend-dev](https://github.com/frontend-dev) | [frontend.dev@example.com](mailto:frontend.dev@example.com) |
-| 后端开发 | [Backend Dev] | [backend-dev](https://github.com/backend-dev) | [backend.dev@example.com](mailto:backend.dev@example.com) |
-| UI/UX设计 | [Designer] | [designer](https://github.com/designer) | [designer@example.com](mailto:designer@example.com) |
+### 数据安全
+- SQL 注入防护
+- XSS 攻击防护
+- CSRF 防护
+- 数据加密传输
 
-## 许可证
+### 系统安全
+- 接口限流
+- 防重放攻击
+- 日志审计
+- 异常监控
 
-MIT License
+## 🤝 贡献指南
 
-## 更新日志
+1. Fork 项目
+2. 创建特性分支 (`git checkout -b feature/amazing-feature`)
+3. 提交更改 (`git commit -m 'Add some amazing feature'`)
+4. 推送到分支 (`git push origin feature/amazing-feature`)
+5. 创建 Pull Request
 
-### v2.0.0 (2024-XX-XX)
-- 升级技术栈到Spring Boot 3.x和Vue 3
-- 增加多游戏支持（五子棋、围棋、飞行棋、象棋、军棋）
-- 引入MyBatis Plus、MongoDB、RabbitMQ等中间件
-- 实现分布式部署架构
-- 完善用户系统和积分排名
+### 开发规范
+- 遵循代码规范
+- 编写单元测试
+- 更新文档
+- 通过代码审查
 
-### v1.0.0 (2024-12-XX)
-- 项目初始化
-- 实现前后端分离架构
-- 完成用户注册登录功能
-- 实现游戏大厅和房间系统
-- 完成五子棋核心游戏逻辑
+## 📄 许可证
+
+本项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情
+
+## 🆘 问题反馈
+
+- **Issues**: [项目 Issues](https://github.com/your-username/gobang/issues)
+- **讨论**: [项目讨论](https://github.com/your-username/gobang/discussions)
+- **邮箱**: support@come-xiaqi.com
+
+## 📞 联系我们
+
+- **项目主页**: https://come-xiaqi.com
+- **技术博客**: https://blog.come-xiaqi.com
+- **官方QQ群**: 123456789
+- **微信公众号**: Come下棋
+
+---
+
+⭐ 如果这个项目对你有帮助，请给个 Star！
