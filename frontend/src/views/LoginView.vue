@@ -1,26 +1,39 @@
 <template>
   <div class="login-container">
-    <!-- 导航栏 -->
-    <nav class="navbar">
-      <div class="nav-container">
-        <div class="nav-logo">
-          <h1>五子棋</h1>
-        </div>
-        <div class="nav-actions">
-          <button class="back-btn" @click="$router.push('/')">
-            返回首页
-          </button>
+    <!-- 通用导航栏 -->
+    <GameNavbar 
+      :show-back-btn="true"
+    />
+
+    <!-- 主要内容区域 -->
+    <div class="main-content">
+      <!-- 左侧五子棋插画 -->
+      <div class="character-section">
+        <div class="character-image">
+          <div class="gobang-board">
+            <div class="board-grid">
+              <div 
+                v-for="i in 9" 
+                :key="i" 
+                class="board-row"
+              >
+                <div 
+                  v-for="j in 9" 
+                  :key="j" 
+                  class="board-cell"
+                  :class="{
+                    'black-piece': (i === 5 && j === 5) || (i === 7 && j === 3) || (i === 3 && j === 7),
+                    'white-piece': (i === 4 && j === 5) || (i === 5 && j === 4) || (i === 5 && j === 6)
+                  }"
+                ></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </nav>
 
-    <div class="login-content">
-      <div class="login-card">
-        <div class="card-header">
-          <h2>用户登录</h2>
-          <p>欢迎回到五子棋游戏</p>
-        </div>
-        
+      <!-- 中间登录表单 -->
+      <div class="login-section">
         <el-form
           ref="loginFormRef"
           :model="loginForm"
@@ -30,60 +43,62 @@
           @keyup.enter="handleLogin"
         >
           <div class="form-group">
-            <label for="username">用户名</label>
             <el-input 
-              id="username"
               v-model="loginForm.username" 
               placeholder="请输入用户名"
               clearable
               autofocus
-            >
-              <template #prefix>
-                <el-icon><User /></el-icon>
-              </template>
-            </el-input>
+            ></el-input>
           </div>
 
           <div class="form-group">
-            <label for="password">密码</label>
             <el-input
-              id="password"
               v-model="loginForm.password"
               type="password"
               placeholder="请输入密码"
               show-password
               clearable
-            >
-              <template #prefix>
-                <el-icon><Lock /></el-icon>
-              </template>
-            </el-input>
+            ></el-input>
           </div>
 
           <div class="form-options">
-            <el-checkbox v-model="loginForm.remember">
-              记住登录状态
+            <el-checkbox v-model="loginForm.agreement">
+              我已详细阅读并同意《用户协议与隐私政策》
             </el-checkbox>
-            <router-link to="/forgot-password" class="forgot-link">
-              忘记密码？
-            </router-link>
           </div>
 
           <button 
             class="login-btn" 
             @click="handleLogin" 
-            :disabled="loading"
+            :disabled="loading || !loginForm.agreement"
           >
-            <span v-if="!loading">立即登录</span>
+            <span v-if="!loading">开始游戏</span>
             <span v-else>登录中...</span>
           </button>
+
+          <div class="register-link">
+            <router-link to="/register">立即注册</router-link>
+          </div>
         </el-form>
 
-        <div class="card-footer">
-          <p>还没有账号？<router-link to="/register">立即注册</router-link></p>
+        <!-- 其他登录方式 -->
+        <div class="other-login">
+          <div class="login-divider">
+            <span>其他登录方式</span>
+          </div>
+          <div class="login-icons">
+            <div class="login-icon" title="微信登录">
+              <el-icon><WeChat /></el-icon>
+            </div>
+            <div class="login-icon" title="QQ登录">
+              <el-icon><ChatDotRound /></el-icon>
+            </div>
+          </div>
         </div>
       </div>
     </div>
+
+
 
     <!-- 登录失败对话框 -->
     <el-dialog
@@ -115,15 +130,21 @@
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { User, Lock, CircleClose } from '@element-plus/icons-vue'
+import {
+  WeChat,
+  CircleClose,
+  ChatDotRound
+} from '@element-plus/icons-vue'
 import { userAPI } from '../api/index.js'
+import GameNavbar from '../components/GameNavbar.vue'
 
 export default {
   name: 'LoginView',
   components: {
-    User,
-    Lock,
-    CircleClose
+    WeChat,
+    CircleClose,
+    ChatDotRound,
+    GameNavbar
   },
   setup() {
     const router = useRouter()
@@ -134,7 +155,7 @@ export default {
     const loginForm = reactive({
       username: '',
       password: '',
-      remember: false
+      agreement: false
     })
 
     // 错误对话框
@@ -307,15 +328,18 @@ export default {
 <style scoped>
 .login-container {
   min-height: 100vh;
-  background: #f8f9fa;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  flex-direction: column;
 }
 
 /* 导航栏样式 */
 .navbar {
-  background: white;
-  border-bottom: 1px solid #e9ecef;
-  position: fixed;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  position: sticky;
   top: 0;
   left: 0;
   right: 0;
@@ -333,165 +357,250 @@ export default {
 }
 
 .nav-logo h1 {
-  font-size: 24px;
-  font-weight: 600;
+  font-size: 28px;
+  font-weight: 700;
   color: #2c3e50;
   margin: 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .back-btn {
-  background: transparent;
-  color: #667eea;
-  border: 1px solid #667eea;
+  background: #f5f7fa;
+  border: 1px solid #dcdfe6;
+  color: #606266;
   padding: 8px 16px;
-  border-radius: 6px;
-  font-size: 14px;
+  border-radius: 4px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  font-size: 14px;
+  transition: all 0.3s;
 }
 
 .back-btn:hover {
-  background: #667eea;
-  color: white;
+  background: #ecf5ff;
+  border-color: #409EFF;
+  color: #409EFF;
 }
 
-/* 登录内容样式 */
-.login-content {
-  padding-top: 70px;
-  min-height: calc(100vh - 70px);
+/* 主要内容区域 */
+.main-content {
   display: flex;
-  align-items: center;
   justify-content: center;
-  padding: 40px 20px;
-}
-
-.login-card {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  padding: 40px;
+  align-items: center;
   width: 100%;
-  max-width: 400px;
+  max-width: 1200px;
+  gap: 80px;
+  margin-bottom: 40px;
 }
 
-.card-header {
-  text-align: center;
-  margin-bottom: 30px;
+/* 左侧角色插画 */
+.character-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.card-header h2 {
-  font-size: 28px;
-  font-weight: 600;
-  color: #2c3e50;
-  margin: 0 0 8px 0;
+.character-image {
+  position: relative;
+  width: 250px;
+  height: 250px;
 }
 
-.card-header p {
-  color: #7f8c8d;
-  font-size: 14px;
-  margin: 0;
+.gobang-board {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-/* 表单样式 */
+.board-grid {
+  display: grid;
+  grid-template-rows: repeat(9, 25px);
+  grid-template-columns: repeat(9, 25px);
+  background: #deb887;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.board-row {
+  display: contents;
+}
+
+.board-cell {
+  width: 25px;
+  height: 25px;
+  position: relative;
+  border: 1px solid #a0522d;
+}
+
+.board-cell::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.black-piece::before {
+  background: #2c3e50;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.white-piece::before {
+  background: #ecf0f1;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* 中间登录表单 */
+.login-section {
+  width: 300px;
+}
+
 .login-form {
-  margin-bottom: 20px;
+  width: 100%;
 }
 
 .form-group {
   margin-bottom: 20px;
 }
 
-.form-group label {
-  display: block;
-  font-size: 14px;
-  font-weight: 500;
-  color: #2c3e50;
-  margin-bottom: 8px;
+.form-group .el-input {
+  width: 100%;
+  border-radius: 4px;
 }
 
-/* 表单选项样式 */
 .form-options {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-  font-size: 14px;
+  margin-bottom: 25px;
+  font-size: 12px;
+  text-align: left;
 }
 
-.forgot-link {
-  color: #667eea;
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-.forgot-link:hover {
-  color: #764ba2;
-  text-decoration: underline;
+.form-options .el-checkbox__label {
+  color: #666;
 }
 
 /* 登录按钮样式 */
 .login-btn {
   width: 100%;
-  background: #667eea;
+  background: #00bfff;
   color: white;
   border: none;
   padding: 12px 24px;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 500;
+  border-radius: 25px;
+  font-size: 18px;
+  font-weight: bold;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: all 0.3s ease;
+  margin-bottom: 15px;
 }
 
 .login-btn:hover:not(:disabled) {
-  background: #5a6fd8;
+  background: #0099cc;
+  transform: scale(1.02);
 }
 
 .login-btn:disabled {
-  background: #bdc3c7;
+  background: #b3e5fc;
   cursor: not-allowed;
 }
 
-/* 底部链接样式 */
-.card-footer {
-  text-align: center;
-  padding-top: 20px;
-  border-top: 1px solid #e9ecef;
-}
-
-.card-footer p {
-  color: #7f8c8d;
+/* 注册链接 */
+.register-link {
+  text-align: right;
   font-size: 14px;
-  margin: 0;
+  margin-bottom: 30px;
 }
 
-.card-footer a {
-  color: #667eea;
+.register-link a {
+  color: #00bfff;
   text-decoration: none;
   font-weight: 500;
-  transition: color 0.3s ease;
 }
 
-.card-footer a:hover {
-  color: #764ba2;
+.register-link a:hover {
   text-decoration: underline;
 }
 
+/* 其他登录方式 */
+.other-login {
+  margin-top: 30px;
+}
+
+.login-divider {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.login-divider::before,
+.login-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #ddd;
+}
+
+.login-divider span {
+  padding: 0 10px;
+  color: #666;
+  font-size: 14px;
+}
+
+.login-icons {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+}
+
+.login-icon {
+  font-size: 28px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.login-icon:hover {
+  transform: scale(1.1);
+}
+
+/* 右侧下载区域 */
+
+
 /* 响应式设计 */
-@media (max-width: 480px) {
-  .login-card {
-    padding: 30px 20px;
-    margin: 0 10px;
-  }
-  
-  .card-header h2 {
-    font-size: 24px;
-  }
-  
-  .form-options {
+@media (max-width: 992px) {
+  .main-content {
     flex-direction: column;
-    gap: 15px;
-    align-items: flex-start;
+    gap: 40px;
+  }
+  
+  .character-section, .download-section {
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .game-logo h1 {
+    font-size: 36px;
+  }
+  
+  .character-image {
+    width: 150px;
+    height: 150px;
+  }
+  
+  .duck, .devil {
+    font-size: 90px;
+  }
+  
+  .login-section {
+    width: 90%;
+  }
+  
+  .age-rating {
+    position: static;
+    margin-top: 20px;
   }
 }
 

@@ -1,18 +1,10 @@
 <template>
   <div class="welcome-container">
-    <!-- 导航栏 -->
-    <nav class="navbar">
-      <div class="nav-container">
-        <div class="nav-logo">
-          <h1>五子棋</h1>
-        </div>
-        <div class="nav-actions">
-          <button class="start-game-btn" @click="handleStartGame">
-            开始游戏
-          </button>
-        </div>
-      </div>
-    </nav>
+    <!-- 通用导航栏 -->
+    <GameNavbar />
+    
+    <!-- 导航栏占位符，确保内容不会被导航栏遮挡 -->
+    <div class="navbar-placeholder"></div>
 
     <!-- 主要内容区域 -->
     <main class="main-content">
@@ -103,9 +95,13 @@
 
 <script>
 import { useRouter } from 'vue-router'
+import GameNavbar from '../components/GameNavbar.vue'
 
 export default {
   name: 'WelcomeView',
+  components: {
+    GameNavbar
+  },
   setup() {
     const router = useRouter()
 
@@ -135,6 +131,10 @@ export default {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+.navbar-placeholder {
+  height: 70px; /* 与导航栏高度保持一致 */
+}
+
 /* 导航栏样式 */
 .navbar {
   background: rgba(255, 255, 255, 0.95);
@@ -158,10 +158,11 @@ export default {
 }
 
 .nav-logo h1 {
-  font-size: 24px;
-  font-weight: 600;
+  font-size: 28px;
+  font-weight: 700;
   color: #2c3e50;
   margin: 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .start-game-btn {
@@ -184,7 +185,7 @@ export default {
 
 /* 主要内容样式 */
 .main-content {
-  padding-top: 70px;
+  padding-top: 0;
 }
 
 .hero-section {
@@ -198,18 +199,20 @@ export default {
 }
 
 .hero-title {
-  font-size: 3rem;
+  font-size: 3.5rem;
   font-weight: 700;
   color: #2c3e50;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
   line-height: 1.2;
+  letter-spacing: -0.5px;
 }
 
 .hero-subtitle {
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   color: #7f8c8d;
-  margin-bottom: 3rem;
+  margin-bottom: 3.5rem;
   line-height: 1.6;
+  max-width: 500px;
 }
 
 .hero-features {
@@ -343,21 +346,27 @@ export default {
 
 /* 行动区域样式 */
 .action-section {
-  padding: 80px 0;
+  padding: 100px 0;
   text-align: center;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 20px;
+  margin: 0 20px;
 }
 
 .action-section h3 {
-  font-size: 2.5rem;
-  font-weight: 600;
+  font-size: 2.8rem;
+  font-weight: 700;
   color: #2c3e50;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .action-section p {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   color: #7f8c8d;
-  margin-bottom: 3rem;
+  margin-bottom: 3.5rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .action-buttons {

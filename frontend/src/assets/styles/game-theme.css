@@ -1,6 +1,6 @@
 :root {
-  /* 主色调 */
-  --primary-color: #1890ff;
+  /* 主色调 - 浅蓝色主题 */
+  --primary-color: #00bfff;
   --success-color: #52c41a;
   --warning-color: #faad14;
   --error-color: #f5222d;
@@ -12,15 +12,15 @@
   --black-stone: #000000;
   --white-stone: #ffffff;
   
-  /* 背景色 */
-  --bg-primary: #0f172a;
-  --bg-secondary: #1e293b;
-  --bg-tertiary: #334155;
+  /* 背景色 - 浅色主题 */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-tertiary: #e9ecef;
   
-  /* 文本色 */
-  --text-primary: #ffffff;
-  --text-secondary: #cbd5e1;
-  --text-tertiary: #94a3b8;
+  /* 文本色 - 浅色主题 */
+  --text-primary: #333333;
+  --text-secondary: #666666;
+  --text-tertiary: #999999;
   
   /* 阴影 */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);

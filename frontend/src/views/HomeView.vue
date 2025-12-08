@@ -1,5 +1,8 @@
 <template>
   <div class="home-container">
+    <!-- 通用导航栏 -->
+    <GameNavbar />
+    
     <!-- 顶部用户信息栏 -->
     <div class="user-bar" v-if="userInfo">
       <div class="user-info">
@@ -183,9 +186,13 @@ import { ref, reactive, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { gameAPI, userAPI } from '../api/index.js'
+import GameNavbar from '../components/GameNavbar.vue'
 
 export default {
   name: 'HomeView',
+  components: {
+    GameNavbar
+  },
   setup() {
     const router = useRouter()
     const selectedGameMode = ref(null)
@@ -533,21 +540,23 @@ export default {
 <style scoped>
 .home-container {
   min-height: 100vh;
-  background: #f5f7fa;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   padding: 20px;
+  padding-top: 90px;
 }
 
 /* 顶部用户信息栏 */
 .user-bar {
-  background: white;
-  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
   padding: 20px;
   margin-bottom: 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e4e7ed;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .user-bar.guest {
@@ -619,13 +628,15 @@ export default {
 .game-modes {
   text-align: center;
   margin-bottom: 40px;
+  color: white;
 }
 
 .title {
   font-size: 2.5rem;
-  color: #303133;
+  color: white;
   margin-bottom: 3rem;
   font-weight: 600;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .mode-cards {
@@ -637,13 +648,14 @@ export default {
 }
 
 .mode-card {
-  background: white;
-  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
   padding: 2rem 1.5rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e4e7ed;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .mode-card:hover {
@@ -693,13 +705,14 @@ export default {
 
 /* 游戏操作区域 */
 .game-actions {
-  background: white;
-  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
   padding: 2rem;
   max-width: 800px;
   margin: 0 auto;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e4e7ed;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   text-align: center;
 }
 
@@ -927,6 +940,7 @@ export default {
 @media (max-width: 768px) {
   .home-container {
     padding: 15px;
+    padding-top: 80px;
   }
   
   .user-bar {

@@ -1,23 +1,15 @@
 <template>
   <div class="register-container">
-    <!-- 导航栏 -->
-    <nav class="navbar">
-      <div class="nav-container">
-        <div class="nav-logo">
-          <h1>五子棋</h1>
-        </div>
-        <div class="nav-actions">
-          <button class="back-btn" @click="$router.push('/')">
-            返回首页
-          </button>
-        </div>
-      </div>
-    </nav>
+    <!-- 通用导航栏 -->
+    <GameNavbar 
+      :show-back-btn="true"
+      :show-login-hint="true"
+    />
 
     <div class="register-content">
       <div class="register-card">
         <div class="card-header">
-          <h2>用户注册</h2>
+          <h2>创建账号</h2>
           <p>创建您的五子棋游戏账户</p>
         </div>
         
@@ -157,13 +149,15 @@ import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { CircleCheck, CircleClose, Loading } from '@element-plus/icons-vue'
 import { userAPI } from '../api/index.js'
+import GameNavbar from '../components/GameNavbar.vue'
 
 export default {
   name: 'RegisterView',
   components: {
     CircleCheck,
     CircleClose,
-    Loading
+    Loading,
+    GameNavbar
   },
   setup() {
     const router = useRouter()
@@ -393,17 +387,21 @@ export default {
 <style scoped>
 .register-container {
   min-height: 100vh;
-  background: #f5f7fa;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   display: flex;
   flex-direction: column;
 }
 
 /* 导航栏样式 */
 .navbar {
-  background: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 1000;
 }
 
@@ -411,17 +409,36 @@ export default {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
-  height: 60px;
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
+  height: 70px;
 }
 
 .nav-logo h1 {
-  color: #409EFF;
-  font-size: 24px;
-  font-weight: 600;
+  font-size: 28px;
+  font-weight: 700;
+  color: #2c3e50;
   margin: 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.login-link {
+  color: #606266;
+  text-decoration: none;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.login-link:hover {
+  color: #409EFF;
+  text-decoration: underline;
 }
 
 .back-btn {
@@ -451,12 +468,13 @@ export default {
 }
 
 .register-card {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
   padding: 40px;
   width: 100%;
-  max-width: 400px;
+  max-width: 500px;
 }
 
 .card-header {
@@ -465,10 +483,11 @@ export default {
 }
 
 .card-header h2 {
-  color: #303133;
-  font-size: 24px;
-  font-weight: 600;
+  color: #2c3e50;
+  font-size: 28px;
+  font-weight: 700;
   margin-bottom: 8px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .card-header p {

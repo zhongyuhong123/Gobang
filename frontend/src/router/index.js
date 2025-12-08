@@ -53,12 +53,8 @@ router.beforeEach((to, from, next) => {
   if (requiresAuth && !isLoggedIn) {
     next('/login')
   } 
-  // 如果用户已登录但访问的是登录或注册页面，重定向到首页
+  // 如果用户已登录但访问的是登录或注册页面，重定向到游戏大厅
   else if (isLoggedIn && (to.path === '/login' || to.path === '/register')) {
-    next('/home')
-  }
-  // 如果用户已登录且访问的是欢迎页面，重定向到首页
-  else if (isLoggedIn && to.path === '/') {
     next('/home')
   }
   // 其他情况正常导航
