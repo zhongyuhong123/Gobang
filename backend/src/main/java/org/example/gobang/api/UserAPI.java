@@ -1,5 +1,8 @@
 package org.example.gobang.api;
 
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.example.gobang.model.User;
 import org.example.gobang.model.UserMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -8,9 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 @RestController
 public class UserAPI {

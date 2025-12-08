@@ -43,7 +43,7 @@ public class MatchAPI extends TextWebSocketHandler {
             if (user == null) {
                 MatchResponse response = new MatchResponse();
                 response.setOk(false);
-                response.setReason("您尚未登录！不能进行匹配功能�?);
+                response.setReason("您尚未登录！不能进行匹配功能�?");
                 session.sendMessage(new TextMessage(objectMapper.writeValueAsString(response)));
                 return;
             }
@@ -53,7 +53,7 @@ public class MatchAPI extends TextWebSocketHandler {
                 //当前用户已经在线了！�?
                 MatchResponse matchResponse = new MatchResponse();
                 matchResponse.setOk(true);
-                matchResponse.setReason("禁止多开游戏页面�?);
+                matchResponse.setReason("禁止多开游戏页面�?");
                 matchResponse.setMessage("repeatConnection");
                 session.sendMessage(new TextMessage(objectMapper.writeValueAsString(matchResponse)));
                //这里 close 太激进了。直接触发客户端 websocket �?onclose 逻辑�?
@@ -63,14 +63,14 @@ public class MatchAPI extends TextWebSocketHandler {
 
             //3.拿到了身份信息之后，就可以把玩家的设置成在线状态了
             onlineUserManager.enterGameHall(user.getUserId(), session);
-            System.out.println("玩家"+user.getUsername()+"进入游戏大厅�?);
+            System.out.println("玩家"+user.getUsername()+"进入游戏大厅�?");
         } catch (NullPointerException e){
             e.printStackTrace();
             //出现空指针异常，说明当前用户的身份信息是空，用户未登录�?
             //把当前用户尚未登录这个信息返回回去~
             MatchResponse response = new MatchResponse();
             response.setOk(false);
-            response.setReason("您尚未登录！不能进行匹配功能�?);
+            response.setReason("您尚未登录！不能进行匹配功能�?");
             session.sendMessage(new TextMessage(objectMapper.writeValueAsString(response)));
         }
 
@@ -100,7 +100,7 @@ public class MatchAPI extends TextWebSocketHandler {
         }else{
             //非法情况
             response.setOk(false);
-            response.setReason("非法的匹配请�?);
+            response.setReason("非法的匹配请�?");
         }
         //服务器需要将响应返回客户端通过   session.sendMessage()
         String jsonString = objectMapper.writeValueAsString(response);

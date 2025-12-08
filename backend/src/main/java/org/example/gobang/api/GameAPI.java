@@ -2,6 +2,7 @@ package org.example.gobang.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.Resource;
 import org.example.gobang.game.*;
 import org.example.gobang.model.User;
 import org.example.gobang.model.UserMapper;
@@ -12,7 +13,6 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import javax.annotation.Resource;
 import java.io.IOException;
 
 @Component
@@ -36,7 +36,7 @@ public class GameAPI extends TextWebSocketHandler {
         User user = (User) session.getAttributes().get("user");
         if(user == null){
             resp.setOk(false);
-            resp.setMessage("用户尚未登录�?);
+            resp.setMessage("用户尚未登录�?");
             session.sendMessage(new TextMessage(objectMapper.writeValueAsString(resp)));
             return;
         }
@@ -100,7 +100,7 @@ public class GameAPI extends TextWebSocketHandler {
         //6.此处若还有玩家测试连接同一个房间，就提示报错�?
         //  理论上不存在，为增强代码的健壮性，仍做一个判定�?
         resp.setOk(false);
-        resp.setReason("当前房间已满，您不能加入房间�?);
+        resp.setReason("当前房间已满，您不能加入房间�?");
         session.sendMessage(new TextMessage(objectMapper.writeValueAsString(resp)));
     }
 
@@ -118,7 +118,7 @@ public class GameAPI extends TextWebSocketHandler {
         if (webSocketSession != null && webSocketSession.isOpen()) { // 同时判断连接是否打开
             webSocketSession.sendMessage(new TextMessage(objectMapper.writeValueAsString(resp)));
         } else {
-            System.err.println("用户 " + thisUser.getUsername() + " 的游戏房间连接未建立�?);
+            System.err.println("用户 " + thisUser.getUsername() + " 的游戏房间连接未建立�?");
         }
     }
 
@@ -127,7 +127,7 @@ public class GameAPI extends TextWebSocketHandler {
         //1.先从会话中拿到当前用户的身份信息
         User user = (User) session.getAttributes().get("user");
         if(user == null){
-            System.out.println("[handleTextMessage] 当前用户尚未登录�?);
+            System.out.println("[handleTextMessage] 当前用户尚未登录�?");
             return;
         }
         //2.根据玩家id ，获取到游戏房间
@@ -153,7 +153,7 @@ public class GameAPI extends TextWebSocketHandler {
             //通过这个判定，避免在多开的情况下，第二个用户的退出连接动作，把第一个用户的在线状态影响到�?
             onlineUserManager.exitGameRoom(user.getUserId());
         }
-        System.out.println("当前用户 "+user.getUsername() + " 游戏房间连接异常�?);
+        System.out.println("当前用户 "+user.getUsername() + " 游戏房间连接异常�?");
         //3.通知对手获胜
         noticeThatUserWin(user);
     }
@@ -172,7 +172,7 @@ public class GameAPI extends TextWebSocketHandler {
             //通过这个判定，避免在多开的情况下，第二个用户的退出连接动作，把第一个用户的在线状态影响到�?
             onlineUserManager.exitGameRoom(user.getUserId());
         }
-        System.out.println("当前用户 "+user.getUsername() + " 离开游戏房间�?);
+        System.out.println("当前用户 "+user.getUsername() + " 离开游戏房间�?");
         //3.通知对手获胜
         noticeThatUserWin(user);
     }
@@ -189,7 +189,7 @@ public class GameAPI extends TextWebSocketHandler {
         //3.找到对手的在线状�?
         WebSocketSession webSocketSession = onlineUserManager.getFromGameRoom(thatUser.getUserId());
         if(webSocketSession == null){
-            System.out.println("双方都掉线！�?);
+            System.out.println("双方都掉线！�?");
             return;
         }
         //4.构造响应，通过获胜�?

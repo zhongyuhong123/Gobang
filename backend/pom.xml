@@ -21,7 +21,7 @@ https://maven.apache.org/xsd/maven-4.0.0.xsd">
         <mybatis.version>3.0.3</mybatis.version>
         <jwt.version>0.12.3</jwt.version>
         <swagger.version>2.2.0</swagger.version>
-        <fastjson.version>2.0.42</fastjson.version>
+        <fastjson.version>2.0.55</fastjson.version>
     </properties>
     <dependencies>
         <!-- Spring Boot Web -->
@@ -102,7 +102,7 @@ https://maven.apache.org/xsd/maven-4.0.0.xsd">
         
         <!-- FastJSON -->
         <dependency>
-            <groupId>com.alibaba</groupId>
+            <groupId>com.alibaba.fastjson2</groupId>
             <artifactId>fastjson2</artifactId>
             <version>${fastjson.version}</version>
         </dependency>

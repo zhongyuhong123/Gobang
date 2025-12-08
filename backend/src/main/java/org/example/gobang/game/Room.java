@@ -219,9 +219,9 @@ public class Room {
 
         //通过入口类中�?context 成员，手动获取到 RoomManager �?OnlineUserManager
         // 用这个方法来代替使用 @Autowired 交给 spring 来进行管�?
-        onlineUserManager = JavaGobangApplication.context.getBean(OnlineUserManager.class);
-        roomManager = JavaGobangApplication.context.getBean(RoomManager.class);
-        userMapper = JavaGobangApplication.context.getBean(UserMapper.class);
+        onlineUserManager = GobangApplication.context.getBean(OnlineUserManager.class);
+        roomManager = GobangApplication.context.getBean(RoomManager.class);
+        userMapper = GobangApplication.context.getBean(UserMapper.class);
     }
 
     public static void main(String[] args) {
@@ -234,84 +234,84 @@ public class Room {
 
 
 
-    //落子
-    public void putChess(Request request) {
-        //1.先进行参数校验
-        if(request == null || request.getUserId() == null || request.getRow() == null || request.getCol() == null){
-            System.out.println("落子失败！参数错误！");
-            return;
-        }
-
-        //2.检查当前是谁在落子
-        //  如果是玩家1落子，则检查当前是否是玩家1的回合
-        //  如果是玩家2落子，则检查当前是否是玩家2的回合
-        int userId = request.getUserId();
-        if(userId == user1.getUserId() && turn != 1){
-            System.out.println("落子失败！当前不是玩家1的回合！");
-            return;
-        }
-        if(userId == user2.getUserId() && turn != 2){
-            System.out.println("落子失败！当前不是玩家2的回合！");
-            return;
-        }
-
-        //3.检查落子位置是否合法
-        int row = request.getRow();
-        int col = request.getCol();
-        if(row < 0 || row >= MAX_ROW || col < 0 || col >= MAX_COL){
-            System.out.println("落子失败！落子位置越界！");
-            return;
-        }
-        if(board[row][col] != 0){
-            System.out.println("落子失败！落子位置已有棋子！");
-            return;
-        }
-
-        //4.落子
-        int chess = userId == user1.getUserId()? 1 : 2;
-        board[row][col] = chess;
-        printBoard();
-
-        //5.判断胜负
-        int winner = checkWinner(row, col, chess);
-        if(winner != 0){
-            System.out.println("玩家"+winner+"获胜！");
-        }
-
-        //6.构造响应对象
-        Response response = new Response();
-        response.setUserId(userId);
-        response.setRow(row);
-        response.setCol(col);
-        response.setWinner(winner);
-        response.setTurn(turn == 1 ? 2 : 1);
-
-        //7.把响应对象返回给两个玩家
-        try {
-            String respJson = objectMapper.writeValueAsString(response);
-            if(session1 != null && session1.isOpen()){
-                session1.sendMessage(new TextMessage(respJson));
-            }
-            if(session2 != null && session2.isOpen()){
-                session2.sendMessage(new TextMessage(respJson));
-            }
-        } catch (Exception e) {
-            System.out.println("处理落子请求失败: " + e.getMessage());
-        }
-
-        //8.交换落子顺序
-        turn = turn == 1 ? 2 : 1;
-
-        //9.判断胜负已分，房间就失去存在的意义了，可以销毁房间了
-        if(winner != 0){
-            System.out.println("游戏结束！房间即将销毁！roomId"+roomId+" 获胜方为"+winner);
-            //更新获胜方和失败方的信息
-            int winUserId = winner;
-            int loseUserId = winner == user1.getUserId()? user2.getUserId() : user1.getUserId();
-            userMapper.userWin(winUserId);
-            userMapper.userLose(loseUserId);
-
-            //销毁房间
-            roomManager.remove(roomManager.getRoomByRoomId(roomId), user1.getUserId(), user2.getUserId());
-        }
-    }
+//    //落子
+//    public void putChess(Request request) {
+//        //1.先进行参数校验
+//        if(request == null || request.getUserId() == null || request.getRow() == null || request.getCol() == null){
+//            System.out.println("落子失败！参数错误！");
+//            return;
+//        }
+//
+//        //2.检查当前是谁在落子
+//        //  如果是玩家1落子，则检查当前是否是玩家1的回合
+//        //  如果是玩家2落子，则检查当前是否是玩家2的回合
+//        int userId = request.getUserId();
+//        if(userId == user1.getUserId() && turn != 1){
+//            System.out.println("落子失败！当前不是玩家1的回合！");
+//            return;
+//        }
+//        if(userId == user2.getUserId() && turn != 2){
+//            System.out.println("落子失败！当前不是玩家2的回合！");
+//            return;
+//        }
+//
+//        //3.检查落子位置是否合法
+//        int row = request.getRow();
+//        int col = request.getCol();
+//        if(row < 0 || row >= MAX_ROW || col < 0 || col >= MAX_COL){
+//            System.out.println("落子失败！落子位置越界！");
+//            return;
+//        }
+//        if(board[row][col] != 0){
+//            System.out.println("落子失败！落子位置已有棋子！");
+//            return;
+//        }
+//
+//        //4.落子
+//        int chess = userId == user1.getUserId()? 1 : 2;
+//        board[row][col] = chess;
+//        printBoard();
+//
+//        //5.判断胜负
+//        int winner = checkWinner(row, col, chess);
+//        if(winner != 0){
+//            System.out.println("玩家"+winner+"获胜！");
+//        }
+//
+//        //6.构造响应对象
+//        Response response = new Response();
+//        response.setUserId(userId);
+//        response.setRow(row);
+//        response.setCol(col);
+//        response.setWinner(winner);
+//        response.setTurn(turn == 1 ? 2 : 1);
+//
+//        //7.把响应对象返回给两个玩家
+//        try {
+//            String respJson = objectMapper.writeValueAsString(response);
+//            if(session1 != null && session1.isOpen()){
+//                session1.sendMessage(new TextMessage(respJson));
+//            }
+//            if(session2 != null && session2.isOpen()){
+//                session2.sendMessage(new TextMessage(respJson));
+//            }
+//        } catch (Exception e) {
+//            System.out.println("处理落子请求失败: " + e.getMessage());
+//        }
+//
+//        //8.交换落子顺序
+//        turn = turn == 1 ? 2 : 1;
+//
+//        //9.判断胜负已分，房间就失去存在的意义了，可以销毁房间了
+//        if(winner != 0){
+//            System.out.println("游戏结束！房间即将销毁！roomId"+roomId+" 获胜方为"+winner);
+//            //更新获胜方和失败方的信息
+//            int winUserId = winner;
+//            int loseUserId = winner == user1.getUserId()? user2.getUserId() : user1.getUserId();
+//            userMapper.userWin(winUserId);
+//            userMapper.userLose(loseUserId);
+//
+//            //销毁房间
+//            roomManager.remove(roomManager.getRoomByRoomId(roomId), user1.getUserId(), user2.getUserId());
+//        }
+//    }

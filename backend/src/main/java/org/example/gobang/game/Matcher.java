@@ -35,19 +35,19 @@ public class Matcher {
                 normalQueue.add(user);
                 normalQueue.notify();
             }
-            System.out.println("把玩�? + user.getUsername() + "加入到了normalQueue中！");
+            System.out.println("把玩�?" + user.getUsername() + "加入到了normalQueue中！");
         }else if(user.getScore()>=2000 && user.getScore()<3000){
             synchronized (highQueue) {
                 highQueue.add(user);
                 highQueue.notify();
             }
-            System.out.println("把玩�? + user.getUsername() + "加入到了highQueue中！");
+            System.out.println("把玩�?" + user.getUsername() + "加入到了highQueue中！");
         }else{
             synchronized (veryHighQueue) {
                 veryHighQueue.add(user);
                 veryHighQueue.notify();
             }
-            System.out.println("把玩�? + user.getUsername() + "加入到了veryHighQueue中！");
+            System.out.println("把玩�?" + user.getUsername() + "加入到了veryHighQueue中！");
         }
     }
 
@@ -57,17 +57,17 @@ public class Matcher {
             synchronized (normalQueue) {
                 normalQueue.remove(user);
             }
-            System.out.println("把玩�?+user.getUsername()+"移除�?normalQueue!");
+            System.out.println("把玩�?"+user.getUsername()+"移除�?normalQueue!");
         }else if(user.getScore()>=2000 && user.getScore()<3000){
             synchronized (highQueue) {
                 highQueue.remove(user);
             }
-            System.out.println("把玩�?+user.getUsername()+"移除�?highQueue!");
+            System.out.println("把玩�?"+user.getUsername()+"移除�?highQueue!");
         }else{
             synchronized (veryHighQueue) {
                 veryHighQueue.remove(user);
             }
-            System.out.println("把玩�?+user.getUsername()+"移除�?veryHighQueue!");
+            System.out.println("把玩�?"+user.getUsername()+"移除�?veryHighQueue!");
         }
     }
 
