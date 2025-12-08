@@ -128,14 +128,11 @@ export default {
             if (entry.isIntersecting) {
               // 元素进入视口，添加active类
               entry.target.classList.add('active')
-            } else {
-              // 元素离开视口，移除active类
-              entry.target.classList.remove('active')
             }
           })
         }, {
-          threshold: 0.1, // 当元素10%进入视口时触发
-          rootMargin: '0px 0px -50px 0px' // 底部偏移，提前50px触发
+          threshold: 0.05, // 当元素5%进入视口时触发
+          rootMargin: '0px 0px -100px 0px' // 底部偏移，提前100px触发
         })
 
         // 观察所有带有animate-on-scroll类的元素
@@ -162,8 +159,8 @@ export default {
 /* 滚动动画效果 */
 .animate-on-scroll {
   opacity: 0;
-  transform: scale(0.9) translateY(20px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
+  transform: scale(0.85) translateY(40px);
+  transition: opacity 0.9s cubic-bezier(0.3, 0, 0.1, 1), transform 0.9s cubic-bezier(0.3, 0, 0.1, 1);
   will-change: opacity, transform;
 }
 
@@ -173,7 +170,7 @@ export default {
 }
 .welcome-container {
   min-height: 100vh;
-  background: var(--color-background-primary);
+  background: var(--bg-primary);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -194,38 +191,37 @@ export default {
   grid-template-columns: 1fr 1fr;
   gap: 60px;
   align-items: center;
-  animation: fadeInUp 0.8s ease-out;
 }
 
 .hero-title {
-  font-size: 3.2rem;
+  font-size: 2.8rem;
   font-weight: 700;
-  color: var(--color-text-primary);
-  margin-bottom: 1.5rem;
-  line-height: 1.2;
-  letter-spacing: -0.3px;
+  color: var(--text-primary);
+  margin-bottom: 1.8rem;
+  line-height: 1.25;
+  letter-spacing: -0.5px;
 }
 
 .hero-subtitle {
-  font-size: 1.2rem;
-  color: var(--color-text-secondary);
-  margin-bottom: 3.5rem;
-  line-height: 1.6;
-  max-width: 500px;
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin-bottom: 3.2rem;
+  line-height: 1.7;
+  max-width: 480px;
 }
 
 .hero-features {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
+  gap: 1.2rem;
 }
 
 .feature-item {
   text-align: center;
-  padding: 1.5rem;
-  background: var(--color-surface);
-  border-radius: var(--radius-medium);
-  border: 1px solid var(--color-border);
+  padding: 1.3rem;
+  background: var(--bg-primary);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
   transition: all 0.3s ease;
   box-shadow: var(--shadow-sm);
 }
@@ -243,12 +239,12 @@ export default {
 .feature-item h4 {
   font-size: 1.1rem;
   font-weight: 600;
-  color: var(--color-text-primary);
+  color: var(--text-primary);
   margin-bottom: 0.5rem;
 }
 
 .feature-item p {
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
   font-size: 0.9rem;
   line-height: 1.4;
 }
@@ -258,7 +254,6 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  animation: scaleIn 0.8s ease-out 0.3s both;
 }
 
 .board-grid {
@@ -267,7 +262,7 @@ export default {
   grid-template-columns: repeat(15, 20px);
   background: #deb887;
   padding: 10px;
-  border-radius: var(--radius-small);
+  border-radius: var(--radius-sm);
   box-shadow: var(--shadow-md);
 }
 
@@ -295,20 +290,19 @@ export default {
 }
 
 .black-piece::before {
-  background: var(--color-text-primary);
+  background: var(--text-primary);
   box-shadow: 0 2px 4px rgb(0, 0, 0);
 }
 
 .white-piece::before {
-  background: var(--color-surface);
+  background: var(--bg-primary);
   box-shadow: 0 2px 4px rgb(0, 0, 0);
 }
 
 /* 规则介绍样式 */
 .rules-section {
-  background: var(--color-background-secondary);
+  background: var(--bg-secondary);
   padding: 80px 0;
-  animation: fadeInUp 0.8s ease-out 0.5s both;
 }
 
 .container {
@@ -319,24 +313,24 @@ export default {
 
 .rules-section h3 {
   text-align: center;
-  font-size: 2.2rem;
+  font-size: 2rem;
   font-weight: 600;
-  color: var(--color-text-primary);
-  margin-bottom: 3rem;
+  color: var(--text-primary);
+  margin-bottom: 2.5rem;
 }
 
 .rules-content {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 2.5rem;
+  gap: 1.8rem;
 }
 
 .rule-item {
   text-align: center;
-  padding: 2rem;
-  background: var(--color-surface);
-  border-radius: var(--radius-medium);
-  border: 1px solid var(--color-border);
+  padding: 1.8rem;
+  background: var(--bg-primary);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
   box-shadow: var(--shadow-sm);
   transition: all 0.3s ease;
 }
@@ -348,12 +342,12 @@ export default {
 .rule-item h4 {
   font-size: 1.3rem;
   font-weight: 600;
-  color: var(--color-text-primary);
+  color: var(--text-primary);
   margin-bottom: 1rem;
 }
 
 .rule-item p {
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
   line-height: 1.6;
 }
 
@@ -361,41 +355,40 @@ export default {
 .action-section {
   padding: 100px 0;
   text-align: center;
-  background: var(--color-surface);
+  background: var(--bg-primary);
   margin: 0 20px;
-  border-radius: var(--radius-large);
-  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
   box-shadow: var(--shadow-sm);
-  animation: fadeInUp 0.8s ease-out 0.7s both;
 }
 
 .action-section h3 {
-  font-size: 2.5rem;
+  font-size: 2.2rem;
   font-weight: 700;
-  color: var(--color-text-primary);
-  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+  margin-bottom: 1.6rem;
 }
 
 .action-section p {
-  font-size: 1.2rem;
-  color: var(--color-text-secondary);
-  margin-bottom: 3.5rem;
-  max-width: 600px;
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin-bottom: 3rem;
+  max-width: 550px;
   margin-left: auto;
   margin-right: auto;
 }
 
 .action-buttons {
   display: flex;
-  gap: 2rem;
+  gap: 1.5rem;
   justify-content: center;
 }
 
 .action-btn {
-  padding: 12px 32px;
+  padding: 11px 28px;
   border: none;
-  border-radius: var(--radius-small);
-  font-size: 16px;
+  border-radius: var(--radius-sm);
+  font-size: 15px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -403,33 +396,33 @@ export default {
 }
 
 .action-btn.primary {
-  background: var(--color-primary);
+  background: var(--primary-color);
   color: white;
   box-shadow: var(--shadow-sm);
 }
 
 .action-btn.primary:hover {
-  background: var(--color-primary-hover);
+  background: var(--primary-hover);
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
 }
 
 .action-btn.secondary {
-  background: var(--color-surface);
-  color: var(--color-primary);
-  border: 1px solid var(--color-border);
+  background: var(--bg-primary);
+  color: var(--primary-color);
+  border: 1px solid var(--border-light);
 }
 
 .action-btn.secondary:hover {
-  background: var(--color-background-hover);
-  border-color: var(--color-primary);
+  background: var(--bg-secondary);
+  border-color: var(--primary-color);
 }
 
 /* 动画效果 */
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(40px);
   }
   to {
     opacity: 1;
@@ -440,7 +433,7 @@ export default {
 @keyframes scaleIn {
   from {
     opacity: 0;
-    transform: scale(0.9);
+    transform: scale(0.85);
   }
   to {
     opacity: 1;

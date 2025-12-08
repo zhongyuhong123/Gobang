@@ -88,7 +88,7 @@ onMounted(() => {
 <style scoped>
 .navbar {
   background-color: var(--bg-secondary);
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-light);
   position: sticky;
   top: 0;
   left: 0;
@@ -130,7 +130,7 @@ onMounted(() => {
 
 .back-btn {
   background-color: var(--bg-primary);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border-light);
   color: var(--text-primary);
   padding: 8px 16px;
   border-radius: var(--radius-sm);
@@ -144,7 +144,7 @@ onMounted(() => {
 }
 
 .back-btn:hover {
-  background-color: var(--primary-color-light);
+  background-color: var(--bg-secondary);
   border-color: var(--primary-color);
   color: var(--primary-color);
   transform: translateX(-2px);
@@ -153,7 +153,7 @@ onMounted(() => {
 .enter-game-btn {
   background-color: var(--primary-color);
   border: none;
-  color: var(--text-light);
+  color: white;
   padding: 10px 24px;
   border-radius: var(--radius-sm);
   cursor: pointer;
@@ -166,7 +166,7 @@ onMounted(() => {
 .enter-game-btn:hover {
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
-  background-color: var(--primary-color-dark);
+  background-color: var(--primary-hover);
 }
 
 .enter-game-btn:active {
@@ -194,20 +194,20 @@ onMounted(() => {
 
 .login-link:hover {
   background-color: var(--primary-color);
-  color: var(--text-light);
+  color: white;
   transform: translateY(-1px);
   box-shadow: var(--shadow-sm);
 }
 
 .register-link {
   background-color: var(--primary-color);
-  color: var(--text-light);
+  color: white;
   border: 1px solid var(--primary-color);
 }
 
 .register-link:hover {
-  background-color: var(--primary-color-dark);
-  border-color: var(--primary-color-dark);
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
   transform: translateY(-1px);
   box-shadow: var(--shadow-sm);
 }
