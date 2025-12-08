@@ -10,17 +10,16 @@
       <div class="nav-actions">
         <!-- 仅在非首页显示返回按钮 -->
         <button 
-          v-if="showBackButton"
           class="back-btn" 
           @click="$router.push('/')"
           aria-label="返回首页">
           <el-icon class="back-icon"><ArrowLeft /></el-icon>
         </button>
         
-        <!-- 登录/注册按钮（始终显示或强制显示） -->
+        <!-- 登录/注册按钮（根据登录状态显示） -->
         <template>
-          <router-link to="/login" class="login-link">登录</router-link>
-          <router-link to="/register" class="register-link">注册</router-link>
+          <el-button type="primary" to="/login" class="login-link">登录</el-button>
+          <el-button type="primary" to="/register" class="register-link">注册</el-button>
         </template>
       </div>
     </div>

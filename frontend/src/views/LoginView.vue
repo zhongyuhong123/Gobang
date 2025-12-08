@@ -91,7 +91,7 @@
           </div>
           <div class="login-icons">
             <div class="login-icon" title="微信登录">
-              <el-icon><WeChat /></el-icon>
+              <el-icon><ChatDotRound /></el-icon>
             </div>
             <div class="login-icon" title="QQ登录">
               <el-icon><ChatDotRound /></el-icon>
@@ -134,7 +134,6 @@ import { ref, reactive, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import {
-  WeChat,
   CircleClose,
   ChatDotRound
 } from '@element-plus/icons-vue'
@@ -144,7 +143,6 @@ import GameNavbar from '../components/GameNavbar.vue'
 export default {
   name: 'LoginView',
   components: {
-    WeChat,
     CircleClose,
     ChatDotRound,
     GameNavbar
