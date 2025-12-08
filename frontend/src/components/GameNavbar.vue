@@ -45,52 +45,53 @@
   </nav>
 </template>
 
-<script>
-export default {
-  // 定义组件属性
-  props: {
-    // 导航栏标题，默认"五子棋对战"
-    title: {
-      type: String,
-      default: '五子棋对战'
-    },
-    // 是否显示返回按钮
-    showBackButton: {
-      type: Boolean,
-      default: true
-    },
-    // 是否显示"已有账号"提示
-    showLoginHint: {
-      type: Boolean,
-      default: false
-    },
-    // 是否强制显示登录/注册按钮（即使已登录）
-    forceShowAuthBtns: {
-      type: Boolean,
-      default: false
-    }
+<script setup>
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { ArrowLeft } from '@element-plus/icons-vue'
+
+// 定义组件属性
+defineProps({
+  // 导航栏标题，默认"五子棋对战"
+  title: {
+    type: String,
+    default: '五子棋对战'
   },
-  data() {
-    return {
-      isLogin: false
-    }
+  // 是否显示返回按钮
+  showBackButton: {
+    type: Boolean,
+    default: true
   },
-  methods: {
-    // 检查用户登录状态
-    checkLoginStatus() {
-      const token = localStorage.getItem('token')
-      this.isLogin = !!token
-    },
-    // 处理"进入游戏"按钮点击事件
-    handleEnterGame() {
-      this.$router.push('/home')
-    }
+  // 是否显示"已有账号"提示
+  showLoginHint: {
+    type: Boolean,
+    default: false
   },
-  mounted() {
-    // 组件挂载时检查登录状态
-    this.checkLoginStatus()
+  // 是否强制显示登录/注册按钮（即使已登录）
+  forceShowAuthBtns: {
+    type: Boolean,
+    default: false
   }
+})
+
+const router = useRouter()
+const isLogin = ref(false)
+
+// 检查用户登录状态
+const checkLoginStatus = () => {
+  const token = localStorage.getItem('token')
+  isLogin.value = !!token
 }
+
+// 处理"进入游戏"按钮点击事件
+const handleEnterGame = () => {
+  router.push('/home')
+}
+
+onMounted(() => {
+  // 组件挂载时检查登录状态
+  checkLoginStatus()
+})
 </script>
 
 <style scoped>
