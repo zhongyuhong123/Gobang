@@ -56,13 +56,7 @@
 ## 🎯 项目预览
 
 ### 主界面
-![主界面](docs/images/main-interface.png)
-
-### 游戏界面
-![游戏界面](docs/images/game-interface.png)
-
-### 移动端适配
-![移动端](docs/images/mobile-view.png)
+![Gobang](preview/Gobang.png)
 
 ## 🚀 快速开始
 
