@@ -1,29 +1,27 @@
 <template>
   <div class="game-container">
-    <div class="game-header">
-      <div class="header-content">
-        <div class="logo-area">
-          <div class="chess-logo">
-            <div class="chess-piece black"></div>
-            <div class="chess-piece white"></div>
-          </div>
-          <h1 class="game-title">五子棋对战</h1>
+    <!-- 通用导航栏 -->
+    <GameNavbar 
+      title="五子棋对战"
+      :showBackButton="true"
+    />
+    
+    <!-- 游戏信息栏 -->
+    <div class="game-info-bar glass-effect">
+      <div class="game-info">
+        <div class="info-item player-info">
+          <span class="label">当前玩家:</span>
+          <span class="value" :class="currentPlayer === 1 ? 'black-player' : 'white-player'">
+            {{ currentPlayer === 1 ? '黑方' : '白方' }}
+          </span>
         </div>
-        <div class="game-info">
-          <div class="info-item player-info">
-            <span class="label">当前玩家:</span>
-            <span class="value" :class="currentPlayer === 1 ? 'black-player' : 'white-player'">
-              {{ currentPlayer === 1 ? '黑方' : '白方' }}
-            </span>
-          </div>
-          <div class="info-item status">
-            <span class="label">状态:</span>
-            <span class="value">
-              <span v-if="gameStatus === 'waiting'">等待游戏开始</span>
-              <span v-else-if="gameStatus === 'playing'">游戏进行中</span>
-              <span v-else-if="gameStatus === 'ended'">游戏已结束</span>
-            </span>
-          </div>
+        <div class="info-item status">
+          <span class="label">状态:</span>
+          <span class="value">
+            <span v-if="gameStatus === 'waiting'">等待游戏开始</span>
+            <span v-else-if="gameStatus === 'playing'">游戏进行中</span>
+            <span v-else-if="gameStatus === 'ended'">游戏已结束</span>
+          </span>
         </div>
       </div>
     </div>
@@ -90,9 +88,13 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import wsManager from '@/utils/websocket'
+import GameNavbar from '@/components/GameNavbar.vue'
 
 export default {
   name: 'GameView',
+  components: {
+    GameNavbar
+  },
   setup() {
     const router = useRouter()
     const route = useRoute()
@@ -429,6 +431,50 @@ export default {
   gap: 30px;
 }
 
+/* 游戏信息栏样式 */
+.game-info-bar {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.game-info {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 16px;
+}
+
+.info-item .label {
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.info-item .value {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.black-player {
+  color: #333;
+}
+
+.white-player {
+  color: #fff;
+  text-shadow: 0 0 2px #333;
+}
+
+/* 游戏棋盘样式 */
 .board-container {
   padding: 20px;
   background: rgba(255, 255, 255, 0.25);

@@ -2,8 +2,8 @@
   <div class="register-container">
     <!-- 通用导航栏 -->
     <GameNavbar 
-      :show-back-btn="true"
-      :show-login-hint="true"
+      :showBackButton="true"
+      :showLoginHint="true"
     />
 
     <div class="register-content">

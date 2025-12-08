@@ -2,7 +2,7 @@
   <div class="login-container">
     <!-- 通用导航栏 -->
     <GameNavbar 
-      :show-back-btn="true"
+      :showBackButton="true"
     />
 
     <!-- 主要内容区域 -->
