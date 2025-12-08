@@ -1,108 +1,120 @@
 <template>
   <div class="register-container">
-    <div class="register-form">
-      <div class="form-header">
-        <h2>用户注册</h2>
-        <p class="form-subtitle">创建您的五子棋游戏账户</p>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+      <div class="nav-container">
+        <div class="nav-logo">
+          <h1>五子棋</h1>
+        </div>
+        <div class="nav-actions">
+          <button class="back-btn" @click="$router.push('/')">
+            返回首页
+          </button>
+        </div>
       </div>
-      
-      <el-form
-        ref="registerFormRef"
-        :model="registerForm"
-        :rules="rules"
-        label-width="100px"
-        size="large"
-        class="register-form-content"
-      >
-        <el-form-item label="用户名" prop="username">
-          <el-input 
-            v-model="registerForm.username" 
-            placeholder="请输入用户名"
-            clearable
-            @blur="checkUsernameAvailability"
-          >
-            <template #suffix>
-              <div v-if="checkingUsername" class="username-check">
-                <el-icon class="is-loading"><Loading /></el-icon>
-              </div>
-              <div v-else-if="usernameCheck.status" class="username-check">
-                <el-icon 
-                  :class="usernameCheck.available ? 'success' : 'error'"
-                >
-                  <CircleCheck v-if="usernameCheck.available" />
-                  <CircleClose v-else />
-                </el-icon>
-              </div>
-            </template>
-          </el-input>
-          <div v-if="usernameCheck.status" class="username-check-message" :class="usernameCheck.available ? 'success' : 'error'">
-            {{ usernameCheck.message }}
+    </nav>
+
+    <div class="register-content">
+      <div class="register-card">
+        <div class="card-header">
+          <h2>用户注册</h2>
+          <p>创建您的五子棋游戏账户</p>
+        </div>
+        
+        <el-form
+          ref="registerFormRef"
+          :model="registerForm"
+          :rules="rules"
+          size="large"
+          class="register-form"
+        >
+          <div class="form-group">
+            <label for="username">用户名</label>
+            <el-input 
+              id="username"
+              v-model="registerForm.username" 
+              placeholder="请输入用户名"
+              clearable
+              @blur="checkUsernameAvailability"
+            >
+              <template #suffix>
+                <div v-if="checkingUsername" class="username-check">
+                  <el-icon class="is-loading"><Loading /></el-icon>
+                </div>
+                <div v-else-if="usernameCheck.status" class="username-check">
+                  <el-icon 
+                    :class="usernameCheck.available ? 'success' : 'error'"
+                  >
+                    <CircleCheck v-if="usernameCheck.available" />
+                    <CircleClose v-else />
+                  </el-icon>
+                </div>
+              </template>
+            </el-input>
+            <div v-if="usernameCheck.status" class="username-check-message" :class="usernameCheck.available ? 'success' : 'error'">
+              {{ usernameCheck.message }}
+            </div>
           </div>
-        </el-form-item>
 
-        <el-form-item label="密码" prop="password">
-          <el-input
-            v-model="registerForm.password"
-            type="password"
-            placeholder="请输入密码"
-            show-password
-            clearable
-            @input="checkPasswordStrength"
-          />
-        </el-form-item>
+          <div class="form-group">
+            <label for="password">密码</label>
+            <el-input
+              id="password"
+              v-model="registerForm.password"
+              type="password"
+              placeholder="请输入密码"
+              show-password
+              clearable
+              @input="checkPasswordStrength"
+            />
+          </div>
 
-        <el-form-item v-if="passwordStrength.text" label="密码强度">
-          <div class="password-strength">
+          <div v-if="passwordStrength.text" class="password-strength">
+            <label>密码强度</label>
             <el-progress 
               :percentage="passwordStrength.percentage" 
               :color="getPasswordStrengthColor()"
               :show-text="false"
-              stroke-width="8"
+              stroke-width="6"
             />
             <span class="strength-text" :class="getPasswordStrengthClass()">
               {{ passwordStrength.text }}
             </span>
           </div>
-        </el-form-item>
 
-        <el-form-item label="确认密码" prop="confirmPassword">
-          <el-input
-            v-model="registerForm.confirmPassword"
-            type="password"
-            placeholder="请确认密码"
-            show-password
-            clearable
-          />
-        </el-form-item>
+          <div class="form-group">
+            <label for="confirmPassword">确认密码</label>
+            <el-input
+              id="confirmPassword"
+              v-model="registerForm.confirmPassword"
+              type="password"
+              placeholder="请确认密码"
+              show-password
+              clearable
+            />
+          </div>
 
-        <el-form-item label="用户协议" prop="agreement">
-          <el-checkbox v-model="registerForm.agreement">
-            我已阅读并同意
-            <el-link type="primary" :underline="false">用户协议</el-link>
-            和
-            <el-link type="primary" :underline="false">隐私政策</el-link>
-          </el-checkbox>
-        </el-form-item>
+          <div class="form-agreement">
+            <el-checkbox v-model="registerForm.agreement">
+              我已阅读并同意
+              <el-link type="primary" :underline="false">用户协议</el-link>
+              和
+              <el-link type="primary" :underline="false">隐私政策</el-link>
+            </el-checkbox>
+          </div>
 
-        <el-form-item>
-          <el-button 
-            type="primary" 
+          <button 
+            class="register-btn" 
             @click="handleRegister" 
-            :loading="loading"
-            size="large"
-            style="width: 100%"
+            :disabled="loading"
           >
-            立即注册
-          </el-button>
-        </el-form-item>
-      </el-form>
+            <span v-if="!loading">立即注册</span>
+            <span v-else>注册中...</span>
+          </button>
+        </el-form>
 
-      <div class="form-footer">
-        <div class="login-link">
-          已有账号？<router-link to="/login">立即登录</router-link>
-        </div>
-        <div class="other-links">
-          <router-link to="/forgot-password">忘记密码？</router-link>
+        <div class="card-footer">
+          <p>已有账号？<router-link to="/login">立即登录</router-link></p>
         </div>
       </div>
     </div>
@@ -381,86 +393,198 @@ export default {
 <style scoped>
 .register-container {
   min-height: 100vh;
+  background: #f5f7fa;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 导航栏样式 */
+.navbar {
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-logo h1 {
+  color: #409EFF;
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.back-btn {
+  background: #f5f7fa;
+  border: 1px solid #dcdfe6;
+  color: #606266;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+.back-btn:hover {
+  background: #ecf5ff;
+  border-color: #409EFF;
+  color: #409EFF;
+}
+
+/* 主要内容区域 */
+.register-content {
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  position: relative;
-  overflow: hidden;
+  padding: 40px 20px;
 }
 
-.register-container::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: 
-    radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 2px, transparent 2px),
-    radial-gradient(circle at 75% 75%, rgba(255,255,255,0.1) 2px, transparent 2px);
-  background-size: 50px 50px;
-  animation: patternMove 20s linear infinite;
-}
-
-@keyframes patternMove {
-  0% { transform: translate(0, 0); }
-  100% { transform: translate(50px, 50px); }
-}
-
-.register-form {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
+.register-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
   padding: 40px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 480px;
-  z-index: 1;
-  position: relative;
+  max-width: 400px;
 }
 
-.form-header {
+.card-header {
   text-align: center;
   margin-bottom: 30px;
 }
 
-.form-header h2 {
-  font-size: 28px;
+.card-header h2 {
+  color: #303133;
+  font-size: 24px;
   font-weight: 600;
-  color: #2c3e50;
-  margin: 0 0 10px 0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  margin-bottom: 8px;
 }
 
-.form-subtitle {
-  color: #7f8c8d;
+.card-header p {
+  color: #909399;
   font-size: 14px;
   margin: 0;
 }
 
-.register-form-content {
+/* 表单样式 */
+.register-form {
+  width: 100%;
+}
+
+.form-group {
   margin-bottom: 20px;
 }
 
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  color: #606266;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.password-strength {
+  margin-bottom: 20px;
+}
+
+.password-strength label {
+  display: block;
+  margin-bottom: 6px;
+  color: #606266;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.strength-text {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.strength-text.weak {
+  color: #F56C6C;
+}
+
+.strength-text.medium {
+  color: #E6A23C;
+}
+
+.strength-text.strong {
+  color: #67C23A;
+}
+
+.form-agreement {
+  margin-bottom: 20px;
+}
+
+.register-btn {
+  width: 100%;
+  background: #409EFF;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.register-btn:hover:not(:disabled) {
+  background: #66b1ff;
+}
+
+.register-btn:disabled {
+  background: #a0cfff;
+  cursor: not-allowed;
+}
+
+.card-footer {
+  text-align: center;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #ebeef5;
+}
+
+.card-footer p {
+  color: #909399;
+  font-size: 14px;
+  margin: 0;
+}
+
+.card-footer a {
+  color: #409EFF;
+  text-decoration: none;
+}
+
+.card-footer a:hover {
+  text-decoration: underline;
+}
+
+/* 用户名检查样式 */
 .username-check {
   display: flex;
   align-items: center;
-  margin-left: 8px;
 }
 
-.username-check .el-icon {
-  font-size: 16px;
+.username-check .success {
+  color: #67C23A;
 }
 
-.username-check .el-icon.success {
-  color: #67c23a;
-}
-
-.username-check .el-icon.error {
-  color: #f56c6c;
+.username-check .error {
+  color: #F56C6C;
 }
 
 .username-check-message {
@@ -469,67 +593,14 @@ export default {
 }
 
 .username-check-message.success {
-  color: #67c23a;
+  color: #67C23A;
 }
 
 .username-check-message.error {
-  color: #f56c6c;
+  color: #F56C6C;
 }
 
-.password-strength {
-  width: 100%;
-}
-
-.strength-text {
-  font-size: 12px;
-  margin-top: 8px;
-  display: block;
-}
-
-.strength-text.weak {
-  color: #f56c6c;
-}
-
-.strength-text.medium {
-  color: #e6a23c;
-}
-
-.strength-text.strong {
-  color: #67c23a;
-}
-
-.form-footer {
-  text-align: center;
-  color: #7f8c8d;
-  font-size: 14px;
-}
-
-.login-link {
-  margin-bottom: 10px;
-}
-
-.login-link a {
-  color: #667eea;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.3s ease;
-}
-
-.login-link a:hover {
-  color: #764ba2;
-  text-decoration: underline;
-}
-
-.other-links a {
-  color: #7f8c8d;
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-.other-links a:hover {
-  color: #667eea;
-}
-
+/* 成功对话框样式 */
 .success-content {
   text-align: center;
   padding: 20px 0;
@@ -540,59 +611,46 @@ export default {
 }
 
 .success-content h3 {
-  font-size: 20px;
-  font-weight: 500;
-  color: #2c3e50;
-  margin: 0 0 10px 0;
+  color: #303133;
+  margin-bottom: 10px;
 }
 
 .success-content p {
-  color: #7f8c8d;
-  font-size: 14px;
-  margin: 0 0 8px 0;
+  color: #606266;
+  margin-bottom: 5px;
 }
 
 .countdown {
-  color: #667eea;
+  color: #409EFF;
   font-weight: 600;
-  font-size: 16px;
-}
-
-.dialog-footer {
-  text-align: center;
 }
 
 /* 响应式设计 */
-@media (max-width: 480px) {
-  .register-form {
-    margin: 20px;
-    padding: 30px 20px;
+@media (max-width: 768px) {
+  .nav-container {
+    padding: 0 15px;
   }
   
-  .form-header h2 {
-    font-size: 24px;
+  .register-content {
+    padding: 20px 15px;
   }
   
-  .register-form-content {
-    margin-bottom: 15px;
+  .register-card {
+    padding: 30px 25px;
+  }
+  
+  .card-header h2 {
+    font-size: 22px;
   }
 }
 
-/* 深色模式支持 */
-@media (prefers-color-scheme: dark) {
-  .register-form {
-    background: rgba(30, 30, 30, 0.95);
-    color: #e0e0e0;
+@media (max-width: 480px) {
+  .register-card {
+    padding: 25px 20px;
   }
   
-  .form-header h2 {
-    background: linear-gradient(135deg, #8a9eff 0%, #a78bfa 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-  
-  .form-subtitle {
-    color: #b0b0b0;
+  .card-header h2 {
+    font-size: 20px;
   }
 }
 </style>

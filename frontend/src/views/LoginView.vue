@@ -1,72 +1,86 @@
 <template>
   <div class="login-container">
-    <div class="login-form">
-      <div class="form-header">
-        <h2>用户登录</h2>
-        <p class="form-subtitle">欢迎回到五子棋游戏</p>
-      </div>
-      
-      <el-form
-        ref="loginFormRef"
-        :model="loginForm"
-        :rules="rules"
-        label-width="80px"
-        size="large"
-        class="login-form-content"
-        @keyup.enter="handleLogin"
-      >
-        <el-form-item label="用户名" prop="username">
-          <el-input 
-            v-model="loginForm.username" 
-            placeholder="请输入用户名"
-            clearable
-            autofocus
-          >
-            <template #prefix>
-              <el-icon><User /></el-icon>
-            </template>
-          </el-input>
-        </el-form-item>
-
-        <el-form-item label="密码" prop="password">
-          <el-input
-            v-model="loginForm.password"
-            type="password"
-            placeholder="请输入密码"
-            show-password
-            clearable
-          >
-            <template #prefix>
-              <el-icon><Lock /></el-icon>
-            </template>
-          </el-input>
-        </el-form-item>
-
-        <el-form-item label="记住我" prop="remember">
-          <el-checkbox v-model="loginForm.remember">
-            记住登录状态
-          </el-checkbox>
-        </el-form-item>
-
-        <el-form-item>
-          <el-button 
-            type="primary" 
-            @click="handleLogin" 
-            :loading="loading"
-            size="large"
-            style="width: 100%"
-          >
-            立即登录
-          </el-button>
-        </el-form-item>
-      </el-form>
-
-      <div class="form-footer">
-        <div class="register-link">
-          还没有账号？<router-link to="/register">立即注册</router-link>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+      <div class="nav-container">
+        <div class="nav-logo">
+          <h1>五子棋</h1>
         </div>
-        <div class="other-links">
-          <router-link to="/forgot-password">忘记密码？</router-link>
+        <div class="nav-actions">
+          <button class="back-btn" @click="$router.push('/')">
+            返回首页
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <div class="login-content">
+      <div class="login-card">
+        <div class="card-header">
+          <h2>用户登录</h2>
+          <p>欢迎回到五子棋游戏</p>
+        </div>
+        
+        <el-form
+          ref="loginFormRef"
+          :model="loginForm"
+          :rules="rules"
+          size="large"
+          class="login-form"
+          @keyup.enter="handleLogin"
+        >
+          <div class="form-group">
+            <label for="username">用户名</label>
+            <el-input 
+              id="username"
+              v-model="loginForm.username" 
+              placeholder="请输入用户名"
+              clearable
+              autofocus
+            >
+              <template #prefix>
+                <el-icon><User /></el-icon>
+              </template>
+            </el-input>
+          </div>
+
+          <div class="form-group">
+            <label for="password">密码</label>
+            <el-input
+              id="password"
+              v-model="loginForm.password"
+              type="password"
+              placeholder="请输入密码"
+              show-password
+              clearable
+            >
+              <template #prefix>
+                <el-icon><Lock /></el-icon>
+              </template>
+            </el-input>
+          </div>
+
+          <div class="form-options">
+            <el-checkbox v-model="loginForm.remember">
+              记住登录状态
+            </el-checkbox>
+            <router-link to="/forgot-password" class="forgot-link">
+              忘记密码？
+            </router-link>
+          </div>
+
+          <button 
+            class="login-btn" 
+            @click="handleLogin" 
+            :disabled="loading"
+          >
+            <span v-if="!loading">立即登录</span>
+            <span v-else>登录中...</span>
+          </button>
+        </el-form>
+
+        <div class="card-footer">
+          <p>还没有账号？<router-link to="/register">立即注册</router-link></p>
         </div>
       </div>
     </div>
@@ -293,265 +307,214 @@ export default {
 <style scoped>
 .login-container {
   min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  background-size: 400% 400%;
-  animation: gradientShift 15s ease infinite;
-  padding: 20px;
-  position: relative;
-  overflow: hidden;
+  background: #f8f9fa;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.login-container::before {
-  content: '';
-  position: absolute;
+/* 导航栏样式 */
+.navbar {
+  background: white;
+  border-bottom: 1px solid #e9ecef;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  bottom: 0;
-  background: 
-    radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
-    radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.3) 0%, transparent 50%);
-  animation: float 20s ease-in-out infinite;
+  z-index: 1000;
 }
 
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
-}
-
-.login-form {
-  background: rgba(255, 255, 255, 0.95);
-  padding: 40px;
-  border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 420px;
-  text-align: center;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  position: relative;
-  z-index: 1;
-  transition: all 0.3s ease;
-}
-
-.login-form:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.15);
-}
-
-.form-header {
-  margin-bottom: 30px;
-}
-
-.form-header h1 {
-  color: #333;
-  font-size: 28px;
-  font-weight: 700;
-  margin: 0;
-  background: linear-gradient(45deg, #667eea, #764ba2);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.form-subtitle {
-  color: #666;
-  font-size: 14px;
-  margin-top: 8px;
-  font-weight: 400;
-}
-
-.form-item {
-  margin-bottom: 20px;
-}
-
-.login-button {
-  width: 100%;
-  height: 48px;
-  font-size: 16px;
-  font-weight: 600;
-  border-radius: 12px;
-  background: linear-gradient(45deg, #667eea, #764ba2);
-  border: none;
-  transition: all 0.3s ease;
-  margin-top: 10px;
-}
-
-.login-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
-}
-
-.login-button:active {
-  transform: translateY(0);
-}
-
-.login-button.is-loading {
-  background: linear-gradient(45deg, #a0aec0, #718096);
-}
-
-.remember-forgot {
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  height: 70px;
+}
+
+.nav-logo h1 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0;
+}
+
+.back-btn {
+  background: transparent;
+  color: #667eea;
+  border: 1px solid #667eea;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+  background: #667eea;
+  color: white;
+}
+
+/* 登录内容样式 */
+.login-content {
+  padding-top: 70px;
+  min-height: calc(100vh - 70px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.login-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 40px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.card-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.card-header h2 {
+  font-size: 28px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0 0 8px 0;
+}
+
+.card-header p {
+  color: #7f8c8d;
+  font-size: 14px;
+  margin: 0;
+}
+
+/* 表单样式 */
+.login-form {
   margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #2c3e50;
+  margin-bottom: 8px;
+}
+
+/* 表单选项样式 */
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
   font-size: 14px;
 }
 
-.remember-me {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.forgot-password {
+.forgot-link {
   color: #667eea;
   text-decoration: none;
   transition: color 0.3s ease;
 }
 
-.forgot-password:hover {
+.forgot-link:hover {
   color: #764ba2;
   text-decoration: underline;
 }
 
-.register-link {
-  margin-top: 25px;
-  color: #666;
-  font-size: 14px;
+/* 登录按钮样式 */
+.login-btn {
+  width: 100%;
+  background: #667eea;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s ease;
 }
 
-.register-link a {
+.login-btn:hover:not(:disabled) {
+  background: #5a6fd8;
+}
+
+.login-btn:disabled {
+  background: #bdc3c7;
+  cursor: not-allowed;
+}
+
+/* 底部链接样式 */
+.card-footer {
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid #e9ecef;
+}
+
+.card-footer p {
+  color: #7f8c8d;
+  font-size: 14px;
+  margin: 0;
+}
+
+.card-footer a {
   color: #667eea;
   text-decoration: none;
-  font-weight: 600;
-  transition: all 0.3s ease;
+  font-weight: 500;
+  transition: color 0.3s ease;
 }
 
-.register-link a:hover {
+.card-footer a:hover {
   color: #764ba2;
   text-decoration: underline;
-}
-
-/* 深色模式支持 */
-@media (prefers-color-scheme: dark) {
-  .login-form {
-    background: rgba(30, 30, 40, 0.95);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-  }
-  
-  .form-header h1 {
-    background: linear-gradient(45deg, #a0aec0, #cbd5e0);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  
-  .form-subtitle,
-  .remember-forgot,
-  .register-link {
-    color: #cbd5e0;
-  }
-  
-  .forgot-password,
-  .register-link a {
-    color: #90cdf4;
-  }
-  
-  .forgot-password:hover,
-  .register-link a:hover {
-    color: #63b3ed;
-  }
 }
 
 /* 响应式设计 */
-@media (max-width: 768px) {
-  .login-container {
-    padding: 15px;
-  }
-  
-  .login-form {
+@media (max-width: 480px) {
+  .login-card {
     padding: 30px 20px;
-    border-radius: 15px;
+    margin: 0 10px;
   }
   
-  .form-header h1 {
+  .card-header h2 {
     font-size: 24px;
   }
   
-  .login-button {
-    height: 44px;
-    font-size: 15px;
-  }
-  
-  .remember-forgot {
+  .form-options {
     flex-direction: column;
-    gap: 10px;
+    gap: 15px;
     align-items: flex-start;
   }
 }
 
-@media (max-width: 480px) {
-  .login-form {
-    padding: 25px 15px;
-  }
-  
-  .form-header h1 {
-    font-size: 22px;
-  }
-  
-  .form-subtitle {
-    font-size: 13px;
-  }
-  
-  .login-button {
-    height: 42px;
-    font-size: 14px;
-  }
-}
-
 /* 错误对话框样式 */
-.error-dialog {
-  border-radius: 15px;
-}
-
-.error-dialog .el-dialog__header {
-  padding: 20px 20px 10px;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.error-dialog .el-dialog__title {
-  font-size: 18px;
-  font-weight: 600;
-  color: #e53e3e;
-}
-
-.error-dialog .el-dialog__body {
-  padding: 20px;
-}
-
-.error-message {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 14px;
-  line-height: 1.5;
-  color: #4a5568;
+.error-content {
+  text-align: center;
+  padding: 20px 0;
 }
 
 .error-icon {
-  font-size: 24px;
-  color: #e53e3e;
-  flex-shrink: 0;
+  margin-bottom: 20px;
+}
+
+.error-content h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0 0 10px 0;
+}
+
+.error-content p {
+  color: #7f8c8d;
+  font-size: 14px;
+  margin: 0;
 }
 </style>

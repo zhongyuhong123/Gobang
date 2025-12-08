@@ -533,43 +533,21 @@ export default {
 <style scoped>
 .home-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #f5f7fa;
   padding: 20px;
-  position: relative;
-  overflow-x: hidden;
-}
-
-.home-container::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: 
-    radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
-  animation: float 6s ease-in-out infinite;
-  pointer-events: none;
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
 }
 
 /* 顶部用户信息栏 */
 .user-bar {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 15px;
+  background: white;
+  border-radius: 8px;
   padding: 20px;
   margin-bottom: 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e4e7ed;
 }
 
 .user-bar.guest {
@@ -644,101 +622,57 @@ export default {
 }
 
 .title {
-  font-size: 3rem;
-  color: white;
+  font-size: 2.5rem;
+  color: #303133;
   margin-bottom: 3rem;
-  font-weight: 700;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-  animation: fadeInUp 1s ease-out;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  font-weight: 600;
 }
 
 .mode-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 2rem;
-  max-width: 1200px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  max-width: 1000px;
   margin: 0 auto;
 }
 
 .mode-card {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 20px;
-  padding: 2.5rem 2rem;
+  background: white;
+  border-radius: 8px;
+  padding: 2rem 1.5rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  position: relative;
-  overflow: hidden;
-}
-
-.mode-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.5s;
-}
-
-.mode-card:hover::before {
-  left: 100%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e4e7ed;
 }
 
 .mode-card:hover {
-  transform: translateY(-10px) scale(1.02);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
 .mode-card.active {
-  background: linear-gradient(135deg, rgba(255, 215, 0, 0.95), rgba(255, 237, 78, 0.95));
-  border-color: #ffd700;
-  box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+  background: #f0f9ff;
+  border-color: #409eff;
+  box-shadow: 0 0 0 2px rgba(64, 158, 255, 0.1);
 }
 
 .mode-icon {
-  font-size: 4rem;
+  font-size: 3rem;
   margin-bottom: 1rem;
   display: block;
-  animation: bounce 2s infinite;
-}
-
-@keyframes bounce {
-  0%, 20%, 50%, 80%, 100% {
-    transform: translateY(0);
-  }
-  40% {
-    transform: translateY(-10px);
-  }
-  60% {
-    transform: translateY(-5px);
-  }
 }
 
 .mode-card h3 {
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   margin-bottom: 0.5rem;
-  color: #333;
+  color: #303133;
   font-weight: 600;
 }
 
 .mode-description {
-  color: #666;
-  font-size: 1rem;
+  color: #606266;
+  font-size: 0.95rem;
   margin-bottom: 1rem;
   line-height: 1.5;
 }
@@ -748,84 +682,83 @@ export default {
   justify-content: space-around;
   margin-top: 1rem;
   padding-top: 1rem;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-top: 1px solid #e4e7ed;
 }
 
 .mode-stats span {
-  font-size: 0.9rem;
-  color: #888;
+  font-size: 0.85rem;
+  color: #909399;
   font-weight: 500;
 }
 
 /* 游戏操作区域 */
 .game-actions {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 20px;
-  padding: 2.5rem;
+  background: white;
+  border-radius: 8px;
+  padding: 2rem;
   max-width: 800px;
   margin: 0 auto;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e4e7ed;
   text-align: center;
 }
 
 .game-actions h2 {
-  font-size: 2.2rem;
-  color: #333;
+  font-size: 1.8rem;
+  color: #303133;
   margin-bottom: 1rem;
   font-weight: 600;
 }
 
 .game-description {
-  color: #666;
-  font-size: 1.1rem;
+  color: #606266;
+  font-size: 1rem;
   margin-bottom: 1rem;
   line-height: 1.6;
 }
 
 .game-tips {
-  color: #888;
-  font-size: 0.95rem;
-  margin-bottom: 2rem;
+  color: #909399;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
   padding: 10px;
-  background: rgba(102, 126, 234, 0.05);
-  border-radius: 8px;
-  border-left: 4px solid #667eea;
+  background: #f5f7fa;
+  border-radius: 4px;
+  border-left: 4px solid #409eff;
 }
 
 .action-buttons {
   display: flex;
-  gap: 1rem;
+  gap: 0.75rem;
   justify-content: center;
   flex-wrap: wrap;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .action-buttons .el-button {
-  font-size: 1.1rem;
-  padding: 15px 30px;
-  border-radius: 25px;
+  font-size: 1rem;
+  padding: 12px 24px;
+  border-radius: 4px;
   font-weight: 500;
   transition: all 0.3s ease;
-  min-width: 140px;
+  min-width: 120px;
 }
 
 .action-buttons .el-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 /* 房间列表 */
 .rooms-section {
-  margin-top: 2rem;
-  padding-top: 2rem;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e4e7ed;
 }
 
 .rooms-section h3 {
-  color: #333;
-  font-size: 1.5rem;
+  color: #303133;
+  font-size: 1.3rem;
   margin-bottom: 1rem;
   font-weight: 600;
 }
@@ -836,43 +769,43 @@ export default {
 }
 
 .room-item {
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: 12px;
-  padding: 1rem;
-  margin-bottom: 0.8rem;
+  background: #f5f7fa;
+  border-radius: 4px;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border: 1px solid #e4e7ed;
 }
 
 .room-item:hover {
-  background: rgba(255, 255, 255, 0.95);
-  transform: translateX(5px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  background: #f0f9ff;
+  transform: translateX(2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .room-info {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
 }
 
 .room-id {
   font-weight: 600;
-  color: #333;
-  font-size: 1.1rem;
+  color: #303133;
+  font-size: 1rem;
 }
 
 .room-players {
-  color: #666;
-  font-size: 0.9rem;
+  color: #606266;
+  font-size: 0.85rem;
 }
 
 .room-status {
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-size: 0.8rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.75rem;
   font-weight: 500;
 }
 
@@ -894,88 +827,99 @@ export default {
 .room-details {
   display: flex;
   justify-content: space-between;
-  font-size: 0.85rem;
-  color: #888;
+  font-size: 0.8rem;
+  color: #909399;
 }
 
 /* 深色模式支持 */
 @media (prefers-color-scheme: dark) {
   .home-container {
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    background: #1f1f1f;
   }
   
   .user-bar {
-    background: rgba(30, 30, 50, 0.95);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #2d2d2d;
+    color: #e8e8e8;
+    border: 1px solid #444;
   }
   
   .user-details, .username {
-    color: white;
+    color: #e8e8e8;
   }
   
   .user-stats span {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: #3a3a3a;
+    border: 1px solid #555;
+    color: #ccc;
   }
   
   .guest-info {
-    color: white;
+    color: #e8e8e8;
   }
   
   .title {
-    color: white;
+    color: #e8e8e8;
   }
   
   .mode-card {
-    background: rgba(30, 30, 50, 0.95);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #2d2d2d;
+    color: #e8e8e8;
+    border: 1px solid #444;
   }
   
   .mode-card h3 {
-    color: white;
+    color: #e8e8e8;
   }
   
   .mode-description {
-    color: #ccc;
+    color: #bbb;
   }
   
   .mode-stats span {
-    color: #aaa;
+    color: #999;
+  }
+  
+  .mode-card.active {
+    background: #1e3a5f;
+    border-color: #409eff;
   }
   
   .game-actions {
-    background: rgba(30, 30, 50, 0.95);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #2d2d2d;
+    color: #e8e8e8;
+    border: 1px solid #444;
   }
   
   .game-actions h2 {
-    color: white;
+    color: #e8e8e8;
   }
   
   .game-description {
-    color: #ccc;
+    color: #bbb;
   }
   
   .game-tips {
-    color: #aaa;
-    background: rgba(255, 255, 255, 0.05);
-    border-left-color: rgba(102, 126, 234, 0.5);
+    color: #999;
+    background: #3a3a3a;
+    border-left-color: #409eff;
   }
   
   .rooms-section h3 {
-    color: white;
+    color: #e8e8e8;
   }
   
   .room-item {
-    background: rgba(30, 30, 50, 0.8);
-    color: white;
+    background: #3a3a3a;
+    color: #e8e8e8;
+    border: 1px solid #555;
+  }
+  
+  .room-item:hover {
+    background: #444;
   }
   
   .room-id, .room-players, .room-details {
-    color: white;
+    color: #e8e8e8;
   }
 }
 
