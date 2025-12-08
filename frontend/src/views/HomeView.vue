@@ -44,7 +44,6 @@
           :class="{ active: selectedGameMode === 'gobang' }"
           @click="selectGameMode('gobang')"
         >
-          <div class="mode-icon">⚫</div>
           <h3>五子棋</h3>
           <p class="mode-description">经典五子棋对战</p>
           <div class="mode-stats" v-if="gameStats.gobang">
@@ -58,7 +57,6 @@
           :class="{ active: selectedGameMode === 'military' }"
           @click="selectGameMode('military')"
         >
-          <div class="mode-icon">⚔️</div>
           <h3>军棋</h3>
           <p class="mode-description">策略军旗对战</p>
           <div class="mode-stats" v-if="gameStats.military">
@@ -72,7 +70,6 @@
           :class="{ active: selectedGameMode === 'chinese-chess' }"
           @click="selectGameMode('chinese-chess')"
         >
-          <div class="mode-icon">♟️</div>
           <h3>中国象棋</h3>
           <p class="mode-description">传统象棋对弈</p>
           <div class="mode-stats" v-if="gameStats.chineseChess">
@@ -304,9 +301,9 @@ export default {
     // 获取游戏模式提示
     const getGameModeTips = (mode) => {
       const tips = {
-        'gobang': '💡 提示：注意防守和进攻的平衡，既要阻止对手连成四子，也要为自己创造机会。',
-        'military': '💡 提示：合理利用炸弹和工兵，保护好您的军旗。',
-        'chinese-chess': '💡 提示：马走日，象走田，车行直路炮翻山，士走斜线护将边。'
+        'gobang': '提示：注意防守和进攻的平衡，既要阻止对手连成四子，也要为自己创造机会。',
+        'military': '提示：合理利用炸弹和工兵，保护好您的军旗。',
+        'chinese-chess': '提示：马走日，象走田，车行直路炮翻山，士走斜线护将边。'
       }
       return tips[mode] || '祝您游戏愉快！'
     }
@@ -545,22 +542,25 @@ export default {
 .home-container {
   min-height: 100vh;
   background: var(--color-background-primary);
-  padding: 20px;
-  padding-top: 90px;
+  padding: 0;
+  padding-top: 80px;
 }
 
 /* 顶部用户信息栏 */
 .user-bar {
-  background: var(--color-surface);
-  border-radius: var(--radius-medium);
-  padding: 20px;
-  margin-bottom: 30px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: var(--radius-lg);
+  padding: 24px 30px;
+  margin: 20px;
+  margin-bottom: 40px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: var(--shadow-md);
-  border: 1px solid var(--color-border);
-  transition: all 0.3s ease;
+  box-shadow: var(--shadow-xl);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .user-bar:hover {
@@ -647,29 +647,39 @@ export default {
 }
 
 .title {
-  font-size: 2.5rem;
+  font-size: 3.5rem;
   color: var(--color-text-primary);
   margin-bottom: 3rem;
-  font-weight: 600;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-text-primary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .mode-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1.5rem;
-  max-width: 1000px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
+  max-width: 1100px;
   margin: 0 auto;
+  padding: 0 20px;
 }
 
 .mode-card {
-  background: var(--color-surface);
-  border-radius: var(--radius-medium);
-  padding: 2rem 1.5rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: var(--radius-xl);
+  padding: 2.5rem 2rem;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: var(--shadow-md);
-  border: 1px solid var(--color-border);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   animation: fadeInUp 0.6s ease-out;
+  position: relative;
+  overflow: hidden;
 }
 
 .mode-card:nth-child(2) {
@@ -686,9 +696,9 @@ export default {
 }
 
 .mode-card.active {
-  background: var(--color-background-hover);
+  background: rgba(64, 158, 255, 0.1);
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px rgba(64, 158, 255, 0.1);
+  box-shadow: 0 0 30px rgba(64, 158, 255, 0.2), 0 0 0 2px rgba(64, 158, 255, 0.3);
 }
 
 .mode-icon {
@@ -703,10 +713,11 @@ export default {
 }
 
 .mode-card h3 {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   margin-bottom: 0.5rem;
   color: var(--color-text-primary);
-  font-weight: 600;
+  font-weight: 800;
+  letter-spacing: -0.5px;
 }
 
 .mode-description {
@@ -732,17 +743,18 @@ export default {
 
 /* 游戏操作区域 */
 .game-actions {
-  background: rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: var(--radius-medium);
-  padding: 2rem;
-  max-width: 800px;
-  margin: 0 auto;
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: var(--radius-xl);
+  padding: 3rem 2.5rem;
+  max-width: 900px;
+  margin: 40px auto;
+  box-shadow: var(--shadow-xl);
   text-align: center;
   animation: fadeInUp 0.8s ease-out 0.5s both;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .game-actions h2 {
@@ -778,19 +790,21 @@ export default {
 
 .action-buttons {
   display: flex;
-  gap: 0.75rem;
+  gap: 1.5rem;
   justify-content: center;
   flex-wrap: wrap;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .action-buttons .el-button {
-  font-size: 1rem;
-  padding: 12px 24px;
-  border-radius: var(--radius-small);
-  font-weight: 500;
-  transition: all 0.3s ease;
-  min-width: 120px;
+  font-size: 1.1rem;
+  padding: 15px 30px;
+  border-radius: var(--radius-lg);
+  font-weight: 700;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 140px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .action-buttons .el-button:hover {

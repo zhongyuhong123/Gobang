@@ -87,16 +87,17 @@ onMounted(() => {
 
 <style scoped>
 .navbar {
-  background: rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
   position: sticky;
   top: 0;
   left: 0;
   right: 0;
   z-index: 1000;
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  box-shadow: var(--shadow-lg);
+  transition: all 0.3s ease;
 }
 
 .nav-container {
@@ -110,13 +111,17 @@ onMounted(() => {
 }
 
 .nav-logo h1 {
-  font-size: 28px;
-  font-weight: 600;
+  font-size: 32px;
+  font-weight: 800;
   color: var(--text-primary);
   margin: 0;
   cursor: pointer;
-  transition: transform 0.2s ease, color 0.2s ease;
-  letter-spacing: -0.5px;
+  transition: transform 0.3s ease, color 0.3s ease;
+  letter-spacing: -1px;
+  background: linear-gradient(135deg, var(--primary-color), var(--text-primary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .nav-logo h1:hover {
@@ -156,13 +161,15 @@ onMounted(() => {
   background-color: var(--primary-color);
   border: none;
   color: white;
-  padding: 10px 24px;
-  border-radius: var(--radius-sm);
+  padding: 12px 28px;
+  border-radius: var(--radius-md);
   cursor: pointer;
   font-size: 16px;
-  font-weight: 600;
-  transition: all var(--transition-fast);
-  box-shadow: var(--shadow-sm);
+  font-weight: 700;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-md);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .enter-game-btn:hover {
@@ -178,14 +185,16 @@ onMounted(() => {
 .login-link, .register-link {
   text-decoration: none;
   font-size: 14px;
-  font-weight: 500;
-  padding: 8px 16px;
-  border-radius: var(--radius-sm);
-  transition: all var(--transition-fast);
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: var(--radius-md);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 80px;
+  min-width: 90px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .login-link {
