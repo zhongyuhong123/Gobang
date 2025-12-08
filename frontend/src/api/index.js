@@ -76,7 +76,7 @@ service.interceptors.response.use(
 export const userAPI = {
   // 用户注册
   register: (data) => {
-    return service.post('/register', {
+    return service.post('/user/register', {
       username: data.username,
       password: data.password
     })
@@ -84,7 +84,7 @@ export const userAPI = {
 
   // 用户登录
   login: (data) => {
-    return service.post('/login', {
+    return service.post('/user/login', {
       username: data.username,
       password: data.password
     })
@@ -92,7 +92,7 @@ export const userAPI = {
 
   // 获取用户信息
   getUserInfo: () => {
-    return service.get('/userInfo')
+    return service.get('/user/info')
   },
 
   // 更新用户信息
@@ -102,7 +102,7 @@ export const userAPI = {
 
   // 获取排行榜
   getLeaderboard: (type = 'score') => {
-    return service.get(`/leaderboard/${type}`)
+    return service.get(`/user/leaderboard/${type}`)
   }
 }
 
@@ -110,27 +110,27 @@ export const userAPI = {
 export const gameAPI = {
   // 创建房间
   createRoom: (data) => {
-    return service.post('/room/create', data)
+    return service.post('/game/room/create', data)
   },
 
   // 获取房间列表
   getRoomList: () => {
-    return service.get('/room/list')
+    return service.get('/game/room/list')
   },
 
   // 加入房间
   joinRoom: (roomId) => {
-    return service.post(`/room/join/${roomId}`)
+    return service.post(`/game/room/join/${roomId}`)
   },
 
   // 开始匹配
   startMatch: () => {
-    return service.post('/match/start')
+    return service.post('/game/match/start')
   },
 
   // 停止匹配
   stopMatch: () => {
-    return service.post('/match/stop')
+    return service.post('/game/match/stop')
   },
 
   // 获取游戏记录
@@ -153,7 +153,8 @@ export const wsManager = {
       return wsManager.matchSocket
     }
 
-    const wsUrl = `${import.meta.env.VITE_WS_BASE_URL || 'ws://localhost:8080'}/match?userId=${userId}`
+    // 根据后端API文档，WebSocket连接路径为/gameHall
+    const wsUrl = `${import.meta.env.VITE_WS_BASE_URL || 'ws://localhost:8080'}/gameHall?userId=${userId}`
     wsManager.matchSocket = new WebSocket(wsUrl)
 
     wsManager.matchSocket.onopen = () => {
@@ -190,7 +191,8 @@ export const wsManager = {
       return wsManager.gameSocket
     }
 
-    const wsUrl = `${import.meta.env.VITE_WS_BASE_URL || 'ws://localhost:8080'}/game?userId=${userId}&roomId=${roomId}`
+    // 根据后端API文档，游戏WebSocket连接路径为/gameRoom/{roomId}
+    const wsUrl = `${import.meta.env.VITE_WS_BASE_URL || 'ws://localhost:8080'}/gameRoom/${roomId}?userId=${userId}`
     wsManager.gameSocket = new WebSocket(wsUrl)
 
     wsManager.gameSocket.onopen = () => {

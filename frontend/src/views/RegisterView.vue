@@ -143,14 +143,15 @@
 import { ref, reactive, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { CircleCheck, CircleClose } from '@element-plus/icons-vue'
+import { CircleCheck, CircleClose, Loading } from '@element-plus/icons-vue'
 import { userAPI } from '../api/index.js'
 
 export default {
   name: 'RegisterView',
   components: {
     CircleCheck,
-    CircleClose
+    CircleClose,
+    Loading
   },
   setup() {
     const router = useRouter()
@@ -595,3 +596,4 @@ export default {
   }
 }
 </style>
+

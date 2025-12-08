@@ -2,6 +2,7 @@ package org.example.gobang.api;
 
 import org.example.gobang.model.User;
 import org.example.gobang.model.UserMapper;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -53,6 +54,8 @@ public class UserAPI {
 
     @Resource
     public UserMapper userMapper;
+    
+    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @PostMapping("/login")
     @ResponseBody
@@ -60,11 +63,11 @@ public class UserAPI {
         //根据username去数据库中查找，如果能查到并密码一致则成功登入
         User user = userMapper.selectByName(username);
         System.out.println("[login] user="+user);
-        if(user==null || !user.getPassword().equals(password)){
+        if(user==null || !passwordEncoder.matches(password, user.getPassword())){
             System.out.println("登入失败!");
             return new ApiResponse(false, "用户名或密码错误", null);
         }
-        //这里true含义：如果为true，会话存在直接返回，不存在则创建一�?
+        //这里true含义：如果为true，会话存在直接返回，不存在则创建一个
         HttpSession session = req.getSession(true);
         session.setAttribute("user", user);
         return new ApiResponse(true, "登录成功", user);
@@ -76,7 +79,8 @@ public class UserAPI {
         try{
             User user = new User();
             user.setUsername(username);
-            user.setPassword(password);
+            // 对密码进行加密
+            user.setPassword(passwordEncoder.encode(password));
             userMapper.insert(user);
             return new ApiResponse(true, "注册成功", user);
         }catch (org.springframework.dao.DuplicateKeyException e){

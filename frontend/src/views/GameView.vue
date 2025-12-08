@@ -1,100 +1,74 @@
 <template>
   <div class="game-container">
-    <div class="bg-pattern"></div>
-    <header class="game-header">
-      <div class="header-content">
-        <div class="logo-area">
-          <div class="chess-logo">
-            <div class="chess-piece black"></div>
-            <div class="chess-piece white"></div>
+    <div class="game-header">
+      <h1>五子棋对战</h1>
+      <div class="game-info">
+        <div class="player-info">
+          <div class="player" :class="{ active: currentPlayer === 1 }">
+            <div class="player-avatar black"></div>
+            <span>黑方: {{ user1?.username || '等待玩家' }}</span>
           </div>
-          <h2 class="game-title">Come 下棋</h2>
+          <div class="vs">VS</div>
+          <div class="player" :class="{ active: currentPlayer === 2 }">
+            <div class="player-avatar white"></div>
+            <span>白方: {{ user2?.username || '等待玩家' }}</span>
+          </div>
         </div>
-        <div class="game-info">
-          <div class="info-item">
-            <span class="label">当前玩家：</span>
-            <span class="value" :class="currentPlayer === 1 ? 'black-player' : 'white-player'">
-              {{ currentPlayer === 1 ? '黑方' : '白方' }}
-            </span>
-          </div>
-          <div class="info-item status">
-            <span class="label">状态：</span>
-            <span class="value">{{ gameStatus }}</span>
-          </div>
+        <div class="game-status">
+          <span v-if="gameStatus === 'waiting'">等待游戏开始</span>
+          <span v-else-if="gameStatus === 'playing'">游戏进行中</span>
+          <span v-else-if="gameStatus === 'ended'">游戏已结束</span>
         </div>
       </div>
-    </header>
-    <main class="game-content">
-      <div class="game-board-wrapper">
-        <div class="board-container">
-          <div class="board" @click="handleBoardClick">
-            <!-- 棋盘线 -->
-            <div class="board-lines">
-              <!-- 横线 -->
-              <div 
-                v-for="i in boardSize" 
-                :key="'h-' + i" 
-                class="horizontal-line"
-                :style="{ top: `${(i - 1) * cellSize}px` }"
-              ></div>
-              <!-- 竖线 -->
-              <div 
-                v-for="i in boardSize" 
-                :key="'v-' + i" 
-                class="vertical-line"
-                :style="{ left: `${(i - 1) * cellSize}px` }"
-              ></div>
-              <!-- 星位 -->
-              <div class="star-point" style="top: calc(3 * var(--cell-size)); left: calc(3 * var(--cell-size));"></div>
-              <div class="star-point" style="top: calc(7 * var(--cell-size)); left: calc(7 * var(--cell-size));"></div>
-              <div class="star-point" style="top: calc(11 * var(--cell-size)); left: calc(11 * var(--cell-size));"></div>
-              <div class="star-point" style="top: calc(3 * var(--cell-size)); left: calc(11 * var(--cell-size));"></div>
-              <div class="star-point" style="top: calc(11 * var(--cell-size)); left: calc(3 * var(--cell-size));"></div>
-            </div>
+    </div>
+
+    <div class="game-board-container">
+      <div class="game-board" @click="handleBoardClick">
+        <!-- 棋盘格子 -->
+        <div 
+          v-for="(row, rowIndex) in board" 
+          :key="rowIndex"
+          class="board-row"
+        >
+          <div 
+            v-for="(cell, colIndex) in row" 
+            :key="colIndex"
+            class="board-cell"
+            @click.stop="handleBoardClick(rowIndex, colIndex)"
+          >
             <!-- 棋子 -->
             <div 
-              v-for="(row, rowIndex) in boardSize" 
-              :key="'row-' + rowIndex" 
-              class="board-row"
-            >
-              <div 
-                v-for="(col, colIndex) in boardSize" 
-                :key="'col-' + colIndex"
-                class="board-cell"
-                :data-row="rowIndex"
-                :data-col="colIndex"
-              >
-                <div 
-                  v-if="board[rowIndex][colIndex] !== 0"
-                  class="chess-piece"
-                  :class="{
-                    'black': board[rowIndex][colIndex] === 1,
-                    'white': board[rowIndex][colIndex] === 2,
-                    'last-move': rowIndex === lastMoveRow && colIndex === lastMoveCol
-                  }"
-                ></div>
-              </div>
-            </div>
+              v-if="cell !== 0" 
+              class="chess-piece" 
+              :class="{ 
+                'black': cell === 1, 
+                'white': cell === 2,
+                'last-move': lastMoveRow === rowIndex && lastMoveCol === colIndex
+              }"
+            ></div>
           </div>
         </div>
-        <div class="game-controls">
-          <el-button type="primary" @click="exitGame" class="game-button control-button">退出游戏</el-button>
-          <el-button type="success" @click="restartGame" class="game-button control-button">重新开始</el-button>
-        </div>
       </div>
-    </main>
+    </div>
+
+    <div class="game-controls">
+      <button class="btn btn-restart" @click="restartGame">重新开始</button>
+      <button class="btn btn-exit" @click="exitGame">退出游戏</button>
+    </div>
   </div>
 </template>
 
 <script>
 import { ref, onMounted, onUnmounted, computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
+import wsManager from '@/utils/websocket'
 
 export default {
   name: 'GameView',
   setup() {
     const router = useRouter()
+    const route = useRoute()
     const boardSize = 15
     const cellSize = 40 // 棋子大小
     const board = ref([])
@@ -104,6 +78,8 @@ export default {
     const roomId = ref(1) // 默认房间ID，实际应该从路由参数或匹配结果获取
     const lastMoveRow = ref(-1)
     const lastMoveCol = ref(-1)
+    const user1 = ref(null) // 玩家1信息
+    const user2 = ref(null) // 玩家2信息
 
     // 计算单元格大小
     const cellSizeStyle = computed(() => {
@@ -111,134 +87,174 @@ export default {
     })
 
     // 初始化棋盘
+    // 初始化
     const initBoard = () => {
-      board.value = Array(boardSize).fill(0).map(() => Array(boardSize).fill(0))
+      const newBoard = []
+      for (let i = 0; i < boardSize; i++) {
+        newBoard[i] = []
+        for (let j = 0; j < boardSize; j++) {
+          newBoard[i][j] = 0
+        }
+      }
+      board.value = newBoard
+    }
+    
+    // 初始化游戏
+    onMounted(() => {
+      // 获取路由参数
+      roomId.value = route.params.roomId || route.query.roomId || ''
+      
+      // 初始化棋盘
+      initBoard()
+      
+      // 初始化游戏状态
+      gameStatus.value = 'waiting'
+      currentPlayer.value = 1
       lastMoveRow.value = -1
       lastMoveCol.value = -1
-    }
-
+      
+      // 获取用户信息
+      const user = JSON.parse(localStorage.getItem('user') || '{}')
+      if (user.userId) {
+        // 连接WebSocket
+        connectWebSocket()
+      } else {
+        ElMessage.error('用户信息缺失，请重新登录')
+        router.push('/login')
+      }
+    })
+    
     // 建立WebSocket连接
+    // 连接WebSocket
     const connectWebSocket = () => {
-      try {
-        const user = JSON.parse(localStorage.getItem('user'))
-        if (!user) {
-          router.push('/')
-          return
-        }
-
-        // WebSocket连接URL，实际应该根据后端配置调整
-        const wsUrl = `ws://localhost:8080/game?userId=${user.userId}&roomId=${roomId.value}`
-        websocket.value = new WebSocket(wsUrl)
-
-        websocket.value.onopen = () => {
+      if (websocket.value) {
+        websocket.value.close()
+      }
+      
+      const currentUser = JSON.parse(localStorage.getItem('user') || '{}')
+      const userId = currentUser.userId
+      
+      if (!userId || !roomId.value) {
+        ElMessage.error('用户信息或房间ID缺失')
+        return
+      }
+      
+      // 使用修复后的API连接WebSocket
+      websocket.value = wsManager.connectGameSocket(userId, roomId.value, {
+        onOpen: () => {
           console.log('WebSocket连接已建立')
-          ElMessage.success('已连接到游戏服务器')
-        }
-
-        websocket.value.onmessage = (event) => {
-          const data = JSON.parse(event.data)
+        },
+        onMessage: (data) => {
           handleGameMessage(data)
-        }
-
-        websocket.value.onerror = (error) => {
+        },
+        onError: (error) => {
           console.error('WebSocket错误:', error)
-          ElMessage.error('与服务器连接失败')
-        }
-
-        websocket.value.onclose = () => {
+          ElMessage.error('连接服务器失败')
+        },
+        onClose: () => {
           console.log('WebSocket连接已关闭')
         }
-      } catch (error) {
-        console.error('建立WebSocket连接失败:', error)
-        ElMessage.error('连接游戏服务器失败')
-      }
+      })
     }
 
     // 处理游戏消息
     const handleGameMessage = (data) => {
-      switch (data.type) {
-        case 'GAME_START':
-          gameStatus.value = '游戏开始'
-          currentPlayer.value = data.currentPlayer
-          ElMessage.info('游戏开始！')
-          break
-        case 'MOVE':
-          board.value[data.row][data.col] = data.player
+      console.log('收到游戏消息:', data)
+      
+      // 根据后端API文档，消息格式为 { userId, row, col } 或 { message }
+      if (data.userId !== undefined && data.row !== undefined && data.col !== undefined) {
+        // 处理落子消息
+        const currentUser = JSON.parse(localStorage.getItem('user') || '{}')
+        
+        // 更新棋盘
+        board.value[data.row][data.col] = currentPlayer.value === 1 ? 1 : 2
+        
+        // 检查是否是自己的落子
+        if (data.userId === currentUser.userId) {
+          // 更新最后一步位置
           lastMoveRow.value = data.row
           lastMoveCol.value = data.col
-          currentPlayer.value = data.nextPlayer
-          break
-        case 'GAME_OVER':
-          gameStatus.value = data.winner ? (data.winner === 1 ? '黑方获胜！' : '白方获胜！') : '平局'
-          ElMessage.success(gameStatus.value)
-          break
-        case 'ERROR':
-          ElMessage.error(data.message)
-          break
-        default:
-          console.log('未知消息类型:', data.type)
-      }
-    }
-
-    // 处理棋盘点击
-    const handleBoardClick = (event) => {
-      if (gameStatus.value !== '游戏进行中') return
-
-      const boardElement = event.currentTarget
-      const rect = boardElement.getBoundingClientRect()
-      const x = event.clientX - rect.left
-      const y = event.clientY - rect.top
-      
-      const col = Math.floor(x / cellSize)
-      const row = Math.floor(y / cellSize)
-
-      // 检查位置是否合法
-      if (row >= 0 && row < boardSize && col >= 0 && col < boardSize && board.value[row][col] === 0) {
-        // 发送落子请求
-        if (websocket.value && websocket.value.readyState === WebSocket.OPEN) {
-          websocket.value.send(JSON.stringify({
-            type: 'MOVE',
-            row,
-            col,
-            player: currentPlayer.value
-          }))
-        } else {
-          ElMessage.error('未连接到游戏服务器')
+          
+          // 切换玩家
+          currentPlayer.value = currentPlayer.value === 1 ? 2 : 1
+        }
+      } else if (data.message) {
+        // 处理游戏消息
+        ElMessage.info(data.message)
+        
+        // 检查是否是游戏结束消息
+        if (data.message.includes('获胜') || data.message.includes('胜利') || data.message.includes('平局')) {
+          gameStatus.value = 'ended'
         }
       }
     }
 
+    // 处理棋盘点击
+    const handleBoardClick = (row, col) => {
+      if (gameStatus.value !== 'playing') {
+        ElMessage.warning('游戏尚未开始')
+        return
+      }
+      
+      if (board.value[row][col] !== 0) {
+        ElMessage.warning('该位置已有棋子')
+        return
+      }
+      
+      // 发送落子请求
+      const currentUser = JSON.parse(localStorage.getItem('user') || '{}')
+      
+      // 根据后端API文档，发送格式为 { userId, row, col }
+      const moveData = {
+        userId: currentUser.userId,
+        row: row,
+        col: col
+      }
+      
+      // 使用WebSocket发送落子请求
+      if (websocket.value && websocket.value.readyState === WebSocket.OPEN) {
+        wsManager.sendMessage(websocket.value, moveData)
+      } else {
+        ElMessage.error('与服务器的连接已断开')
+      }
+    }
+
+    // 重新开始游戏
+    const restartGame = () => {
+      gameStatus.value = 'playing'
+      currentPlayer.value = 1
+      lastMoveRow.value = -1
+      lastMoveCol.value = -1
+      
+      // 重置棋盘
+      for (let i = 0; i < boardSize; i++) {
+        for (let j = 0; j < boardSize; j++) {
+          board.value[i][j] = 0
+        }
+      }
+      
+      ElMessage.success('游戏已重新开始')
+    }
+    
     // 退出游戏
     const exitGame = () => {
       if (websocket.value) {
         websocket.value.close()
       }
-      router.push('/home')
+      router.push('/')
     }
 
-    // 重新开始
-    const restartGame = () => {
-      initBoard()
-      currentPlayer.value = 1
-      gameStatus.value = '游戏进行中'
-      if (websocket.value && websocket.value.readyState === WebSocket.OPEN) {
-        websocket.value.send(JSON.stringify({ type: 'RESTART' }))
-      }
-      ElMessage.info('游戏已重新开始')
-    }
-
-    onMounted(() => {
-      initBoard()
-      connectWebSocket()
-    })
-
+    // 组件卸载时关闭WebSocket连接
     onUnmounted(() => {
       if (websocket.value) {
         websocket.value.close()
       }
+      // 关闭所有WebSocket连接
+      wsManager.closeAll()
     })
 
     return {
+      // 游戏状态
       boardSize,
       cellSize,
       board,
@@ -246,10 +262,15 @@ export default {
       gameStatus,
       lastMoveRow,
       lastMoveCol,
-      cellSizeStyle,
+      
+      // 玩家信息
+      user1,
+      user2,
+      
+      // 方法
       handleBoardClick,
-      exitGame,
-      restartGame
+      restartGame,
+      exitGame
     }
   }
 }

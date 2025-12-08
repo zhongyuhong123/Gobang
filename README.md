@@ -1,5 +1,16 @@
 # Come 下棋 - 多棋类在线对战平台
 
+![GitHub license](https://img.shields.io/github/license/phoenix-cities/gobang)
+![Gitee stars](https://gitee.com/phoenix-cities/gobang/badge/star.svg?theme=dark)
+![Gitee forks](https://gitee.com/phoenix-cities/gobang/badge/fork.svg?theme=dark)
+![Gitee issues](https://gitee.com/phoenix-cities/gobang/badge/issue.svg?theme=dark)
+![Gitee pull requests](https://gitee.com/phoenix-cities/gobang/badge/pr.svg?theme=dark)
+![Gitee release](https://gitee.com/phoenix-cities/gobang/badge/release.svg?theme=dark)
+![Vue.js](https://img.shields.io/badge/vue.js-3.x-green)
+![Spring Boot](https://img.shields.io/badge/spring%20boot-2.7.x-brightgreen)
+![MySQL](https://img.shields.io/badge/mysql-8.0-blue)
+![Redis](https://img.shields.io/badge/redis-6.0-red)
+
 一个支持多种棋类游戏的在线对战平台，包括五子棋、军棋、象棋等。采用前后端分离架构，支持实时对战、用户匹配、积分系统等功能。
 
 ## 🎮 功能特性
@@ -56,7 +67,7 @@
 
 ### 1. 克隆项目
 ```bash
-git clone https://github.com/your-username/gobang.git
+git clone https://gitee.com/phoenix-cities/gobang.git
 cd gobang
 ```
 
@@ -252,7 +263,7 @@ npm run lint
 
 ## 🤝 贡献指南
 
-1. Fork 项目
+1. Fork 项目 (https://gitee.com/phoenix-cities/gobang)
 2. 创建特性分支 (`git checkout -b feature/amazing-feature`)
 3. 提交更改 (`git commit -m 'Add some amazing feature'`)
 4. 推送到分支 (`git push origin feature/amazing-feature`)
@@ -270,8 +281,8 @@ npm run lint
 
 ## 🆘 问题反馈
 
-- **Issues**: [项目 Issues](https://github.com/your-username/gobang/issues)
-- **讨论**: [项目讨论](https://github.com/your-username/gobang/discussions)
+- **Issues**: [项目 Issues](https://gitee.com/phoenix-cities/gobang/issues)
+- **讨论**: [项目讨论](https://gitee.com/phoenix-cities/gobang/issues/new)
 - **邮箱**: support@come-xiaqi.com
 
 ## 📞 联系我们

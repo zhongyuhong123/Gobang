@@ -79,13 +79,13 @@ public class Room {
 
         //玩家下线
         if(session1 == null){
-            //玩家1下线，直接判定玩�?获胜
+            //玩家1下线，直接判定玩家2获胜
             response.setWinner(user2.getUserId());
-            System.out.println("玩家1掉线�?);
+            System.out.println("玩家1掉线");
         }else if(session2 == null){
-            //玩家2下线，直接判定玩�?获胜
+            //玩家2下线，直接判定玩家1获胜
             response.setWinner(user1.getUserId());
-            System.out.println("玩家2掉线�?);
+            System.out.println("玩家2掉线");
         }
 
         //5.把响应对象构造成 JSON 字符串，通过 session 对象进行传输�?
@@ -97,41 +97,41 @@ public class Room {
             session2.sendMessage(new TextMessage(respJson));
         }
 
-        //6.如果胜负已分，房间就失去存在的意义了，可以销毁房间了�?
+        //6.如果胜负已分，房间就失去存在的意义了，可以销毁房间了
         if(response.getWinner() != 0){
-            System.out.println("游戏结束！房间即将销毁！roomId"+roomId+" 获胜方为�?+response.getWinner());
-            //更新获胜方和失败方的信息�?
+            System.out.println("游戏结束！房间即将销毁！roomId"+roomId+" 获胜方为"+response.getWinner());
+            //更新获胜方和失败方的信息
             int winUserId = response.getWinner();
             int loseUserId = response.getWinner() == user1.getUserId()? user2.getUserId() : user1.getUserId();
             userMapper.userWin(winUserId);
             userMapper.userLose(loseUserId);
 
-            //销毁房�?
+            //销毁房间
             roomManager.remove(roomManager.getRoomByRoomId(roomId), user1.getUserId(), user2.getUserId());
         }
 
     }
 
     private void printBoard() {
-        //todo  更好的做法，应该给每个房间的信息放到单独的日志文件中进行打印�?
+        //todo  更好的做法，应该给每个房间的信息放到单独的日志文件中进行打印
         System.out.println("[打印棋盘信息]  房间号："+roomId);
         System.out.println("===============================");
         for(int r = 0; r < MAX_ROW; r++) {
             for(int c = 0; c < MAX_COL; c++){
                 System.out.print(board[r][c] + " ");
             }
-            System.out.println("/n");
+            System.out.println();
         }
         System.out.println("===============================");
     }
 
     // 判断胜负
     private int checkWinner(int row, int col, int chess) {
-        //定义两个指针从当前坐�?row, col)往两边数chess的数�?
+        //定义两个指针从当前坐标(row, col)往两边数chess的数量
         //  start：往左or上方找头（记录当前棋子到头方向棋子数量）
-        //  end�? 往右or下方找尾（记录当前棋子到尾方向棋子数量）
+        //  end： 往右or下方找尾（记录当前棋子到尾方向棋子数量）
 
-        //检查横�?
+        //检查横线
         int start=0,end=0;
         for(int r=row,c=col-1;c>=0 && board[r][c]==chess;c--){
             start++;
@@ -175,33 +175,6 @@ public class Room {
         if(start+end+1==5) return chess;
 
         //没有五子连珠
-        return 0;
-            end++;
-        }
-        if(start+end+1==5) return chess;
-
-        //检查左上斜�?
-        start=0;
-        end=0;
-        for(int r=row-1,c=col-1;r>=0 && c>=0 && board[r][c]==chess; r--, c--){
-            start++;
-        }
-        for(int r=row+1,c=col+1;r<MAX_ROW && c<MAX_COL && board[r][c]==chess;r++, c++){
-            end++;
-        }
-        if(start+end+1==5) return chess;
-
-        //检查左下斜�?
-        start=0;
-        end=0;
-        for(int r=row+1,c=col-1;r<MAX_ROW && c>=0 && board[r][c]==chess; r++, c--){
-            start++;
-        }
-        for(int r=row-1,c=col+1;r>=0 && c<MAX_COL && board[r][c]==chess;r--, c++){
-            end++;
-        }
-        if(start+end+1==5) return chess;
-
         return 0;
     }
 
@@ -256,3 +229,89 @@ public class Room {
         System.out.println(room.roomId);
     }
 }
+
+
+
+
+
+    //落子
+    public void putChess(Request request) {
+        //1.先进行参数校验
+        if(request == null || request.getUserId() == null || request.getRow() == null || request.getCol() == null){
+            System.out.println("落子失败！参数错误！");
+            return;
+        }
+
+        //2.检查当前是谁在落子
+        //  如果是玩家1落子，则检查当前是否是玩家1的回合
+        //  如果是玩家2落子，则检查当前是否是玩家2的回合
+        int userId = request.getUserId();
+        if(userId == user1.getUserId() && turn != 1){
+            System.out.println("落子失败！当前不是玩家1的回合！");
+            return;
+        }
+        if(userId == user2.getUserId() && turn != 2){
+            System.out.println("落子失败！当前不是玩家2的回合！");
+            return;
+        }
+
+        //3.检查落子位置是否合法
+        int row = request.getRow();
+        int col = request.getCol();
+        if(row < 0 || row >= MAX_ROW || col < 0 || col >= MAX_COL){
+            System.out.println("落子失败！落子位置越界！");
+            return;
+        }
+        if(board[row][col] != 0){
+            System.out.println("落子失败！落子位置已有棋子！");
+            return;
+        }
+
+        //4.落子
+        int chess = userId == user1.getUserId()? 1 : 2;
+        board[row][col] = chess;
+        printBoard();
+
+        //5.判断胜负
+        int winner = checkWinner(row, col, chess);
+        if(winner != 0){
+            System.out.println("玩家"+winner+"获胜！");
+        }
+
+        //6.构造响应对象
+        Response response = new Response();
+        response.setUserId(userId);
+        response.setRow(row);
+        response.setCol(col);
+        response.setWinner(winner);
+        response.setTurn(turn == 1 ? 2 : 1);
+
+        //7.把响应对象返回给两个玩家
+        try {
+            String respJson = objectMapper.writeValueAsString(response);
+            if(session1 != null && session1.isOpen()){
+                session1.sendMessage(new TextMessage(respJson));
+            }
+            if(session2 != null && session2.isOpen()){
+                session2.sendMessage(new TextMessage(respJson));
+            }
+        } catch (Exception e) {
+            System.out.println("处理落子请求失败: " + e.getMessage());
+        }
+
+        //8.交换落子顺序
+        turn = turn == 1 ? 2 : 1;
+
+        //9.判断胜负已分，房间就失去存在的意义了，可以销毁房间了
+        if(winner != 0){
+            System.out.println("游戏结束！房间即将销毁！roomId"+roomId+" 获胜方为"+winner);
+            //更新获胜方和失败方的信息
+            int winUserId = winner;
+            int loseUserId = winner == user1.getUserId()? user2.getUserId() : user1.getUserId();
+            userMapper.userWin(winUserId);
+            userMapper.userLose(loseUserId);
+
+            //销毁房间
+            roomManager.remove(roomManager.getRoomByRoomId(roomId), user1.getUserId(), user2.getUserId());
+        }
+    }
