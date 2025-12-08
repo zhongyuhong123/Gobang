@@ -1,6 +1,5 @@
 <template>
   <div class="home-container">
-    <!-- 通用导航栏 -->
     <GameNavbar />
     
     <!-- 顶部用户信息栏 -->
@@ -25,7 +24,6 @@
       </div>
     </div>
 
-    <!-- 未登录状态 -->
     <div class="user-bar guest glass-user-bar" v-else>
       <div class="guest-info">
         <span>欢迎来到五子棋游戏大厅！</span>
@@ -117,8 +115,7 @@
         </el-button>
       </div>
 
-      <!-- 房间列表 -->
-      <div class="rooms-section" v-if="rooms.length > 0">
+        <div class="rooms-section" v-if="rooms.length > 0">
         <h3>活跃房间</h3>
         <div class="rooms-list">
           <div 
@@ -142,7 +139,6 @@
     </div>
   </div>
 
-  <!-- 加入房间对话框 -->
   <el-dialog
     v-model="joinRoomDialog.visible"
     title="加入房间"
@@ -209,6 +205,10 @@ export default {
       military: null,
       chineseChess: null
     })
+
+    onUnmounted(() => {
+      stopDataRefresh()
+    })
     
     // 房间列表
     const rooms = ref([])
@@ -224,7 +224,6 @@ export default {
       }
     })
 
-    // 获取用户信息
     const loadUserInfo = async () => {
       try {
         const token = localStorage.getItem('token')
@@ -234,7 +233,6 @@ export default {
             userInfo.value = JSON.parse(savedUserInfo)
           }
           
-          // 尝试从服务器获取最新用户信息
           const response = await userAPI.getUserInfo()
           if (response.success && response.data) {
             userInfo.value = response.data
@@ -246,7 +244,6 @@ export default {
       }
     }
 
-    // 获取游戏统计
     const loadGameStats = async () => {
       try {
         const response = await gameAPI.getGameStats()
@@ -258,7 +255,6 @@ export default {
       }
     }
 
-    // 获取房间列表
     const loadRooms = async () => {
       if (!selectedGameMode.value) return
       
@@ -272,13 +268,11 @@ export default {
       }
     }
 
-    // 选择游戏模式
     const selectGameMode = (mode) => {
       selectedGameMode.value = mode
       loadRooms()
     }
 
-    // 获取游戏模式标题
     const getGameModeTitle = (mode) => {
       const titles = {
         'gobang': '五子棋',
@@ -288,7 +282,6 @@ export default {
       return titles[mode] || '未知游戏'
     }
 
-    // 获取游戏模式描述
     const getGameModeDescription = (mode) => {
       const descriptions = {
         'gobang': '经典的五子棋游戏，黑白双方轮流下棋，先连成五子者获胜。考验您的策略和布局能力。',
@@ -298,7 +291,6 @@ export default {
       return descriptions[mode] || '精彩的对弈游戏'
     }
 
-    // 获取游戏模式提示
     const getGameModeTips = (mode) => {
       const tips = {
         'gobang': '提示：注意防守和进攻的平衡，既要阻止对手连成四子，也要为自己创造机会。',
@@ -308,7 +300,6 @@ export default {
       return tips[mode] || '祝您游戏愉快！'
     }
 
-    // 获取段位名称
     const getRankName = (rank) => {
       const ranks = {
         0: '新手',
@@ -322,13 +313,11 @@ export default {
       return ranks[rank] || '新手'
     }
 
-    // 获取胜率
     const getWinRate = (user) => {
       if (!user || !user.totalGames) return '0%'
       return Math.round((user.winGames || 0) / user.totalGames * 100) + '%'
     }
 
-    // 获取房间状态
     const getRoomStatus = (status) => {
       const statuses = {
         'waiting': '等待中',
@@ -338,7 +327,6 @@ export default {
       return statuses[status] || '未知'
     }
 
-    // 快速匹配
     const startQuickMatch = async () => {
       if (!selectedGameMode.value) return
       if (!userInfo.value) {
@@ -365,7 +353,6 @@ export default {
       }
     }
 
-    // 创建房间
     const createRoom = async () => {
       if (!selectedGameMode.value) return
       if (!userInfo.value) {
@@ -392,7 +379,6 @@ export default {
       }
     }
 
-    // 加入房间
     const joinRoom = () => {
       if (!selectedGameMode.value) return
       if (!userInfo.value) {
@@ -406,7 +392,6 @@ export default {
       joinRoomDialog.form.password = ''
     }
 
-    // 确认加入房间
     const confirmJoinRoom = async () => {
       if (!joinRoomDialog.form.roomId.trim()) {
         ElMessage.warning('请输入房间号')
@@ -436,23 +421,19 @@ export default {
       }
     }
 
-    // 加入特定房间
     const joinSpecificRoom = (roomId) => {
       joinRoomDialog.form.roomId = roomId
       joinRoomDialog.visible = true
     }
 
-    // 查看个人资料
     const viewProfile = () => {
       router.push('/profile')
     }
 
-    // 查看排行榜
     const viewRankings = () => {
       router.push('/rankings')
     }
 
-    // 退出登录
     const logout = () => {
       ElMessageBox.confirm('确定要退出登录吗？', '提示', {
         confirmButtonText: '确定',
@@ -470,17 +451,14 @@ export default {
       })
     }
 
-    // 定时刷新数据
     let statsTimer = null
     let roomsTimer = null
 
     const startDataRefresh = () => {
-      // 每30秒刷新游戏统计
       statsTimer = setInterval(() => {
         loadGameStats()
       }, 30000)
       
-      // 每5秒刷新房间列表（当选择了游戏模式时）
       roomsTimer = setInterval(() => {
         if (selectedGameMode.value) {
           loadRooms()
@@ -503,6 +481,11 @@ export default {
       loadUserInfo()
       loadGameStats()
       startDataRefresh()
+    })
+
+    // 组件卸载时停止定时器
+    onUnmounted(() => {
+      stopDataRefresh()
     })
 
     // 组件卸载时停止定时器
@@ -546,7 +529,6 @@ export default {
   padding-top: 80px;
 }
 
-/* 顶部用户信息栏 */
 .user-bar {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
@@ -640,7 +622,6 @@ export default {
   gap: 10px;
 }
 
-/* 游戏模式选择 */
 .game-modes {
   text-align: center;
   margin-bottom: 40px;

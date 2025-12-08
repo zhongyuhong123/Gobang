@@ -17,22 +17,8 @@
           <el-icon class="back-icon"><ArrowLeft /></el-icon>
         </button>
         
-        <!-- 登录状态下显示"进入游戏"按钮 -->
-        <button 
-          v-if="isLogin && !forceShowAuthBtns"
-          class="enter-game-btn"
-          @click="handleEnterGame"
-        >
-          进入游戏
-        </button>
-        
-        <!-- 登录提示（可选） -->
-        <div v-if="showLoginHint" class="login-hint">
-          已有账号？<router-link to="/login">登录</router-link>
-        </div>
-        
         <!-- 登录/注册按钮（始终显示或强制显示） -->
-        <template v-if="!isLogin || forceShowAuthBtns">
+        <template>
           <router-link to="/login" class="login-link">登录</router-link>
           <router-link to="/register" class="register-link">注册</router-link>
         </template>
@@ -43,7 +29,6 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
 import { ArrowLeft } from '@element-plus/icons-vue'
 
 // 定义组件属性
@@ -70,18 +55,12 @@ defineProps({
   }
 })
 
-const router = useRouter()
 const isLogin = ref(false)
 
 // 检查用户登录状态
 const checkLoginStatus = () => {
   const token = localStorage.getItem('token')
   isLogin.value = !!token
-}
-
-// 处理"进入游戏"按钮点击事件
-const handleEnterGame = () => {
-  router.push('/home')
 }
 
 onMounted(() => {
