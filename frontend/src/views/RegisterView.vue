@@ -404,13 +404,15 @@ export default {
 }
 
 .register-card {
-  background-color: var(--bg-primary);
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
   padding: 40px;
   width: 100%;
   max-width: 500px;
-  border: 1px solid var(--border-light);
   transition: all var(--transition-normal);
 }
 

@@ -309,9 +309,13 @@ export default {
 }
 
 .game-header {
-  background-color: var(--bg-secondary);
-  border-bottom: 1px solid var(--border-color);
-  box-shadow: var(--shadow-sm);
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  padding: 15px 20px;
+  animation: slideDown 0.4s ease-out;
 }
 
 .header-content {
@@ -427,10 +431,12 @@ export default {
 
 .board-container {
   padding: 20px;
-  background-color: var(--bg-secondary);
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-md);
-  border: 1px solid var(--border-color);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -547,6 +553,13 @@ export default {
 .game-controls {
   display: flex;
   gap: 20px;
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  padding: 15px 20px;
+  border-radius: var(--radius-md);
 }
 
 .control-button {

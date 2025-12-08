@@ -419,11 +419,13 @@ export default {
 /* 中间登录表单 */
 .login-section {
   width: 320px;
-  background-color: var(--bg-primary);
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   padding: 32px;
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--border-light);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
   animation: fadeIn var(--transition-normal);
   transition: all var(--transition-normal);
 }

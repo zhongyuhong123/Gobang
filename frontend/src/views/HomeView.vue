@@ -732,13 +732,15 @@ export default {
 
 /* 游戏操作区域 */
 .game-actions {
-  background: var(--color-surface);
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: var(--radius-medium);
   padding: 2rem;
   max-width: 800px;
   margin: 0 auto;
-  box-shadow: var(--shadow-md);
-  border: 1px solid var(--color-border);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
   text-align: center;
   animation: fadeInUp 0.8s ease-out 0.5s both;
 }
@@ -816,13 +818,16 @@ export default {
 }
 
 .room-item {
-  background: var(--color-background-secondary);
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: var(--radius-small);
   padding: 0.75rem;
   margin-bottom: 0.5rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  border: 1px solid var(--color-border);
+  box-shadow: 0 2px 8px 0 rgba(31, 38, 135, 0.2);
 }
 
 .room-item:hover {
@@ -1074,5 +1079,25 @@ export default {
   .user-stats span {
     padding: 2px 8px;
   }
+}
+/* 对话框 */
+.glass-modal .el-dialog__header {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.glass-modal .el-dialog__body {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.glass-modal .el-dialog__footer {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
 }
 </style>

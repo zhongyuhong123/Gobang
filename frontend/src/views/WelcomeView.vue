@@ -13,18 +13,18 @@
           <h2 class="hero-title animate-on-scroll">经典五子棋对战</h2>
           <p class="hero-subtitle animate-on-scroll">体验传统棋艺的智慧与乐趣</p>
           <div class="hero-features">
-            <div class="feature-item animate-on-scroll">
-              <div class="feature-icon">⚫</div>
+            <div class="feature-item animate-on-scroll glass-effect">
+              <div class="feature-icon">•</div>
               <h4>经典玩法</h4>
               <p>黑白对弈，连五取胜</p>
             </div>
-            <div class="feature-item animate-on-scroll">
-              <div class="feature-icon">👥</div>
+            <div class="feature-item animate-on-scroll glass-effect">
+              <div class="feature-icon">2</div>
               <h4>在线对战</h4>
               <p>与全球玩家实时竞技</p>
             </div>
-            <div class="feature-item animate-on-scroll">
-              <div class="feature-icon">🏆</div>
+            <div class="feature-item animate-on-scroll glass-effect">
+              <div class="feature-icon">铂金</div>
               <h4>段位系统</h4>
               <p>挑战自我，提升棋艺</p>
             </div>
@@ -290,13 +290,15 @@ export default {
 }
 
 .black-piece::before {
-  background: var(--text-primary);
-  box-shadow: 0 2px 4px rgb(0, 0, 0);
+  background: #000000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  border: 1px solid #333;
 }
 
 .white-piece::before {
-  background: var(--bg-primary);
-  box-shadow: 0 2px 4px rgb(0, 0, 0);
+  background: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  border: 1px solid #ddd;
 }
 
 /* 规则介绍样式 */

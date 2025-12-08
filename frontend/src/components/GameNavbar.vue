@@ -87,14 +87,16 @@ onMounted(() => {
 
 <style scoped>
 .navbar {
-  background-color: var(--bg-secondary);
-  border-bottom: 1px solid var(--border-light);
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
   position: sticky;
   top: 0;
   left: 0;
   right: 0;
   z-index: 1000;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
 }
 
 .nav-container {
