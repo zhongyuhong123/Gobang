@@ -87,7 +87,7 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import wsManager from '@/utils/websocket'
+import { wsManager } from '../api/index'
 import GameNavbar from '@/components/GameNavbar.vue'
 
 export default {

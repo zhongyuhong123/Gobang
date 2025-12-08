@@ -19,15 +19,20 @@
         
         <!-- 登录状态下显示"进入游戏"按钮 -->
         <button 
-          v-if="isLogin"
+          v-if="isLogin && !forceShowAuthBtns"
           class="enter-game-btn"
           @click="handleEnterGame"
         >
           进入游戏
         </button>
         
-        <!-- 未登录状态下显示登录/注册按钮 -->
-        <template v-else>
+        <!-- 登录提示（可选） -->
+        <div v-if="showLoginHint" class="login-hint">
+          已有账号？<router-link to="/login">登录</router-link>
+        </div>
+        
+        <!-- 登录/注册按钮（始终显示或强制显示） -->
+        <template v-if="!isLogin || forceShowAuthBtns">
           <router-link to="/login" class="login-link">登录</router-link>
           <router-link to="/register" class="register-link">注册</router-link>
         </template>

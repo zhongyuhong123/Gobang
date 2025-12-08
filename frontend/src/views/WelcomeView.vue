@@ -75,7 +75,7 @@
       </section>
 
       <!-- 底部行动按钮 -->
-      <section class="action-section animate-on-scroll">
+      <section class="action-section">
         <div class="container">
           <h2 class="section-title">立即开始游戏</h2>
           <p class="action-subtitle">选择您喜欢的游戏模式，开始您的五子棋之旅</p>
@@ -554,10 +554,7 @@ export default {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
-  margin: 0 20px;
-  border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 15px 40px rgba(31, 38, 135, 0.2);
+  margin: 0px;
   position: relative;
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
