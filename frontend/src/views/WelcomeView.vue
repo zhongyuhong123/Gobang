@@ -260,18 +260,24 @@ export default {
 .feature-item {
   text-align: center;
   padding: 2.2rem 1.8rem;
-  background: rgba(255, 255, 255, 0.85);
   border-radius: var(--radius-lg);
   border: 1px solid rgba(255, 255, 255, 0.3);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: var(--shadow-md);
-  backdrop-filter: blur(15px);
   position: relative;
   overflow: hidden;
   min-height: 180px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+/* 液态玻璃效果应用 */
+.feature-item.glass-effect {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
 }
 
 .feature-item::before {

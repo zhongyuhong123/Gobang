@@ -87,17 +87,18 @@ onMounted(() => {
 
 <style scoped>
 .navbar {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
   position: sticky;
   top: 0;
   left: 0;
   right: 0;
-  z-index: 1000;
-  box-shadow: var(--shadow-lg);
+  z-index: 10000; /* 确保在最上层 */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
   transition: all 0.3s ease;
+  will-change: transform, opacity;
 }
 
 .nav-container {
