@@ -80,10 +80,10 @@
           <h2 class="section-title">立即开始游戏</h2>
           <p class="action-subtitle">选择您喜欢的游戏模式，开始您的五子棋之旅</p>
           <div class="action-buttons">
-            <button class="action-btn primary glass-effect" @click="handleStartGame">
+            <button class="action-btn primary" @click="handleStartGame">
               <span class="btn-text">开始游戏</span>
             </button>
-            <button class="action-btn secondary glass-effect" @click="$router.push('/login')">
+            <button class="action-btn secondary" @click="$router.push('/login')">
               <span class="btn-text">登录账户</span>
             </button>
           </div>
@@ -635,12 +635,15 @@ export default {
 }
 
 .action-btn.primary {
-  /* 增强对比度的渐变背景 */
-  background: linear-gradient(135deg, rgba(0, 113, 227, 0.9), rgba(0, 136, 255, 0.9));
-  color: white;
-  box-shadow: 0 8px 32px rgba(0, 113, 227, 0.35);
-  /* 添加清晰的边框 */
-  border: 1px solid rgba(255, 255, 255, 0.35);
+  /* 优化的渐变背景，提高对比度 */
+  background: linear-gradient(135deg, rgba(0, 113, 227, 0.95), rgba(0, 136, 255, 0.95));
+  /* 确保文字可见 */
+  color: white !important;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+  /* 清晰的边框 */
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  /* 增强的阴影效果 */
+  box-shadow: 0 8px 32px rgba(0, 113, 227, 0.45) !important;
 }
 
 .action-btn.primary:hover {
@@ -651,14 +654,17 @@ export default {
 }
 
 .action-btn.secondary {
-  /* 优化液态玻璃效果 */
-  background: rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(25px);
-  -webkit-backdrop-filter: blur(25px);
-  color: var(--primary-color);
-  /* 更清晰的边框 */
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+  /* 优化的液态玻璃效果 */
+  background: rgba(255, 255, 255, 0.35) !important;
+  backdrop-filter: blur(30px) !important;
+  -webkit-backdrop-filter: blur(30px) !important;
+  /* 确保文字颜色 */
+  color: var(--primary-color) !important;
+  text-shadow: 0 0 1px rgba(255, 255, 255, 0.8);
+  /* 清晰的边框 */
+  border: 1px solid rgba(255, 255, 255, 0.5) !important;
+  /* 增强的阴影效果 */
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2) !important;
 }
 
 .action-btn.secondary:hover {
