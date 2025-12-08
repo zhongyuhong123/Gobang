@@ -35,7 +35,7 @@ module.exports = defineConfig({
   },
   // 开发服务器配置
   devServer: {
-    port: 8081,
+    port: 8080,
     open: true,
     compress: true
   },

@@ -219,14 +219,14 @@ export default {
 }
 
 .hero-section {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 120px 20px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 100px;
-  align-items: center;
-}
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 120px 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 100px;
+    align-items: center;
+  }
 
 .hero-title {
   font-size: 4rem;
@@ -260,7 +260,7 @@ export default {
 .feature-item {
   text-align: center;
   padding: 2.2rem 1.8rem;
-  border-radius: var(--radius-lg);
+  border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.3);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
@@ -274,31 +274,19 @@ export default {
 /* 液态玻璃效果应用 */
 .feature-item.glass-effect {
   background: rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
   border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-}
-
-.feature-item::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--primary-color), var(--success-color));
-  transform: scaleX(0);
-  transition: transform 0.3s ease;
+  box-shadow: 0 10px 40px 0 rgba(31, 38, 135, 0.3);
+  border-radius: var(--radius-lg); /* 更圆润的边角 */
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .feature-item:hover {
-  transform: translateY(-4px);
+  transform: translateY(-6px);
   box-shadow: var(--shadow-lg);
-}
-
-.feature-item:hover::before {
-  transform: scaleX(1);
+  background: rgba(255, 255, 255, 0.35); /* 增强悬停时的透明度 */
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .feature-icon {
@@ -337,6 +325,7 @@ export default {
   animation: float 3s ease-in-out infinite;
   transform: perspective(1000px) rotateY(10deg);
   transition: transform 0.6s ease;
+  padding: 20px;
 }
 
 .chessboard-preview:hover {
@@ -349,12 +338,14 @@ export default {
   grid-template-columns: repeat(15, 22px);
   background: var(--board-color);
   padding: 20px;
-  border-radius: var(--radius-md);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15),
+  border-radius: 16px;
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2),
               inset 0 2px 10px rgba(0, 0, 0, 0.1);
   border: 3px solid var(--board-border);
   position: relative;
   overflow: hidden;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .board-grid::before {
@@ -475,7 +466,7 @@ export default {
   width: 60px;
   height: 3px;
   background: linear-gradient(90deg, var(--primary-color), var(--success-color));
-  border-radius: 2px;
+  border-radius: 3px;
 }
 
 .rules-content {
@@ -487,10 +478,13 @@ export default {
 .rule-item {
   text-align: center;
   padding: 3rem 2.5rem;
-  background: var(--bg-primary);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border-light);
-  box-shadow: var(--shadow-md);
+  /* 应用液态玻璃效果 */
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+  border-radius: var(--radius-lg); /* 更圆润的边角 */
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
@@ -514,9 +508,10 @@ export default {
 }
 
 .rule-item:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-lg);
-  border-color: var(--border-medium);
+  transform: translateY(-6px);
+  box-shadow: 0 15px 40px rgba(31, 38, 135, 0.25);
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.25); /* 增强悬停时的透明度 */
 }
 
 .rule-item:hover::before {
@@ -555,31 +550,17 @@ export default {
 .action-section {
   padding: 140px 0;
   text-align: center;
-  background: var(--bg-primary);
-  margin: 0 20px 80px;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border-light);
-  box-shadow: var(--shadow-lg);
+  /* 增强液态玻璃效果 */
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  margin: 0 20px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 15px 40px rgba(31, 38, 135, 0.2);
   position: relative;
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.action-section:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
-}
-
-.action-section::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: conic-gradient(from 0deg, transparent, rgba(0, 113, 227, 0.03), transparent);
-  animation: rotate 20s linear infinite;
-  pointer-events: none;
 }
 
 .action-subtitle {
@@ -606,7 +587,7 @@ export default {
 .action-btn {
   padding: 18px 45px;
   border: none;
-  border-radius: var(--radius-md);
+  border-radius: 20px;
   font-size: 1.2rem;
   font-weight: 700;
   cursor: pointer;
@@ -617,11 +598,12 @@ export default {
   display: flex;
   align-items: center;
   gap: 0.8rem;
-  min-width: 200px;
+  width: 220px; /* 固定宽度确保两个按钮宽度一致 */
   justify-content: center;
   letter-spacing: -0.01em;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
 .action-btn::before {
@@ -654,10 +636,13 @@ export default {
 }
 
 .action-btn.secondary {
-  background: var(--bg-primary);
+  /* 应用液态玻璃效果 */
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
   color: var(--primary-color);
-  border: 2px solid var(--border-light);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
 }
 
 .action-btn.secondary:hover {

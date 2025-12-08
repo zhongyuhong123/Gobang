@@ -5,6 +5,9 @@
       :showBackButton="true"
     />
 
+    <!-- 导航栏占位符，确保内容不会被导航栏遮挡 -->
+    <div class="navbar-placeholder"></div>
+
     <!-- 主要内容区域 -->
     <div class="main-content">
       <!-- 左侧五子棋插画 -->
@@ -334,6 +337,10 @@ export default {
   flex-direction: column;
   padding: 0;
   margin: 0;
+}
+
+.navbar-placeholder {
+  height: 70px; /* 与导航栏高度保持一致 */
 }
 
 /* 主要内容区域 */

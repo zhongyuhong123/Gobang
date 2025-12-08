@@ -87,16 +87,17 @@ onMounted(() => {
 
 <style scoped>
 .navbar {
-  background: rgba(255, 255, 255, 0.98);
-  backdrop-filter: blur(25px);
-  -webkit-backdrop-filter: blur(25px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-  position: sticky;
+  /* 增强液态玻璃效果 */
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 10000; /* 确保在最上层 */
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
   transition: all 0.3s ease;
   will-change: transform, opacity;
 }
@@ -137,18 +138,22 @@ onMounted(() => {
 }
 
 .back-btn {
-  background-color: var(--bg-primary);
-  border: 1px solid var(--border-light);
+  /* 应用液态玻璃效果 */
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   color: var(--text-primary);
   padding: 8px 16px;
-  border-radius: var(--radius-sm);
+  border-radius: 12px;
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
-  transition: all var(--transition-fast);
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   gap: 6px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .back-btn:hover {
@@ -159,16 +164,16 @@ onMounted(() => {
 }
 
 .enter-game-btn {
-  background-color: var(--primary-color);
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
   border: none;
   color: white;
   padding: 12px 28px;
-  border-radius: var(--radius-md);
+  border-radius: 16px;
   cursor: pointer;
   font-size: 16px;
   font-weight: 700;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 6px 20px rgba(0, 113, 227, 0.3);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -188,7 +193,7 @@ onMounted(() => {
   font-size: 14px;
   font-weight: 600;
   padding: 10px 20px;
-  border-radius: var(--radius-md);
+  border-radius: 14px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: inline-flex;
   align-items: center;
@@ -196,6 +201,8 @@ onMounted(() => {
   min-width: 90px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .login-link {
