@@ -4,7 +4,7 @@ import router from '../router'
 
 // 创建axios实例
 const service = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080',
+  baseURL: process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json'
@@ -154,7 +154,7 @@ export const wsManager = {
     }
 
     // 根据后端API文档，WebSocket连接路径为/gameHall
-    const wsUrl = `${import.meta.env.VITE_WS_BASE_URL || 'ws://localhost:8080'}/gameHall?userId=${userId}`
+    const wsUrl = `${process.env.VUE_APP_WS_BASE_URL || 'ws://localhost:8080'}/gameHall?userId=${userId}`
     wsManager.matchSocket = new WebSocket(wsUrl)
 
     wsManager.matchSocket.onopen = () => {
@@ -192,7 +192,7 @@ export const wsManager = {
     }
 
     // 根据后端API文档，游戏WebSocket连接路径为/gameRoom/{roomId}
-    const wsUrl = `${import.meta.env.VITE_WS_BASE_URL || 'ws://localhost:8080'}/gameRoom/${roomId}?userId=${userId}`
+    const wsUrl = `${process.env.VUE_APP_WS_BASE_URL || 'ws://localhost:8080'}/gameRoom/${roomId}?userId=${userId}`
     wsManager.gameSocket = new WebSocket(wsUrl)
 
     wsManager.gameSocket.onopen = () => {
