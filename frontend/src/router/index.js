@@ -1,9 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import WelcomeView from '../views/WelcomeView.vue'
-import LoginView from '../views/LoginView.vue'
-import RegisterView from '../views/RegisterView.vue'
-import HomeView from '../views/HomeView.vue'
-import GameView from '../views/GameView.vue'
+
+// 路由懒加载
+const WelcomeView = () => import('../views/WelcomeView.vue')
+const LoginView = () => import('../views/LoginView.vue')
+const RegisterView = () => import('../views/RegisterView.vue')
+const HomeView = () => import('../views/HomeView.vue')
+const GameView = () => import('../views/GameView.vue')
 
 const routes = [
   {
