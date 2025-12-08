@@ -31,13 +31,7 @@ module.exports = defineConfig({
   // CSS优化
   css: {
     extract: true,
-    sourceMap: false,
-    loaderOptions: {
-      css: {
-        // 压缩CSS
-        minimize: true
-      }
-    }
+    sourceMap: false
   },
   // 开发服务器配置
   devServer: {
@@ -65,18 +59,12 @@ module.exports = defineConfig({
     config.plugins.delete('prefetch')
     
     // 启用gzip压缩
-    config.plugins
-      .tap(args => {
-        // 添加gzip压缩插件
-        const CompressionPlugin = require('compression-webpack-plugin')
-        args.push(
-          new CompressionPlugin({
-            test: /\.(js|css|html|svg)$/,
-            threshold: 10240,
-            minRatio: 0.8
-          })
-        )
-        return args
-      })
+    config
+      .plugin('compression')
+      .use(require('compression-webpack-plugin'), [{
+        test: /\.(js|css|html|svg)$/,
+        threshold: 10240,
+        minRatio: 0.8
+      }])
   }
 })
