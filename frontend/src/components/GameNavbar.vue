@@ -31,15 +31,6 @@
           <router-link to="/login" class="login-link">登录</router-link>
           <router-link to="/register" class="register-link">注册</router-link>
         </template>
-        
-        <!-- 已有账号提示，仅在注册页显示 -->
-        <router-link 
-          v-if="showLoginHint"
-          to="/login" 
-          class="login-hint"
-        >
-          已有账号？去登录
-        </router-link>
       </div>
     </div>
   </nav>
@@ -96,14 +87,14 @@ onMounted(() => {
 
 <style scoped>
 .navbar {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
   position: sticky;
   top: 0;
   left: 0;
   right: 0;
   z-index: 1000;
+  box-shadow: var(--shadow-sm);
 }
 
 .nav-container {
@@ -118,57 +109,68 @@ onMounted(() => {
 
 .nav-logo h1 {
   font-size: 28px;
-  font-weight: 700;
-  color: #2c3e50;
+  font-weight: 600;
+  color: var(--text-primary);
   margin: 0;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
   cursor: pointer;
-  transition: transform 0.3s ease;
+  transition: transform 0.2s ease, color 0.2s ease;
+  letter-spacing: -0.5px;
 }
 
 .nav-logo h1:hover {
-  transform: scale(1.05);
+  transform: scale(1.02);
+  color: var(--primary-color);
 }
 
 .nav-actions {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 16px;
 }
 
 .back-btn {
-  background: #f5f7fa;
-  border: 1px solid #dcdfe6;
-  color: #606266;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
   padding: 8px 16px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   font-size: 14px;
-  transition: all 0.3s;
+  font-weight: 500;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .back-btn:hover {
-  background: #ecf5ff;
-  border-color: #409EFF;
-  color: #409EFF;
+  background-color: var(--primary-color-light);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  transform: translateX(-2px);
 }
 
 .enter-game-btn {
-  background: linear-gradient(135deg, #409EFF 0%, #67C23A 100%);
+  background-color: var(--primary-color);
   border: none;
-  color: white;
+  color: var(--text-light);
   padding: 10px 24px;
-  border-radius: 25px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   font-size: 16px;
   font-weight: 600;
-  transition: all 0.3s;
-  box-shadow: 0 4px 15px rgba(64, 158, 255, 0.3);
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
 }
 
 .enter-game-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(64, 158, 255, 0.4);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+  background-color: var(--primary-color-dark);
+}
+
+.enter-game-btn:active {
+  transform: translateY(0);
 }
 
 .login-link, .register-link {
@@ -176,40 +178,49 @@ onMounted(() => {
   font-size: 14px;
   font-weight: 500;
   padding: 8px 16px;
-  border-radius: 4px;
-  transition: all 0.3s;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 80px;
 }
 
 .login-link {
-  color: #409EFF;
-  border: 1px solid #409EFF;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  background-color: var(--bg-primary);
 }
 
 .login-link:hover {
-  background: #409EFF;
-  color: white;
+  background-color: var(--primary-color);
+  color: var(--text-light);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
 }
 
 .register-link {
-  background: #409EFF;
-  color: white;
-  border: 1px solid #409EFF;
+  background-color: var(--primary-color);
+  color: var(--text-light);
+  border: 1px solid var(--primary-color);
 }
 
 .register-link:hover {
-  background: #66b1ff;
-  border-color: #66b1ff;
+  background-color: var(--primary-color-dark);
+  border-color: var(--primary-color-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
 }
 
 .login-hint {
-  color: #606266;
+  color: var(--text-secondary);
   text-decoration: none;
   font-size: 14px;
-  transition: all 0.3s;
+  transition: all var(--transition-fast);
 }
 
 .login-hint:hover {
-  color: #409EFF;
+  color: var(--primary-color);
   text-decoration: underline;
 }
 
@@ -233,6 +244,7 @@ onMounted(() => {
   .back-btn {
     padding: 6px 12px;
     font-size: 14px;
+    min-width: 70px;
   }
 }
 </style>

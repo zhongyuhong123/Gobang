@@ -328,57 +328,12 @@ export default {
 <style scoped>
 .login-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--bg-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   display: flex;
   flex-direction: column;
-}
-
-/* 导航栏样式 */
-.navbar {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  position: sticky;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-}
-
-.nav-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 70px;
-}
-
-.nav-logo h1 {
-  font-size: 28px;
-  font-weight: 700;
-  color: #2c3e50;
+  padding: 0;
   margin: 0;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.back-btn {
-  background: #f5f7fa;
-  border: 1px solid #dcdfe6;
-  color: #606266;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: all 0.3s;
-}
-
-.back-btn:hover {
-  background: #ecf5ff;
-  border-color: #409EFF;
-  color: #409EFF;
 }
 
 /* 主要内容区域 */
@@ -387,22 +342,27 @@ export default {
   justify-content: center;
   align-items: center;
   width: 100%;
-  max-width: 1200px;
-  gap: 80px;
-  margin-bottom: 40px;
+  max-width: 1000px;
+  gap: 60px;
+  margin: 40px auto;
+  padding: 0 20px;
+  flex: 1;
 }
 
-/* 左侧角色插画 */
+/* 左侧五子棋插画 */
 .character-section {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex: 1;
+  min-width: 250px;
 }
 
 .character-image {
   position: relative;
   width: 250px;
   height: 250px;
+  animation: fadeIn var(--transition-normal);
 }
 
 .gobang-board {
@@ -415,10 +375,11 @@ export default {
   display: grid;
   grid-template-rows: repeat(9, 25px);
   grid-template-columns: repeat(9, 25px);
-  background: #deb887;
+  background: var(--board-color);
   padding: 15px;
   border-radius: 8px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-md);
+  border: 2px solid var(--board-border);
 }
 
 .board-row {
@@ -429,7 +390,7 @@ export default {
   width: 25px;
   height: 25px;
   position: relative;
-  border: 1px solid #a0522d;
+  border: 1px solid var(--board-line);
 }
 
 .board-cell::before {
@@ -442,21 +403,33 @@ export default {
   height: 20px;
   border-radius: 50%;
   z-index: 1;
+  transition: all var(--transition-fast);
 }
 
 .black-piece::before {
-  background: #2c3e50;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  background: var(--black-stone);
+  box-shadow: var(--shadow-sm);
 }
 
 .white-piece::before {
-  background: #ecf0f1;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  background: var(--white-stone);
+  box-shadow: var(--shadow-sm);
 }
 
 /* 中间登录表单 */
 .login-section {
-  width: 300px;
+  width: 320px;
+  background-color: var(--bg-primary);
+  padding: 32px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
+  animation: fadeIn var(--transition-normal);
+  transition: all var(--transition-normal);
+}
+
+.login-section:hover {
+  box-shadow: var(--shadow-md);
 }
 
 .login-form {
@@ -469,7 +442,6 @@ export default {
 
 .form-group .el-input {
   width: 100%;
-  border-radius: 4px;
 }
 
 .form-options {
@@ -479,54 +451,68 @@ export default {
 }
 
 .form-options .el-checkbox__label {
-  color: #666;
+  color: var(--text-secondary);
+  font-weight: 400;
 }
 
 /* 登录按钮样式 */
 .login-btn {
   width: 100%;
-  background: #00bfff;
+  background: var(--primary-color);
   color: white;
   border: none;
   padding: 12px 24px;
-  border-radius: 25px;
-  font-size: 18px;
-  font-weight: bold;
+  border-radius: var(--radius-sm);
+  font-size: 16px;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
-  margin-bottom: 15px;
+  transition: all var(--transition-fast);
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-sm);
+  font-family: inherit;
 }
 
 .login-btn:hover:not(:disabled) {
-  background: #0099cc;
-  transform: scale(1.02);
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.login-btn:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .login-btn:disabled {
-  background: #b3e5fc;
+  background: var(--bg-tertiary);
+  color: var(--text-tertiary);
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 /* 注册链接 */
 .register-link {
   text-align: right;
   font-size: 14px;
-  margin-bottom: 30px;
+  margin-bottom: 24px;
 }
 
 .register-link a {
-  color: #00bfff;
+  color: var(--primary-color);
   text-decoration: none;
   font-weight: 500;
+  transition: color var(--transition-fast);
 }
 
 .register-link a:hover {
-  text-decoration: underline;
+  color: var(--primary-hover);
+  text-decoration: none;
 }
 
 /* 其他登录方式 */
 .other-login {
-  margin-top: 30px;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-light);
 }
 
 .login-divider {
@@ -540,90 +526,101 @@ export default {
   content: '';
   flex: 1;
   height: 1px;
-  background: #ddd;
+  background: var(--border-light);
 }
 
 .login-divider span {
-  padding: 0 10px;
-  color: #666;
+  padding: 0 12px;
+  color: var(--text-tertiary);
   font-size: 14px;
+  font-weight: 400;
 }
 
 .login-icons {
   display: flex;
   justify-content: center;
-  gap: 30px;
+  gap: 40px;
 }
 
 .login-icon {
   font-size: 28px;
+  color: var(--text-secondary);
   cursor: pointer;
-  transition: transform 0.3s ease;
+  transition: all var(--transition-fast);
 }
 
 .login-icon:hover {
-  transform: scale(1.1);
+  color: var(--primary-color);
+  transform: scale(1.05);
 }
 
-/* 右侧下载区域 */
-
-
 /* 响应式设计 */
-@media (max-width: 992px) {
+@media (max-width: 768px) {
   .main-content {
     flex-direction: column;
     gap: 40px;
+    margin: 20px auto;
   }
   
-  .character-section, .download-section {
+  .character-section {
     margin-bottom: 20px;
+  }
+  
+  .login-section {
+    width: 100%;
+    max-width: 400px;
   }
 }
 
 @media (max-width: 480px) {
-  .game-logo h1 {
-    font-size: 36px;
-  }
-  
   .character-image {
-    width: 150px;
-    height: 150px;
+    width: 200px;
+    height: 200px;
   }
   
-  .duck, .devil {
-    font-size: 90px;
+  .board-grid {
+    grid-template-rows: repeat(9, 20px);
+    grid-template-columns: repeat(9, 20px);
+  }
+  
+  .board-cell {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .board-cell::before {
+    width: 16px;
+    height: 16px;
   }
   
   .login-section {
-    width: 90%;
-  }
-  
-  .age-rating {
-    position: static;
-    margin-top: 20px;
+    padding: 24px;
+    border-radius: 12px;
   }
 }
 
 /* 错误对话框样式 */
 .error-content {
   text-align: center;
-  padding: 20px 0;
+  padding: 24px 0;
 }
 
 .error-icon {
-  margin-bottom: 20px;
+  margin-bottom: 16px;
+  animation: pulse 1.5s infinite;
 }
 
 .error-content h3 {
   font-size: 18px;
   font-weight: 600;
-  color: #2c3e50;
-  margin: 0 0 10px 0;
+  color: var(--text-primary);
+  margin: 0 0 8px 0;
 }
 
 .error-content p {
-  color: #7f8c8d;
+  color: var(--text-secondary);
   font-size: 14px;
   margin: 0;
+  line-height: 1.5;
 }
 </style>

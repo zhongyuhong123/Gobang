@@ -4,7 +4,7 @@
     <GameNavbar />
     
     <!-- 顶部用户信息栏 -->
-    <div class="user-bar" v-if="userInfo">
+    <div class="user-bar glass-user-bar" v-if="userInfo">
       <div class="user-info">
         <div class="user-avatar">
           <img :src="userInfo.avatar || '/default-avatar.png'" alt="头像" />
@@ -26,7 +26,7 @@
     </div>
 
     <!-- 未登录状态 -->
-    <div class="user-bar guest" v-else>
+    <div class="user-bar guest glass-user-bar" v-else>
       <div class="guest-info">
         <span>欢迎来到五子棋游戏大厅！</span>
       </div>
@@ -40,7 +40,7 @@
       <h1 class="title">选择游戏模式</h1>
       <div class="mode-cards">
         <div 
-          class="mode-card" 
+          class="mode-card glass-game-card" 
           :class="{ active: selectedGameMode === 'gobang' }"
           @click="selectGameMode('gobang')"
         >
@@ -54,7 +54,7 @@
         </div>
         
         <div 
-          class="mode-card" 
+          class="mode-card glass-game-card" 
           :class="{ active: selectedGameMode === 'military' }"
           @click="selectGameMode('military')"
         >
@@ -68,7 +68,7 @@
         </div>
         
         <div 
-          class="mode-card" 
+          class="mode-card glass-game-card" 
           :class="{ active: selectedGameMode === 'chinese-chess' }"
           @click="selectGameMode('chinese-chess')"
         >
@@ -95,6 +95,7 @@
           @click="startQuickMatch"
           :loading="matchingLoading"
           :disabled="!userInfo"
+          class="glass-button"
         >
           快速匹配
         </el-button>
@@ -104,6 +105,7 @@
           @click="createRoom"
           :loading="creatingRoom"
           :disabled="!userInfo"
+          class="glass-button"
         >
           创建房间
         </el-button>
@@ -112,6 +114,7 @@
           size="large" 
           @click="joinRoom"
           :disabled="!userInfo"
+          class="glass-button"
         >
           加入房间
         </el-button>
@@ -148,6 +151,7 @@
     title="加入房间"
     width="400px"
     :close-on-click-modal="false"
+    custom-class="glass-modal"
   >
     <el-form :model="joinRoomDialog.form" label-width="80px">
       <el-form-item label="房间号">
@@ -540,23 +544,27 @@ export default {
 <style scoped>
 .home-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--color-background-primary);
   padding: 20px;
   padding-top: 90px;
 }
 
 /* 顶部用户信息栏 */
 .user-bar {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 12px;
+  background: var(--color-surface);
+  border-radius: var(--radius-medium);
   padding: 20px;
   margin-bottom: 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border);
+  transition: all 0.3s ease;
+}
+
+.user-bar:hover {
+  box-shadow: var(--shadow-lg);
 }
 
 .user-bar.guest {
@@ -575,7 +583,8 @@ export default {
   height: 50px;
   border-radius: 50%;
   overflow: hidden;
-  border: 3px solid #667eea;
+  border: 2px solid var(--color-primary);
+  box-shadow: var(--shadow-sm);
 }
 
 .user-avatar img {
@@ -585,27 +594,34 @@ export default {
 }
 
 .user-details {
-  color: #333;
+  color: var(--color-text-primary);
 }
 
 .username {
   font-size: 18px;
   font-weight: bold;
   margin-bottom: 5px;
+  color: var(--color-text-primary);
 }
 
 .user-stats {
   display: flex;
   gap: 15px;
   font-size: 14px;
-  color: #666;
+  color: var(--color-text-secondary);
 }
 
 .user-stats span {
-  padding: 2px 8px;
-  background: rgba(102, 126, 234, 0.1);
-  border-radius: 12px;
-  border: 1px solid rgba(102, 126, 234, 0.2);
+  padding: 4px 10px;
+  background: var(--color-background-secondary);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-border);
+  transition: all 0.3s ease;
+}
+
+.user-stats span:hover {
+  background: var(--color-background-hover);
+  border-color: var(--color-primary);
 }
 
 .user-actions {
@@ -615,7 +631,7 @@ export default {
 
 .guest-info {
   font-size: 18px;
-  color: #333;
+  color: var(--color-text-primary);
   margin-right: 20px;
 }
 
@@ -628,15 +644,13 @@ export default {
 .game-modes {
   text-align: center;
   margin-bottom: 40px;
-  color: white;
 }
 
 .title {
   font-size: 2.5rem;
-  color: white;
+  color: var(--color-text-primary);
   margin-bottom: 3rem;
   font-weight: 600;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .mode-cards {
@@ -648,24 +662,32 @@ export default {
 }
 
 .mode-card {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 12px;
+  background: var(--color-surface);
+  border-radius: var(--radius-medium);
   padding: 2rem 1.5rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border);
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.mode-card:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.mode-card:nth-child(3) {
+  animation-delay: 0.4s;
 }
 
 .mode-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
 }
 
 .mode-card.active {
-  background: #f0f9ff;
-  border-color: #409eff;
+  background: var(--color-background-hover);
+  border-color: var(--color-primary);
   box-shadow: 0 0 0 2px rgba(64, 158, 255, 0.1);
 }
 
@@ -673,17 +695,22 @@ export default {
   font-size: 3rem;
   margin-bottom: 1rem;
   display: block;
+  transition: transform 0.3s ease;
+}
+
+.mode-card:hover .mode-icon {
+  transform: scale(1.1);
 }
 
 .mode-card h3 {
   font-size: 1.5rem;
   margin-bottom: 0.5rem;
-  color: #303133;
+  color: var(--color-text-primary);
   font-weight: 600;
 }
 
 .mode-description {
-  color: #606266;
+  color: var(--color-text-secondary);
   font-size: 0.95rem;
   margin-bottom: 1rem;
   line-height: 1.5;
@@ -694,50 +721,57 @@ export default {
   justify-content: space-around;
   margin-top: 1rem;
   padding-top: 1rem;
-  border-top: 1px solid #e4e7ed;
+  border-top: 1px solid var(--color-border);
 }
 
 .mode-stats span {
   font-size: 0.85rem;
-  color: #909399;
+  color: var(--color-text-tertiary);
   font-weight: 500;
 }
 
 /* 游戏操作区域 */
 .game-actions {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 12px;
+  background: var(--color-surface);
+  border-radius: var(--radius-medium);
   padding: 2rem;
   max-width: 800px;
   margin: 0 auto;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border);
   text-align: center;
+  animation: fadeInUp 0.8s ease-out 0.5s both;
 }
 
 .game-actions h2 {
   font-size: 1.8rem;
-  color: #303133;
+  color: var(--color-text-primary);
   margin-bottom: 1rem;
   font-weight: 600;
 }
 
 .game-description {
-  color: #606266;
+  color: var(--color-text-secondary);
   font-size: 1rem;
   margin-bottom: 1rem;
   line-height: 1.6;
 }
 
 .game-tips {
-  color: #909399;
+  color: var(--color-text-tertiary);
   font-size: 0.9rem;
   margin-bottom: 1.5rem;
-  padding: 10px;
-  background: #f5f7fa;
-  border-radius: 4px;
-  border-left: 4px solid #409eff;
+  padding: 12px 16px;
+  background: var(--color-background-secondary);
+  border-radius: var(--radius-small);
+  border-left: 4px solid var(--color-primary);
+  text-align: left;
+  transition: all 0.3s ease;
+}
+
+.game-tips:hover {
+  background: var(--color-background-hover);
+  box-shadow: var(--shadow-sm);
 }
 
 .action-buttons {
@@ -751,26 +785,26 @@ export default {
 .action-buttons .el-button {
   font-size: 1rem;
   padding: 12px 24px;
-  border-radius: 4px;
+  border-radius: var(--radius-small);
   font-weight: 500;
   transition: all 0.3s ease;
   min-width: 120px;
 }
 
 .action-buttons .el-button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 /* 房间列表 */
 .rooms-section {
   margin-top: 1.5rem;
   padding-top: 1.5rem;
-  border-top: 1px solid #e4e7ed;
+  border-top: 1px solid var(--color-border);
 }
 
 .rooms-section h3 {
-  color: #303133;
+  color: var(--color-text-primary);
   font-size: 1.3rem;
   margin-bottom: 1rem;
   font-weight: 600;
@@ -782,19 +816,20 @@ export default {
 }
 
 .room-item {
-  background: #f5f7fa;
-  border-radius: 4px;
+  background: var(--color-background-secondary);
+  border-radius: var(--radius-small);
   padding: 0.75rem;
   margin-bottom: 0.5rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  border: 1px solid #e4e7ed;
+  border: 1px solid var(--color-border);
 }
 
 .room-item:hover {
-  background: #f0f9ff;
-  transform: translateX(2px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: var(--color-background-hover);
+  transform: translateX(4px);
+  box-shadow: var(--shadow-sm);
+  border-color: var(--color-primary);
 }
 
 .room-info {
@@ -806,20 +841,21 @@ export default {
 
 .room-id {
   font-weight: 600;
-  color: #303133;
+  color: var(--color-text-primary);
   font-size: 1rem;
 }
 
 .room-players {
-  color: #606266;
+  color: var(--color-text-secondary);
   font-size: 0.85rem;
 }
 
 .room-status {
-  padding: 2px 6px;
-  border-radius: 4px;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
   font-size: 0.75rem;
   font-weight: 500;
+  transition: all 0.3s ease;
 }
 
 .room-status.waiting {
@@ -841,7 +877,19 @@ export default {
   display: flex;
   justify-content: space-between;
   font-size: 0.8rem;
-  color: #909399;
+  color: var(--color-text-tertiary);
+}
+
+/* 动画效果 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* 深色模式支持 */
@@ -1024,7 +1072,7 @@ export default {
   }
   
   .user-stats span {
-    padding: 1px 6px;
+    padding: 2px 8px;
   }
 }
 </style>

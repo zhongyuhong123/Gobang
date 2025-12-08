@@ -387,75 +387,10 @@ export default {
 <style scoped>
 .register-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--bg-primary);
   display: flex;
   flex-direction: column;
-}
-
-/* 导航栏样式 */
-.navbar {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  position: sticky;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-}
-
-.nav-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 70px;
-}
-
-.nav-logo h1 {
-  font-size: 28px;
-  font-weight: 700;
-  color: #2c3e50;
-  margin: 0;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.nav-actions {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.login-link {
-  color: #606266;
-  text-decoration: none;
-  font-size: 14px;
-  transition: all 0.3s ease;
-}
-
-.login-link:hover {
-  color: #409EFF;
-  text-decoration: underline;
-}
-
-.back-btn {
-  background: #f5f7fa;
-  border: 1px solid #dcdfe6;
-  color: #606266;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: all 0.3s;
-}
-
-.back-btn:hover {
-  background: #ecf5ff;
-  border-color: #409EFF;
-  color: #409EFF;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
 /* 主要内容区域 */
@@ -465,33 +400,40 @@ export default {
   align-items: center;
   justify-content: center;
   padding: 40px 20px;
+  animation: fadeIn var(--transition-normal);
 }
 
 .register-card {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
   padding: 40px;
   width: 100%;
   max-width: 500px;
+  border: 1px solid var(--border-light);
+  transition: all var(--transition-normal);
+}
+
+.register-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-medium);
 }
 
 .card-header {
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 32px;
 }
 
 .card-header h2 {
-  color: #2c3e50;
-  font-size: 28px;
-  font-weight: 700;
+  color: var(--text-primary);
+  font-size: 24px;
+  font-weight: 600;
   margin-bottom: 8px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  letter-spacing: -0.5px;
 }
 
 .card-header p {
-  color: #909399;
+  color: var(--text-secondary);
   font-size: 14px;
   margin: 0;
 }
@@ -502,94 +444,119 @@ export default {
 }
 
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 6px;
-  color: #606266;
+  margin-bottom: 8px;
+  color: var(--text-secondary);
   font-size: 14px;
   font-weight: 500;
 }
 
 .password-strength {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+  padding: 16px;
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-sm);
 }
 
 .password-strength label {
   display: block;
-  margin-bottom: 6px;
-  color: #606266;
+  margin-bottom: 8px;
+  color: var(--text-secondary);
   font-size: 14px;
   font-weight: 500;
 }
 
 .strength-text {
   display: block;
-  margin-top: 4px;
+  margin-top: 8px;
   font-size: 12px;
   font-weight: 500;
 }
 
 .strength-text.weak {
-  color: #F56C6C;
+  color: var(--error-color);
 }
 
 .strength-text.medium {
-  color: #E6A23C;
+  color: var(--warning-color);
 }
 
 .strength-text.strong {
-  color: #67C23A;
+  color: var(--success-color);
 }
 
 .form-agreement {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+  font-size: 14px;
+}
+
+.form-agreement .el-checkbox__label {
+  color: var(--text-secondary);
+}
+
+.form-agreement .el-link {
+  color: var(--primary-color) !important;
+  font-weight: 500;
 }
 
 .register-btn {
   width: 100%;
-  background: #409EFF;
+  background: var(--primary-color);
   color: white;
   border: none;
   padding: 12px 20px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+  font-family: inherit;
 }
 
 .register-btn:hover:not(:disabled) {
-  background: #66b1ff;
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.register-btn:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .register-btn:disabled {
-  background: #a0cfff;
+  background: var(--bg-tertiary);
+  color: var(--text-tertiary);
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 .card-footer {
   text-align: center;
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 1px solid #ebeef5;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-light);
 }
 
 .card-footer p {
-  color: #909399;
+  color: var(--text-secondary);
   font-size: 14px;
   margin: 0;
 }
 
 .card-footer a {
-  color: #409EFF;
+  color: var(--primary-color);
   text-decoration: none;
+  font-weight: 500;
+  transition: color var(--transition-fast);
 }
 
 .card-footer a:hover {
-  text-decoration: underline;
+  color: var(--primary-hover);
 }
 
 /* 用户名检查样式 */
@@ -599,63 +566,63 @@ export default {
 }
 
 .username-check .success {
-  color: #67C23A;
+  color: var(--success-color);
 }
 
 .username-check .error {
-  color: #F56C6C;
+  color: var(--error-color);
 }
 
 .username-check-message {
   font-size: 12px;
-  margin-top: 4px;
+  margin-top: 6px;
 }
 
 .username-check-message.success {
-  color: #67C23A;
+  color: var(--success-color);
 }
 
 .username-check-message.error {
-  color: #F56C6C;
+  color: var(--error-color);
 }
 
 /* 成功对话框样式 */
 .success-content {
   text-align: center;
-  padding: 20px 0;
+  padding: 24px 0;
 }
 
 .success-icon {
-  margin-bottom: 20px;
+  margin-bottom: 16px;
+  animation: pulse 1.5s infinite;
 }
 
 .success-content h3 {
-  color: #303133;
-  margin-bottom: 10px;
+  color: var(--text-primary);
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
 }
 
 .success-content p {
-  color: #606266;
+  color: var(--text-secondary);
   margin-bottom: 5px;
+  line-height: 1.5;
 }
 
 .countdown {
-  color: #409EFF;
+  color: var(--primary-color);
   font-weight: 600;
 }
 
 /* 响应式设计 */
 @media (max-width: 768px) {
-  .nav-container {
-    padding: 0 15px;
-  }
-  
   .register-content {
     padding: 20px 15px;
   }
   
   .register-card {
-    padding: 30px 25px;
+    padding: 32px 24px;
   }
   
   .card-header h2 {
@@ -665,11 +632,15 @@ export default {
 
 @media (max-width: 480px) {
   .register-card {
-    padding: 25px 20px;
+    padding: 24px 20px;
   }
   
   .card-header h2 {
     font-size: 20px;
+  }
+  
+  .password-strength {
+    padding: 12px;
   }
 }
 </style>

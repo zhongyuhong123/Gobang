@@ -1,59 +1,86 @@
 <template>
   <div class="game-container">
     <div class="game-header">
-      <h1>五子棋对战</h1>
-      <div class="game-info">
-        <div class="player-info">
-          <div class="player" :class="{ active: currentPlayer === 1 }">
-            <div class="player-avatar black"></div>
-            <span>黑方: {{ user1?.username || '等待玩家' }}</span>
+      <div class="header-content">
+        <div class="logo-area">
+          <div class="chess-logo">
+            <div class="chess-piece black"></div>
+            <div class="chess-piece white"></div>
           </div>
-          <div class="vs">VS</div>
-          <div class="player" :class="{ active: currentPlayer === 2 }">
-            <div class="player-avatar white"></div>
-            <span>白方: {{ user2?.username || '等待玩家' }}</span>
-          </div>
+          <h1 class="game-title">五子棋对战</h1>
         </div>
-        <div class="game-status">
-          <span v-if="gameStatus === 'waiting'">等待游戏开始</span>
-          <span v-else-if="gameStatus === 'playing'">游戏进行中</span>
-          <span v-else-if="gameStatus === 'ended'">游戏已结束</span>
+        <div class="game-info">
+          <div class="info-item player-info">
+            <span class="label">当前玩家:</span>
+            <span class="value" :class="currentPlayer === 1 ? 'black-player' : 'white-player'">
+              {{ currentPlayer === 1 ? '黑方' : '白方' }}
+            </span>
+          </div>
+          <div class="info-item status">
+            <span class="label">状态:</span>
+            <span class="value">
+              <span v-if="gameStatus === 'waiting'">等待游戏开始</span>
+              <span v-else-if="gameStatus === 'playing'">游戏进行中</span>
+              <span v-else-if="gameStatus === 'ended'">游戏已结束</span>
+            </span>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="game-board-container">
-      <div class="game-board" @click="handleBoardClick">
-        <!-- 棋盘格子 -->
-        <div 
-          v-for="(row, rowIndex) in board" 
-          :key="rowIndex"
-          class="board-row"
-        >
-          <div 
-            v-for="(cell, colIndex) in row" 
-            :key="colIndex"
-            class="board-cell"
-            @click.stop="handleBoardClick(rowIndex, colIndex)"
-          >
-            <!-- 棋子 -->
+    <div class="game-content">
+      <div class="game-board-wrapper">
+        <div class="board-container">
+          <div class="board" @click="handleBoardClick">
+            <!-- 棋盘线 -->
+            <div class="board-lines">
+              <div v-for="i in 14" :key="'h-' + i" class="horizontal-line" :style="{ top: `${i * (100 / 15)}%` }"></div>
+              <div v-for="i in 14" :key="'v-' + i" class="vertical-line" :style="{ left: `${i * (100 / 15)}%` }"></div>
+              
+              <!-- 星位 -->
+              <div class="star-point" style="top: 3*(100/15)%; left: 3*(100/15)%;"></div>
+              <div class="star-point" style="top: 3*(100/15)%; left: 7*(100/15)%;"></div>
+              <div class="star-point" style="top: 3*(100/15)%; left: 11*(100/15)%;"></div>
+              <div class="star-point" style="top: 7*(100/15)%; left: 3*(100/15)%;"></div>
+              <div class="star-point" style="top: 7*(100/15)%; left: 7*(100/15)%;"></div>
+              <div class="star-point" style="top: 7*(100/15)%; left: 11*(100/15)%;"></div>
+              <div class="star-point" style="top: 11*(100/15)%; left: 3*(100/15)%;"></div>
+              <div class="star-point" style="top: 11*(100/15)%; left: 7*(100/15)%;"></div>
+              <div class="star-point" style="top: 11*(100/15)%; left: 11*(100/15)%;"></div>
+            </div>
+            
+            <!-- 棋盘格子 -->
             <div 
-              v-if="cell !== 0" 
-              class="chess-piece" 
-              :class="{ 
-                'black': cell === 1, 
-                'white': cell === 2,
-                'last-move': lastMoveRow === rowIndex && lastMoveCol === colIndex
-              }"
-            ></div>
+              v-for="(row, rowIndex) in board" 
+              :key="rowIndex"
+              class="board-row"
+            >
+              <div 
+                v-for="(cell, colIndex) in row" 
+                :key="colIndex"
+                class="board-cell"
+                @click.stop="handleBoardClick(rowIndex, colIndex)"
+              >
+                <!-- 棋子 -->
+                <div 
+                  v-if="cell !== 0" 
+                  class="chess-piece" 
+                  :class="{ 
+                    'black': cell === 1, 
+                    'white': cell === 2,
+                    'last-move': lastMoveRow === rowIndex && lastMoveCol === colIndex
+                  }"
+                ></div>
+              </div>
+            </div>
           </div>
         </div>
+        
+        <div class="game-controls">
+          <button class="btn primary control-button" @click="restartGame">重新开始</button>
+          <button class="btn secondary control-button" @click="exitGame">退出游戏</button>
+        </div>
       </div>
-    </div>
-
-    <div class="game-controls">
-      <button class="btn btn-restart" @click="restartGame">重新开始</button>
-      <button class="btn btn-exit" @click="exitGame">退出游戏</button>
     </div>
   </div>
 </template>
@@ -276,16 +303,15 @@ export default {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+  background-color: var(--bg-primary);
   position: relative;
   overflow: hidden;
 }
 
 .game-header {
-  background: rgba(30, 41, 59, 0.95);
-  backdrop-filter: blur(10px);
-  box-shadow: var(--shadow-lg);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
 }
 
 .header-content {
@@ -302,6 +328,7 @@ export default {
   display: flex;
   align-items: center;
   gap: 15px;
+  animation: fadeInLeft 0.5s ease-out;
 }
 
 .chess-logo {
@@ -315,7 +342,7 @@ export default {
   height: 30px;
   border-radius: 50%;
   position: absolute;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-sm);
   animation: scaleIn 0.3s ease-out;
 }
 
@@ -337,15 +364,16 @@ export default {
 
 .game-title {
   font-size: 2rem;
-  font-weight: bold;
+  font-weight: 600;
   color: var(--text-primary);
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  letter-spacing: -0.5px;
 }
 
 .game-info {
   display: flex;
   gap: 30px;
   align-items: center;
+  animation: fadeInRight 0.5s ease-out;
 }
 
 .info-item {
@@ -357,22 +385,24 @@ export default {
 .info-item .label {
   color: var(--text-secondary);
   font-size: 14px;
+  font-weight: 500;
 }
 
 .info-item .value {
   color: var(--text-primary);
   font-size: 16px;
-  font-weight: bold;
+  font-weight: 600;
 }
 
 .black-player {
-  color: #000;
-  text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  color: var(--black-stone);
+  font-weight: 700;
 }
 
 .white-player {
-  color: #fff;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  color: var(--white-stone);
+  font-weight: 700;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
 
 .info-item.status .value {
@@ -385,6 +415,7 @@ export default {
   justify-content: center;
   align-items: center;
   padding: 20px;
+  animation: fadeIn 0.5s ease-out;
 }
 
 .game-board-wrapper {
@@ -396,26 +427,33 @@ export default {
 
 .board-container {
   padding: 20px;
-  background: rgba(30, 41, 59, 0.8);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-xl);
-  backdrop-filter: blur(10px);
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-color);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.board-container:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
 }
 
 .board {
+  --cell-size: 40px;
   width: calc(var(--cell-size) * 15);
   height: calc(var(--cell-size) * 15);
   position: relative;
   background-color: var(--board-color);
   border: 3px solid var(--board-border);
-  border-radius: 5px;
-  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3);
+  border-radius: var(--radius-sm);
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: all var(--transition-fast);
 }
 
 .board:hover {
-  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3), 0 0 30px rgba(24, 144, 255, 0.2);
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1), 0 0 20px rgba(24, 144, 255, 0.1);
 }
 
 /* 棋盘线 */
@@ -452,6 +490,7 @@ export default {
   background-color: var(--board-line);
   border-radius: 50%;
   transform: translate(-50%, -50%);
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
 }
 
 /* 棋盘格子 */
@@ -465,6 +504,7 @@ export default {
   height: var(--cell-size);
   position: relative;
   z-index: 1;
+  transition: background-color 0.2s ease;
 }
 
 .board-cell:hover {
@@ -480,26 +520,28 @@ export default {
   width: calc(var(--cell-size) * 0.85);
   height: calc(var(--cell-size) * 0.85);
   border-radius: 50%;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
   cursor: default;
+  transition: transform 0.1s ease;
 }
 
 .board-cell .chess-piece.black {
   background: radial-gradient(circle at 30% 30%, #555, #000);
   border: 1px solid #333;
-  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
 }
 
 .board-cell .chess-piece.white {
   background: radial-gradient(circle at 30% 30%, #fff, #ddd);
   border: 1px solid #bbb;
-  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
 }
 
 /* 最后一步高亮 */
 .board-cell .chess-piece.last-move {
-  box-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 0 2px 15px rgba(0, 0, 0, 0.5);
-  animation: pulse 1s infinite;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.6), 0 2px 12px rgba(0, 0, 0, 0.5);
+  animation: pulse 1.5s infinite;
+  transform: translate(-50%, -50%) scale(1.05);
 }
 
 .game-controls {
@@ -508,14 +550,26 @@ export default {
 }
 
 .control-button {
-  padding: 12px 24px !important;
-  font-size: 16px !important;
+  padding: 12px 24px;
+  font-size: 16px;
   min-width: 120px;
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.control-button:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.control-button:active {
+  transform: translateY(0);
 }
 
 /* 响应式设计 */
 @media (max-width: 768px) {
-  :root {
+  .board {
     --cell-size: 35px;
   }
   
@@ -533,7 +587,7 @@ export default {
 }
 
 @media (max-width: 480px) {
-  :root {
+  .board {
     --cell-size: 25px;
   }
   
@@ -581,8 +635,8 @@ export default {
   }
   
   .control-button {
-    padding: 10px 16px !important;
-    font-size: 14px !important;
+    padding: 10px 16px;
+    font-size: 14px;
     min-width: 100px;
   }
 }
