@@ -143,11 +143,11 @@ onMounted(() => {
 }
 
 .back-btn {
-  /* 应用液态玻璃效果 */
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  /* 液态玻璃效果 */
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   color: var(--text-primary);
   padding: 8px 16px;
   border-radius: 12px;
@@ -158,19 +158,37 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 6px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.back-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, transparent 50%);
+  pointer-events: none;
 }
 
 .back-btn:hover {
-  background-color: var(--bg-secondary);
-  border-color: var(--primary-color);
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.35);
   color: var(--primary-color);
   transform: translateX(-2px);
+  box-shadow: 0 10px 40px rgba(31, 38, 135, 0.15);
 }
 
 .enter-game-btn {
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
-  border: none;
+  /* 优化的液态玻璃效果渐变按钮 */
+  background: linear-gradient(135deg, rgba(0, 113, 227, 0.9), rgba(0, 136, 255, 0.9));
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  /* 清晰的白色边框 */
+  border: 1px solid rgba(255, 255, 255, 0.4);
   color: white;
   padding: 12px 28px;
   border-radius: 16px;
@@ -178,15 +196,30 @@ onMounted(() => {
   font-size: 16px;
   font-weight: 700;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 6px 20px rgba(0, 113, 227, 0.3);
+  /* 增强的阴影效果 */
+  box-shadow: 0 8px 32px rgba(0, 113, 227, 0.35), 0 2px 8px rgba(0, 0, 0, 0.1);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  position: relative;
+  overflow: hidden;
+}
+
+.enter-game-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, transparent 50%);
+  pointer-events: none;
 }
 
 .enter-game-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
-  background-color: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0, 113, 227, 0.35);
+  background: linear-gradient(135deg, rgba(0, 136, 255, 0.9), rgba(0, 159, 255, 0.9));
+  border-color: rgba(255, 255, 255, 0.35);
 }
 
 .enter-game-btn:active {
@@ -206,34 +239,50 @@ onMounted(() => {
   min-width: 90px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
 }
 
 .login-link {
   color: var(--primary-color);
-  border: 1px solid var(--primary-color);
-  background-color: var(--bg-primary);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.login-link::before,
+.register-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, transparent 50%);
+  pointer-events: none;
 }
 
 .login-link:hover {
-  background-color: var(--primary-color);
+  background: rgba(0, 113, 227, 0.9);
   color: white;
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0, 113, 227, 0.25);
+  border-color: rgba(255, 255, 255, 0.35);
 }
 
 .register-link {
-  background-color: var(--primary-color);
+  background: rgba(0, 113, 227, 0.8);
   color: white;
-  border: 1px solid var(--primary-color);
+  border: 1px solid rgba(255, 255, 255, 0.25);
 }
 
 .register-link:hover {
-  background-color: var(--primary-hover);
-  border-color: var(--primary-hover);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
+  background: rgba(0, 136, 255, 0.9);
+  border-color: rgba(255, 255, 255, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0, 113, 227, 0.35);
 }
 
 .login-hint {

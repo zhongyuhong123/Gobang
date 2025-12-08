@@ -80,10 +80,10 @@
           <h2 class="section-title">立即开始游戏</h2>
           <p class="action-subtitle">选择您喜欢的游戏模式，开始您的五子棋之旅</p>
           <div class="action-buttons">
-            <button class="action-btn primary" @click="handleStartGame">
+            <button class="action-btn primary glass-effect" @click="handleStartGame">
               <span class="btn-text">开始游戏</span>
             </button>
-            <button class="action-btn secondary" @click="$router.push('/login')">
+            <button class="action-btn secondary glass-effect" @click="$router.push('/login')">
               <span class="btn-text">登录账户</span>
             </button>
           </div>
@@ -583,7 +583,7 @@ export default {
 
 .action-btn {
   padding: 18px 45px;
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 20px;
   font-size: 1.2rem;
   font-weight: 700;
@@ -600,7 +600,9 @@ export default {
   letter-spacing: -0.01em;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
 }
 
 .action-btn::before {
@@ -616,37 +618,55 @@ export default {
   transition: width 0.6s, height 0.6s;
 }
 
+.action-btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, transparent 50%);
+  pointer-events: none;
+}
+
 .action-btn:hover::before {
   width: 300px;
   height: 300px;
 }
 
 .action-btn.primary {
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  /* 增强对比度的渐变背景 */
+  background: linear-gradient(135deg, rgba(0, 113, 227, 0.9), rgba(0, 136, 255, 0.9));
   color: white;
-  box-shadow: 0 6px 20px rgba(0, 113, 227, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 113, 227, 0.35);
+  /* 添加清晰的边框 */
+  border: 1px solid rgba(255, 255, 255, 0.35);
 }
 
 .action-btn.primary:hover {
   transform: translateY(-3px);
-  box-shadow: 0 10px 30px rgba(0, 113, 227, 0.4);
+  box-shadow: 0 12px 40px rgba(0, 113, 227, 0.35);
+  background: linear-gradient(135deg, rgba(0, 136, 255, 0.9), rgba(0, 159, 255, 0.9));
+  border-color: rgba(255, 255, 255, 0.35);
 }
 
 .action-btn.secondary {
-  /* 应用液态玻璃效果 */
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
+  /* 优化液态玻璃效果 */
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
   color: var(--primary-color);
-  border: 2px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  /* 更清晰的边框 */
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
 }
 
 .action-btn.secondary:hover {
-  background: var(--bg-secondary);
-  border-color: var(--primary-color);
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.35);
+  color: var(--primary-color);
   transform: translateY(-3px);
-  box-shadow: 0 6px 20px rgba(0, 113, 227, 0.15);
+  box-shadow: 0 12px 40px rgba(31, 38, 135, 0.15);
 }
 
 .btn-text {

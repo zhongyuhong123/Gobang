@@ -406,9 +406,11 @@ export default {
 }
 
 .white-player {
-  color: var(--white-stone);
+  /* 使用稍暗的白色以提高对比度 */
+  color: rgba(255, 255, 255, 0.95);
   font-weight: 700;
-  text-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  /* 增强文字阴影以提高可读性 */
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.5), 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
 .info-item.status .value {
@@ -470,8 +472,10 @@ export default {
 }
 
 .white-player {
-  color: #fff;
-  text-shadow: 0 0 2px #333;
+  /* 使用稍暗的白色以提高对比度 */
+  color: rgba(255, 255, 255, 0.95);
+  /* 增强文字阴影以提高可读性 */
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.5), 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
 /* 游戏棋盘样式 */

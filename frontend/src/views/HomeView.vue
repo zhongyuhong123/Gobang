@@ -805,11 +805,62 @@ export default {
   min-width: 140px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.action-buttons .el-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, transparent 50%);
+  pointer-events: none;
 }
 
 .action-buttons .el-button:hover {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 12px 40px rgba(31, 38, 135, 0.15);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.action-buttons .el-button--primary {
+  background: rgba(64, 158, 255, 0.8);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.action-buttons .el-button--primary:hover {
+  background: rgba(64, 158, 255, 0.9);
+  box-shadow: 0 12px 40px rgba(64, 158, 255, 0.3);
+}
+
+.action-buttons .el-button--success {
+  background: rgba(103, 194, 58, 0.8);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.action-buttons .el-button--success:hover {
+  background: rgba(103, 194, 58, 0.9);
+  box-shadow: 0 12px 40px rgba(103, 194, 58, 0.3);
+}
+
+.action-buttons .el-button--warning {
+  background: rgba(230, 162, 60, 0.8);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.action-buttons .el-button--warning:hover {
+  background: rgba(230, 162, 60, 0.9);
+  box-shadow: 0 12px 40px rgba(230, 162, 60, 0.3);
 }
 
 /* 房间列表 */
@@ -878,18 +929,24 @@ export default {
 }
 
 .room-status.waiting {
-  background: #67c23a;
+  background: rgba(103, 194, 58, 0.9);
   color: white;
+  box-shadow: 0 2px 8px rgba(103, 194, 58, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .room-status.playing {
-  background: #e6a23c;
+  background: rgba(230, 162, 60, 0.9);
   color: white;
+  box-shadow: 0 2px 8px rgba(230, 162, 60, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .room-status.full {
-  background: #f56c6c;
+  background: rgba(245, 108, 108, 0.9);
   color: white;
+  box-shadow: 0 2px 8px rgba(245, 108, 108, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .room-details {
