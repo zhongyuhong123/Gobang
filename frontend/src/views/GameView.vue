@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import wsManager from '@/utils/websocket'
@@ -80,11 +80,6 @@ export default {
     const lastMoveCol = ref(-1)
     const user1 = ref(null) // 玩家1信息
     const user2 = ref(null) // 玩家2信息
-
-    // 计算单元格大小
-    const cellSizeStyle = computed(() => {
-      return `--cell-size: ${cellSize}px`
-    })
 
     // 初始化棋盘
     // 初始化
