@@ -1,15 +1,8 @@
 <template>
   <div class="welcome-container">
-    <!-- 背景装饰 -->
     <div class="bg-decoration"></div>
-    
-    <!-- 通用导航栏 -->
     <GameNavbar />
-    
-    <!-- 导航栏占位符，确保内容不会被导航栏遮挡 -->
     <div class="navbar-placeholder"></div>
-
-    <!-- 主要内容区域 -->
     <main class="main-content">
       <div class="hero-section">
         <div class="hero-content">
@@ -33,11 +26,7 @@
         <div class="hero-visual animate-on-scroll">
           <div class="chessboard-preview">
             <div class="board-grid">
-              <div 
-                v-for="i in 15" 
-                :key="i" 
-                class="board-row"
-              >
+              <div v-for="i in 15" :key="i" class="board-row">
                 <div 
                   v-for="j in 15" 
                   :key="j" 
@@ -52,8 +41,6 @@
           </div>
         </div>
       </div>
-
-      <!-- 游戏规则介绍 -->
       <section class="rules-section">
         <div class="container">
           <h2 class="section-title animate-on-scroll">游戏规则</h2>
@@ -73,28 +60,11 @@
           </div>
         </div>
       </section>
-
-      <!-- 底部行动按钮 -->
-      <section class="action-section">
-        <div class="container">
-          <h2 class="section-title">立即开始游戏</h2>
-          <p class="action-subtitle">选择您喜欢的游戏模式，开始您的五子棋之旅</p>
-          <div class="action-buttons">
-            <button class="action-btn primary" @click="handleStartGame">
-              <span class="btn-text">开始游戏</span>
-            </button>
-            <button class="action-btn secondary" @click="$router.push('/login')">
-              <span class="btn-text">登录账户</span>
-            </button>
-          </div>
-        </div>
-      </section>
     </main>
   </div>
 </template>
 
 <script>
-import { useRouter } from 'vue-router'
 import { onMounted, onUnmounted } from 'vue'
 import GameNavbar from '../components/GameNavbar.vue'
 
@@ -104,43 +74,25 @@ export default {
     GameNavbar
   },
   setup() {
-    const router = useRouter()
     let observer = null
 
-    const handleStartGame = () => {
-      // 检查用户是否已登录
-      const token = localStorage.getItem('token')
-      if (token) {
-        // 已登录，跳转到游戏大厅
-        router.push('/home')
-      } else {
-        // 未登录，跳转到登录页面
-        router.push('/login')
-      }
-    }
-
     onMounted(() => {
-      // 等待DOM渲染完成后初始化IntersectionObserver
       setTimeout(() => {
-        // 创建观察者实例
         observer = new IntersectionObserver((entries) => {
           entries.forEach(entry => {
             if (entry.isIntersecting) {
-              // 元素进入视口，添加active类
               entry.target.classList.add('active')
             }
           })
         }, {
-          threshold: 0.05, // 当元素5%进入视口时触发
-          rootMargin: '0px 0px -150px 0px' // 底部偏移，提前150px触发
+          threshold: 0.05,
+          rootMargin: '0px 0px -150px 0px'
         })
 
-        // 观察所有带有animate-on-scroll类的元素
         const animatedElements = document.querySelectorAll('.animate-on-scroll')
         animatedElements.forEach(el => observer.observe(el))
       }, 100)
 
-      // 添加棋盘动画效果
       const blackPiece = document.querySelector('.black-piece')
       const whitePiece = document.querySelector('.white-piece')
       
@@ -156,21 +108,17 @@ export default {
     })
 
     onUnmounted(() => {
-      // 清理观察者
       if (observer) {
         observer.disconnect()
       }
     })
 
-    return {
-      handleStartGame
-    }
+    return {}
   }
 }
 </script>
 
 <style scoped>
-/* 背景装饰 */
 .bg-decoration {
   position: fixed;
   top: 0;
@@ -184,7 +132,6 @@ export default {
   z-index: 0;
 }
 
-/* 滚动动画效果 */
 .animate-on-scroll {
   opacity: 0;
   transform: scale(0.9) translateY(30px);
@@ -208,10 +155,9 @@ export default {
 }
 
 .navbar-placeholder {
-  height: 70px; /* 与导航栏高度保持一致 */
+  height: 70px;
 }
 
-/* 主要内容样式 */
 .main-content {
   padding-top: 0;
   position: relative;
@@ -219,14 +165,14 @@ export default {
 }
 
 .hero-section {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 120px 20px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 100px;
-    align-items: center;
-  }
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 120px 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 100px;
+  align-items: center;
+}
 
 .hero-title {
   font-size: 4rem;
@@ -271,21 +217,20 @@ export default {
   justify-content: center;
 }
 
-/* 液态玻璃效果应用 */
 .feature-item.glass-effect {
   background: rgba(255, 255, 255, 0.25);
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
   border: 1px solid rgba(255, 255, 255, 0.18);
   box-shadow: 0 10px 40px 0 rgba(31, 38, 135, 0.3);
-  border-radius: var(--radius-lg); /* 更圆润的边角 */
+  border-radius: var(--radius-lg);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .feature-item:hover {
   transform: translateY(-6px);
   box-shadow: var(--shadow-lg);
-  background: rgba(255, 255, 255, 0.35); /* 增强悬停时的透明度 */
+  background: rgba(255, 255, 255, 0.35);
   border-color: rgba(255, 255, 255, 0.3);
 }
 
@@ -313,7 +258,6 @@ export default {
   line-height: 1.6;
 }
 
-/* 棋盘预览样式 */
 .hero-visual {
   position: relative;
 }
@@ -370,7 +314,6 @@ export default {
   border: 1px solid rgba(139, 69, 19, 0.3);
 }
 
-/* 棋盘中心点 */
 .board-cell:nth-child(8):nth-of-type(8)::after {
   content: '';
   position: absolute;
@@ -413,13 +356,11 @@ export default {
   animation: pieceAppear 0.6s ease-out 0.3s both;
 }
 
-/* 棋子脉冲动画 */
 .black-piece.pulse::before,
 .white-piece.pulse::before {
   animation: pulse 2s ease-in-out infinite;
 }
 
-/* 规则介绍样式 */
 .rules-section {
   background: linear-gradient(135deg, var(--bg-secondary), rgba(242, 242, 247, 0.8));
   padding: 100px 0;
@@ -478,13 +419,12 @@ export default {
 .rule-item {
   text-align: center;
   padding: 3rem 2.5rem;
-  /* 应用液态玻璃效果 */
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.18);
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
-  border-radius: var(--radius-lg); /* 更圆润的边角 */
+  border-radius: var(--radius-lg);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
@@ -511,7 +451,7 @@ export default {
   transform: translateY(-6px);
   box-shadow: 0 15px 40px rgba(31, 38, 135, 0.25);
   border-color: rgba(255, 255, 255, 0.3);
-  background: rgba(255, 255, 255, 0.25); /* 增强悬停时的透明度 */
+  background: rgba(255, 255, 255, 0.25);
 }
 
 .rule-item:hover::before {
@@ -546,151 +486,6 @@ export default {
   z-index: 1;
 }
 
-/* 行动区域样式 */
-.action-section {
-  padding: 140px 0;
-  text-align: center;
-  /* 增强液态玻璃效果 */
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(25px);
-  -webkit-backdrop-filter: blur(25px);
-  margin: 0px;
-  position: relative;
-  overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.action-subtitle {
-  font-size: 1.2rem;
-  color: var(--text-secondary);
-  margin-bottom: 3.5rem;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
-  line-height: 1.7;
-  position: relative;
-  z-index: 1;
-}
-
-.action-buttons {
-  display: flex;
-  gap: 2.5rem;
-  justify-content: center;
-  position: relative;
-  z-index: 1;
-  flex-wrap: wrap;
-}
-
-.action-btn {
-  padding: 18px 45px;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 20px;
-  font-size: 1.2rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  font-family: inherit;
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  width: 220px; /* 固定宽度确保两个按钮宽度一致 */
-  justify-content: center;
-  letter-spacing: -0.01em;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
-}
-
-.action-btn::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.3);
-  transform: translate(-50%, -50%);
-  transition: width 0.6s, height 0.6s;
-}
-
-.action-btn::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, transparent 50%);
-  pointer-events: none;
-}
-
-.action-btn:hover::before {
-  width: 300px;
-  height: 300px;
-}
-
-.action-btn.primary {
-  /* 优化的渐变背景，提高对比度 */
-  background: linear-gradient(135deg, rgba(0, 113, 227, 0.95), rgba(0, 136, 255, 0.95));
-  /* 确保文字可见 */
-  color: white !important;
-  text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
-  /* 清晰的边框 */
-  border: 1px solid rgba(255, 255, 255, 0.4) !important;
-  /* 增强的阴影效果 */
-  box-shadow: 0 8px 32px rgba(0, 113, 227, 0.45) !important;
-}
-
-.action-btn.primary:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 40px rgba(0, 113, 227, 0.35);
-  background: linear-gradient(135deg, rgba(0, 136, 255, 0.9), rgba(0, 159, 255, 0.9));
-  border-color: rgba(255, 255, 255, 0.35);
-}
-
-.action-btn.secondary {
-  /* 优化的液态玻璃效果 */
-  background: rgba(255, 255, 255, 0.35) !important;
-  backdrop-filter: blur(30px) !important;
-  -webkit-backdrop-filter: blur(30px) !important;
-  /* 确保文字颜色 */
-  color: var(--primary-color) !important;
-  text-shadow: 0 0 1px rgba(255, 255, 255, 0.8);
-  /* 清晰的边框 */
-  border: 1px solid rgba(255, 255, 255, 0.5) !important;
-  /* 增强的阴影效果 */
-  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2) !important;
-}
-
-.action-btn.secondary:hover {
-  background: rgba(255, 255, 255, 0.35);
-  border-color: rgba(255, 255, 255, 0.35);
-  color: var(--primary-color);
-  transform: translateY(-3px);
-  box-shadow: 0 12px 40px rgba(31, 38, 135, 0.15);
-}
-
-.btn-text {
-  position: relative;
-  z-index: 1;
-}
-
-.btn-icon {
-  position: relative;
-  z-index: 1;
-  transition: transform 0.3s ease;
-}
-
-.action-btn:hover .btn-icon {
-  transform: translateX(5px);
-}
-
-/* 动画效果 */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -755,7 +550,6 @@ export default {
   }
 }
 
-/* 响应式设计 */
 @media (max-width: 992px) {
   .hero-section {
     grid-template-columns: 1fr;
@@ -808,17 +602,6 @@ export default {
     gap: 2rem;
   }
   
-  .action-buttons {
-    flex-direction: column;
-    align-items: center;
-    gap: 1.5rem;
-  }
-  
-  .action-btn {
-    width: 100%;
-    max-width: 300px;
-  }
-  
   .board-grid {
     grid-template-rows: repeat(15, 18px);
     grid-template-columns: repeat(15, 18px);
@@ -851,11 +634,6 @@ export default {
   
   .rule-item {
     padding: 2rem 1.5rem;
-  }
-  
-  .action-section {
-    padding: 80px 20px;
-    margin: 0 15px 40px;
   }
 }
 </style>
