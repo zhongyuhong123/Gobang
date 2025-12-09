@@ -377,7 +377,7 @@ export default {
   padding: 10px;
 }
 
-/* 液态玻璃背景效果 - iOS 26级别 */
+/* 液态玻璃背景效果 - iOS 26级别增强版 */
 .glass-bg {
   position: absolute;
   top: 0;
@@ -391,16 +391,17 @@ export default {
 .glass-blob {
   position: absolute;
   border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.02));
-  backdrop-filter: blur(60px) saturate(180%);
-  -webkit-backdrop-filter: blur(60px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
+  backdrop-filter: blur(80px) saturate(200%);
+  -webkit-backdrop-filter: blur(80px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.5);
   box-shadow: 
-    0 0 80px rgba(255, 255, 255, 0.2),
-    inset 0 0 40px rgba(255, 255, 255, 0.1),
-    0 8px 32px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.6);
-  animation: liquid-float 20s infinite cubic-bezier(0.45, 0, 0.55, 1);
+    0 0 100px rgba(255, 255, 255, 0.3),
+    inset 0 0 50px rgba(255, 255, 255, 0.15),
+    0 12px 40px rgba(0, 0, 0, 0.08),
+    inset 0 2px 0 rgba(255, 255, 255, 0.7),
+    0 0 0 1px rgba(255, 255, 255, 0.2);
+  animation: liquid-float 18s infinite cubic-bezier(0.45, 0, 0.55, 1);
   transform-origin: center;
 }
 
@@ -502,7 +503,7 @@ export default {
   }
 }
 
-/* 主登录卡片 - 清新液态玻璃 */
+/* 主登录卡片 - 顶级液态玻璃效果 */
 .login-wrapper {
   position: relative;
   z-index: 10;
@@ -513,15 +514,16 @@ export default {
 
 .login-card {
   display: flex;
-  background: rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(60px) saturate(180%);
-  -webkit-backdrop-filter: blur(60px) saturate(180%);
-  border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(100px) saturate(220%);
+  -webkit-backdrop-filter: blur(100px) saturate(220%);
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
   box-shadow: 
-    0 32px 64px rgba(0, 0, 0, 0.1),
-    0 0 0 1px rgba(255, 255, 255, 0.6) inset,
-    0 0 80px rgba(59, 130, 246, 0.15);
+    0 40px 80px rgba(0, 0, 0, 0.08),
+    0 0 0 1px rgba(255, 255, 255, 0.8) inset,
+    0 0 120px rgba(59, 130, 246, 0.2),
+    inset 0 0 60px rgba(255, 255, 255, 0.1);
   overflow: hidden;
   width: 100%;
   max-width: 900px;
@@ -565,7 +567,7 @@ export default {
   }
 }
 
-/* 品牌面板 - 清新蓝白调 */
+/* 品牌面板 - 顶级液态玻璃效果 */
 .brand-panel {
   flex: 1;
   background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 50%, #93c5fd 100%);
@@ -577,9 +579,9 @@ export default {
   text-align: center;
   position: relative;
   overflow: hidden;
-  border-right: 1px solid rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(40px) saturate(150%);
+  -webkit-backdrop-filter: blur(40px) saturate(150%);
 }
 
 .brand-panel::before {
@@ -695,22 +697,22 @@ export default {
 
 
 
-/* 简约棋盘展示 - 清新风格 */
+/* 简约棋盘展示 - 顶级液态玻璃效果 */
 .board-showcase {
   margin: 20px 0;
 }
 
 .simple-board {
-  background: rgba(255, 255, 255, 0.2);
-  padding: 12px;
-  border-radius: 20px;
-  backdrop-filter: blur(20px) saturate(150%);
-  -webkit-backdrop-filter: blur(20px) saturate(150%);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.25);
+  padding: 16px;
+  border-radius: 24px;
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.5);
   box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.1),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.4),
-    inset 0 0 20px rgba(59, 130, 246, 0.1);
+    0 12px 40px rgba(0, 0, 0, 0.08),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.6),
+    inset 0 0 30px rgba(59, 130, 246, 0.15);
   display: inline-flex;
   gap: 8px;
   position: relative;
@@ -779,16 +781,16 @@ export default {
   filter: blur(1px);
 }
 
-/* 表单面板 - 清新风格 */
+/* 表单面板 - 顶级液态玻璃效果 */
 .form-panel {
   flex: 1;
   padding: 40px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(50px) saturate(150%);
-  -webkit-backdrop-filter: blur(50px) saturate(150%);
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(70px) saturate(180%);
+  -webkit-backdrop-filter: blur(70px) saturate(180%);
   position: relative;
 }
 
