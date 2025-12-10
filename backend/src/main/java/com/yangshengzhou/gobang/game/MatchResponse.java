@@ -1,6 +1,6 @@
-package org.example.gobang.game;
+package com.yangshengzhou.gobang.game;
 
-//这表示一个websocket的匹配响�?
+//这表示一个websocket的匹配响应
 public class MatchResponse {
     private boolean ok;
     private String reason;

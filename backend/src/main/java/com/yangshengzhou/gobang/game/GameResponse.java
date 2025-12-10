@@ -1,6 +1,6 @@
-package org.example.gobang.game;
+package com.yangshengzhou.gobang.game;
 
-//这个类表示落子响�?
+//这个类表示落子响应
 public class GameResponse {
     private String message;
     private int userId;

@@ -1,7 +1,9 @@
-package org.example.gobang.api;
+package com.yangshengzhou.gobang.controller;
 
-import org.example.gobang.model.User;
-import org.example.gobang.model.UserMapper;
+import com.yangshengzhou.gobang.entity.User;
+import com.yangshengzhou.gobang.mapper.UserMapper;
+import com.yangshengzhou.gobang.util.JwtTokenUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,10 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
-public class UserAPI {
+public class UserController {
 
     // 内部类，用于统一API响应格式
     private static class ApiResponse {
@@ -55,6 +58,9 @@ public class UserAPI {
     @Resource
     public UserMapper userMapper;
     
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+    
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @PostMapping("/login")
@@ -67,10 +73,20 @@ public class UserAPI {
             System.out.println("登入失败!");
             return new ApiResponse(false, "用户名或密码错误", null);
         }
-        //这里true含义：如果为true，会话存在直接返回，不存在则创建一个
-        HttpSession session = req.getSession(true);
-        session.setAttribute("user", user);
-        return new ApiResponse(true, "登录成功", user);
+        
+        // 生成双token
+        String accessToken = jwtTokenUtil.generateAccessToken(String.valueOf(user.getUserId()), user.getUsername());
+        String refreshToken = jwtTokenUtil.generateRefreshToken(String.valueOf(user.getUserId()), user.getUsername());
+        
+        // 创建登录响应数据
+        Map<String, Object> loginData = new HashMap<>();
+        loginData.put("user", user);
+        loginData.put("accessToken", accessToken);
+        loginData.put("refreshToken", refreshToken);
+        loginData.put("tokenType", "Bearer");
+        loginData.put("expiresIn", 86400); // 24小时，单位秒
+        
+        return new ApiResponse(true, "登录成功", loginData);
     }
 
     @PostMapping("/register")
@@ -92,13 +108,19 @@ public class UserAPI {
     @ResponseBody
     public Object getUserInfo(HttpServletRequest req) {
         try{
-            HttpSession httpSession = req.getSession(false);
-            User user = (User) httpSession.getAttribute("user");
-            //拿着这个user对象，去数据库中找，找到最新的数据
-            User newUser = userMapper.selectByName(user.getUsername());
-            return new ApiResponse(true, "获取用户信息成功", newUser);
-        }catch (NullPointerException e){
-            return new ApiResponse(false, "用户未登录", null);
+            // 从请求头中获取token并验证
+            String authHeader = req.getHeader("Authorization");
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                String token = authHeader.substring(7);
+                if (jwtTokenUtil.validateAccessToken(token)) {
+                    String username = jwtTokenUtil.getUsernameFromAccessToken(token);
+                    User user = userMapper.selectByName(username);
+                    return new ApiResponse(true, "获取用户信息成功", user);
+                }
+            }
+            return new ApiResponse(false, "token无效或已过期", null);
+        }catch (Exception e){
+            return new ApiResponse(false, "获取用户信息失败", null);
         }
     }
 }

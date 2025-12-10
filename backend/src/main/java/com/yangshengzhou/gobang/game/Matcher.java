@@ -1,7 +1,8 @@
-package org.example.gobang.game;
+package com.yangshengzhou.gobang.game;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.gobang.model.User;
+import com.yangshengzhou.gobang.entity.User;
+import com.yangshengzhou.gobang.entity.Room;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
@@ -11,7 +12,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
 
-//这个类表示“匹配器”，通过这个类负责完成整个匹配功�?
+//这个类表示"匹配器"，通过这个类负责完成整个匹配功能
 @Component
 public class Matcher {
     //创建三个匹配队列
@@ -27,7 +28,7 @@ public class Matcher {
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    //操作匹配队列的方�?
+    //操作匹配队列的方法
     //把玩家放到匹配队列中
     public void add(User user) {
         if(user.getScore()<2000){
@@ -35,19 +36,19 @@ public class Matcher {
                 normalQueue.add(user);
                 normalQueue.notify();
             }
-            System.out.println("把玩�? + user.getUsername() + "加入到了normalQueue中！");
+            System.out.println("把玩家 " + user.getUsername() + " 加入到了normalQueue中！");
         }else if(user.getScore()>=2000 && user.getScore()<3000){
             synchronized (highQueue) {
                 highQueue.add(user);
                 highQueue.notify();
             }
-            System.out.println("把玩�? + user.getUsername() + "加入到了highQueue中！");
+            System.out.println("把玩家 " + user.getUsername() + " 加入到了highQueue中！");
         }else{
             synchronized (veryHighQueue) {
                 veryHighQueue.add(user);
                 veryHighQueue.notify();
             }
-            System.out.println("把玩�? + user.getUsername() + "加入到了veryHighQueue中！");
+            System.out.println("把玩家 " + user.getUsername() + " 加入到了veryHighQueue中！");
         }
     }
 
@@ -57,21 +58,21 @@ public class Matcher {
             synchronized (normalQueue) {
                 normalQueue.remove(user);
             }
-            System.out.println("把玩�?+user.getUsername()+"移除�?normalQueue!");
+            System.out.println("把玩家"+user.getUsername()+"移除出normalQueue!");
         }else if(user.getScore()>=2000 && user.getScore()<3000){
             synchronized (highQueue) {
                 highQueue.remove(user);
             }
-            System.out.println("把玩�?+user.getUsername()+"移除�?highQueue!");
+            System.out.println("把玩家"+user.getUsername()+"移除出highQueue!");
         }else{
             synchronized (veryHighQueue) {
                 veryHighQueue.remove(user);
             }
-            System.out.println("把玩�?+user.getUsername()+"移除�?veryHighQueue!");
+            System.out.println("把玩家"+user.getUsername()+"移除出veryHighQueue!");
         }
     }
 
-    //构造方法中创建线程，分别针对三个匹配队列，进行操作�?
+    //构造方法中创建线程，分别针对三个匹配队列，进行操作
     public Matcher(){
         Thread t1 = new Thread(){
             @Override
@@ -117,7 +118,7 @@ public class Matcher {
                 User player1 = matchQueue.poll();
                 User player2 = matchQueue.poll();
                 System.out.println("匹配出两个玩家：" + player1.getUsername() + ", " + player2.getUsername());
-                //3.获取到玩家的 websocket 的会�?
+                //3.获取到玩家的 websocket 的会话
                 //     获取到会话的木器是为了告诉玩家，匹配成功
                 WebSocketSession session1 = onlineUserManager.getFromGameHall(player1.getUserId());
                 WebSocketSession session2 = onlineUserManager.getFromGameHall(player2.getUserId());
@@ -142,8 +143,8 @@ public class Matcher {
                 roomManager.add(room, player1.getUserId(), player2.getUserId());
 
                 //5.给玩家反馈信息：你匹配到对手了~
-                //      通过 websocket 返回一�?message �?'matchSuccess' 这样的响�?
-                //      两个玩家都需要返�?
+                //      通过 websocket 返回一个 message 为'matchSuccess' 这样的响应
+                //      两个玩家都需要返回
                 MatchResponse response1 = new MatchResponse();
                 response1.setOk(true);
                 response1.setMessage("matchSuccess");
@@ -162,12 +163,3 @@ public class Matcher {
         }
     }
 }
-
-
-
-
-
-
-
-
-

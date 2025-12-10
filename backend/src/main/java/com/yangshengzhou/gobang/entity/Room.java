@@ -1,10 +1,13 @@
-package org.example.gobang.game;
+package com.yangshengzhou.gobang.entity;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.gobang.GobangApplication;
-import org.example.gobang.model.User;
-import org.example.gobang.model.UserMapper;
+import com.yangshengzhou.gobang.GobangApplication;
+import com.yangshengzhou.gobang.mapper.UserMapper;
+import com.yangshengzhou.gobang.game.OnlineUserManager;
+import com.yangshengzhou.gobang.game.RoomManager;
+import com.yangshengzhou.gobang.game.GameRequest;
+import com.yangshengzhou.gobang.game.GameResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -12,7 +15,7 @@ import org.springframework.web.socket.WebSocketSession;
 import java.io.IOException;
 import java.util.UUID;
 
-//这个类表示一个游戏房�?
+//这个类表示一个游戏房间
 public class Room {
     //使用字符串类型来表示，方便生成唯一值。final
     private String roomId;
@@ -20,7 +23,7 @@ public class Room {
     private User user1;
     private User user2;
 
-    //先手的玩家（白子�?
+    //先手的玩家（白子）
     private User whiteUser;
 
 
@@ -33,16 +36,16 @@ public class Room {
     private static final int MAX_COL = 15;
     private static final int MAX_ROW = 15;
 
-    //添加一个棋盘，使用二维数组来表示�?
-    //此处约定�?
-    //  1）使�?0 表示当前位置未落子，一个刚 new 好的二维数组，默认全�?，相对于是空棋盘
-    //  2）使�?1 表示 user1 的落子位置�?
-    //  3）使�?2 表示 user2 的落子位置�?
+    //添加一个棋盘，使用二维数组来表示
+    //此处约定：
+    //  1）使用 0 表示当前位置未落子，一个刚 new 好的二维数组，默认全是 0，相对于是空棋盘
+    //  2）使用 1 表示 user1 的落子位置
+    //  3）使用 2 表示 user2 的落子位置
     private int[][] board = new int[MAX_ROW][MAX_COL];
 
     public void putChess(String reqJson) throws IOException {
 //        System.out.println("收到落子响应"+reqJson);
-        //1.解析请求，并且记录落子的位置�?
+        //1.解析请求，并且记录落子的位置
         GameRequest request = objectMapper.readValue(reqJson, GameRequest.class);
         GameResponse response = new GameResponse();
         int chess = request.getUserId() == user1.getUserId()? 1 : 2;//获取当前棋子
@@ -55,7 +58,7 @@ public class Room {
         }
         board[row][col] = chess;
 
-        //2.打印棋盘状�?
+        //2.打印棋盘状态
         //printBoard();
 
         //3.判断当前是否分出胜负
@@ -66,14 +69,14 @@ public class Room {
             winner = user2.getUserId();
         }
 
-        //4.返回响应，给房间中的所有客户端都返回响应�?
+        //4.返回响应，给房间中的所有客户端都返回响应
         response.setMessage("putChess");
         response.setUserId(request.getUserId());
         response.setRow(row);
         response.setCol(col);
         response.setWinner(winner);
 
-        //通过 websocket 把上述响应给发送客户端�?
+        //通过 websocket 把上述响应给发送客户端
         WebSocketSession session1 = onlineUserManager.getFromGameRoom(user1.getUserId());
         WebSocketSession session2 = onlineUserManager.getFromGameRoom(user2.getUserId());
 
@@ -88,7 +91,7 @@ public class Room {
             System.out.println("玩家2掉线");
         }
 
-        //5.把响应对象构造成 JSON 字符串，通过 session 对象进行传输�?
+        //5.把响应对象构造成 JSON 字符串，通过 session 对象进行传输
         String respJson = objectMapper.writeValueAsString(response);
         if(session1 != null){
             session1.sendMessage(new TextMessage(respJson));
@@ -213,15 +216,15 @@ public class Room {
 
 
     public Room() {
-       //构�?Room 的时候生成一个唯一的字符串表示房间id�?
-        //使用UUID来作为房�?id
+       //构造Room 的时候生成一个唯一的字符串表示房间id
+        //使用UUID来作为房间id
         roomId = UUID.randomUUID().toString();
 
-        //通过入口类中�?context 成员，手动获取到 RoomManager �?OnlineUserManager
-        // 用这个方法来代替使用 @Autowired 交给 spring 来进行管�?
-        onlineUserManager = JavaGobangApplication.context.getBean(OnlineUserManager.class);
-        roomManager = JavaGobangApplication.context.getBean(RoomManager.class);
-        userMapper = JavaGobangApplication.context.getBean(UserMapper.class);
+        //通过入口类中的 context 成员，手动获取到 RoomManager 和 OnlineUserManager
+        // 用这个方法来代替使用 @Autowired 交给 spring 来进行管理
+        onlineUserManager = GobangApplication.context.getBean(OnlineUserManager.class);
+        roomManager = GobangApplication.context.getBean(RoomManager.class);
+        userMapper = GobangApplication.context.getBean(UserMapper.class);
     }
 
     public static void main(String[] args) {
@@ -229,89 +232,3 @@ public class Room {
         System.out.println(room.roomId);
     }
 }
-
-
-
-
-
-    //落子
-    public void putChess(Request request) {
-        //1.先进行参数校验
-        if(request == null || request.getUserId() == null || request.getRow() == null || request.getCol() == null){
-            System.out.println("落子失败！参数错误！");
-            return;
-        }
-
-        //2.检查当前是谁在落子
-        //  如果是玩家1落子，则检查当前是否是玩家1的回合
-        //  如果是玩家2落子，则检查当前是否是玩家2的回合
-        int userId = request.getUserId();
-        if(userId == user1.getUserId() && turn != 1){
-            System.out.println("落子失败！当前不是玩家1的回合！");
-            return;
-        }
-        if(userId == user2.getUserId() && turn != 2){
-            System.out.println("落子失败！当前不是玩家2的回合！");
-            return;
-        }
-
-        //3.检查落子位置是否合法
-        int row = request.getRow();
-        int col = request.getCol();
-        if(row < 0 || row >= MAX_ROW || col < 0 || col >= MAX_COL){
-            System.out.println("落子失败！落子位置越界！");
-            return;
-        }
-        if(board[row][col] != 0){
-            System.out.println("落子失败！落子位置已有棋子！");
-            return;
-        }
-
-        //4.落子
-        int chess = userId == user1.getUserId()? 1 : 2;
-        board[row][col] = chess;
-        printBoard();
-
-        //5.判断胜负
-        int winner = checkWinner(row, col, chess);
-        if(winner != 0){
-            System.out.println("玩家"+winner+"获胜！");
-        }
-
-        //6.构造响应对象
-        Response response = new Response();
-        response.setUserId(userId);
-        response.setRow(row);
-        response.setCol(col);
-        response.setWinner(winner);
-        response.setTurn(turn == 1 ? 2 : 1);
-
-        //7.把响应对象返回给两个玩家
-        try {
-            String respJson = objectMapper.writeValueAsString(response);
-            if(session1 != null && session1.isOpen()){
-                session1.sendMessage(new TextMessage(respJson));
-            }
-            if(session2 != null && session2.isOpen()){
-                session2.sendMessage(new TextMessage(respJson));
-            }
-        } catch (Exception e) {
-            System.out.println("处理落子请求失败: " + e.getMessage());
-        }
-
-        //8.交换落子顺序
-        turn = turn == 1 ? 2 : 1;
-
-        //9.判断胜负已分，房间就失去存在的意义了，可以销毁房间了
-        if(winner != 0){
-            System.out.println("游戏结束！房间即将销毁！roomId"+roomId+" 获胜方为"+winner);
-            //更新获胜方和失败方的信息
-            int winUserId = winner;
-            int loseUserId = winner == user1.getUserId()? user2.getUserId() : user1.getUserId();
-            userMapper.userWin(winUserId);
-            userMapper.userLose(loseUserId);
-
-            //销毁房间
-            roomManager.remove(roomManager.getRoomByRoomId(roomId), user1.getUserId(), user2.getUserId());
-        }
-    }

@@ -1,14 +1,13 @@
-package org.example.gobang.config;
+package com.yangshengzhou.gobang.config;
 
-import org.example.gobang.api.GameAPI;
-import org.example.gobang.api.MatchAPI;
-import org.example.gobang.api.TestAPI;
+import com.yangshengzhou.gobang.controller.GameController;
+import com.yangshengzhou.gobang.controller.MatchController;
+import com.yangshengzhou.gobang.controller.TestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
-import org.springframework.web.socket.handler.AbstractWebSocketHandler;
 import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
 
 @Configuration
@@ -16,20 +15,20 @@ import org.springframework.web.socket.server.support.HttpSessionHandshakeInterce
 public class WebSocketConfig implements WebSocketConfigurer{
 
     @Autowired
-    private TestAPI testAPI;
+    private TestController testController;
 
     @Autowired
-    private MatchAPI matchAPI;
+    private MatchController matchController;
 
     @Autowired
-    private GameAPI gameAPI;
+    private GameController gameController;
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(testAPI,"/test");
-        registry.addHandler(matchAPI,"/findMatch")
+        registry.addHandler(testController,"/test");
+        registry.addHandler(matchController,"/findMatch")
                 .addInterceptors(new HttpSessionHandshakeInterceptor());//把之前httpsession中的数据借到了websocket会话
-        registry.addHandler(gameAPI,"/game")
+        registry.addHandler(gameController,"/game")
                 .addInterceptors(new HttpSessionHandshakeInterceptor());
     }
 }

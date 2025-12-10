@@ -1,6 +1,6 @@
-package org.example.gobang.game;
+package com.yangshengzhou.gobang.game;
 
-//这个类表示落子请�?
+//这个类表示落子请求
 public class GameRequest {
     private String message;
     private int userId;

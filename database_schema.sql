@@ -245,7 +245,13 @@ GROUP BY game_type, DATE(create_time)
 ORDER BY game_date DESC;
 
 -- 权限设置
-GRANT SELECT, INSERT, UPDATE, DELETE ON `java_gobang`.* TO 'gobang_user'@'localhost' IDENTIFIED BY 'gobang_password';
+-- 创建用户（如果不存在）
+CREATE USER IF NOT EXISTS 'gobang_user'@'localhost' IDENTIFIED BY 'gobang_password';
+
+-- 授权
+GRANT SELECT, INSERT, UPDATE, DELETE ON `java_gobang`.* TO 'gobang_user'@'localhost';
+
+-- 刷新权限
 FLUSH PRIVILEGES;
 
 -- 最后更新时间

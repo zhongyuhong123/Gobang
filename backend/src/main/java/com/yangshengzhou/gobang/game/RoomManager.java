@@ -1,10 +1,10 @@
-package org.example.gobang.game;
+package com.yangshengzhou.gobang.game;
 
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-//房间管理�?
+//房间管理器
 //这个类希望有唯一实例
 @Component
 public class RoomManager {
@@ -30,7 +30,7 @@ public class RoomManager {
     public Room getRoomByUserId(int userId) {
         String roomId = userIdToRoomId.get(userId);
         if(roomId == null) {
-            //userId->roomId映射不存�?
+            //userId->roomId映射不存在
             return null;
         }
         return rooms.get(roomId);
