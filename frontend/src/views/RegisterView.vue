@@ -7,7 +7,7 @@
       <div class="glass-blob glass-blob-4"></div>
     </div>
     <div class="particles-bg">
-      <div v-for="n in 15" :key="n" class="particle" :style="getParticleStyle(n)"></div>
+      <div v-for="n in 8" :key="n" class="particle" :style="getParticleStyle(n)"></div>
     </div>
     <div class="register-wrapper">
       <div class="register-card">
@@ -34,9 +34,6 @@
             <el-form ref="registerFormRef" :model="registerForm" :rules="rules" class="register-form" @keyup.enter="handleRegister" size="large">
               <el-form-item prop="username">
                 <el-input v-model="registerForm.username" placeholder="用户名" clearable autofocus class="form-input" />
-              </el-form-item>
-              <el-form-item prop="email">
-                <el-input v-model="registerForm.email" type="email" placeholder="邮箱地址" clearable class="form-input" />
               </el-form-item>
               <el-form-item prop="password">
                 <el-input v-model="registerForm.password" type="password" placeholder="密码" show-password clearable class="form-input" />
@@ -78,7 +75,6 @@ export default {
 
     const registerForm = reactive({
       username: '',
-      email: '',
       password: '',
       confirmPassword: ''
     })
@@ -100,10 +96,6 @@ export default {
         { required: true, message: '请输入用户名', trigger: 'blur' },
         { min: 3, max: 20, message: '用户名长度在 3 到 20 个字符', trigger: 'blur' }
       ],
-      email: [
-        { required: true, message: '请输入邮箱地址', trigger: 'blur' },
-        { type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur' }
-      ],
       password: [
         { required: true, message: '请输入密码', trigger: 'blur' },
         { min: 6, message: '密码长度至少为 6 个字符', trigger: 'blur' }
@@ -123,7 +115,6 @@ export default {
           try {
             const response = await userAPI.register({
               username: registerForm.username,
-              email: registerForm.email,
               password: registerForm.password
             })
 

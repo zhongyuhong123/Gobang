@@ -2,12 +2,8 @@
   <div id="app">
     <!-- 背景图案 -->
     <div class="bg-pattern"></div>
-    <!-- 主要内容区域 - 添加页面过渡效果 -->
-    <router-view v-slot="{ Component }">
-      <transition name="page-fade" mode="out-in">
-        <component :is="Component" />
-      </transition>
-    </router-view>
+    <!-- 主要内容区域 -->
+    <router-view />
   </div>
 </template>
 
@@ -80,16 +76,6 @@ html, body {
   background-color: var(--bg-primary);
 }
 
-/* 页面过渡动画 */
-.page-fade-enter-active,
-.page-fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.page-fade-enter-from,
-.page-fade-leave-to {
-  opacity: 0;
-}
 
 /* 响应式字体大小 */
 @media (max-width: 768px) {

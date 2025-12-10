@@ -5,10 +5,11 @@ import router from '../router'
 // 创建axios实例
 const service = axios.create({
   baseURL: process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080',
-  timeout: 10000,
+  timeout: 15000,
   headers: {
     'Content-Type': 'application/json'
-  }
+  },
+  withCredentials: true
 })
 
 // 请求拦截器
