@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yangshengzhou.gobang.game.*;
 import com.yangshengzhou.gobang.entity.User;
+import com.yangshengzhou.gobang.entity.Room;
 import com.yangshengzhou.gobang.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,8 +13,9 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.io.IOException;
+import java.util.Map;
 
 @Component
 public class GameController extends TextWebSocketHandler {

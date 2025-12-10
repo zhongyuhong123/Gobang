@@ -1,5 +1,6 @@
 package com.yangshengzhou.gobang.game;
 
+import com.yangshengzhou.gobang.entity.Room;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ConcurrentHashMap;

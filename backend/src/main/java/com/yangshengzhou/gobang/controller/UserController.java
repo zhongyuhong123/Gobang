@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -113,7 +113,7 @@ public class UserController {
             if (authHeader != null && authHeader.startsWith("Bearer ")) {
                 String token = authHeader.substring(7);
                 if (jwtTokenUtil.validateAccessToken(token)) {
-                    String username = jwtTokenUtil.getUsernameFromAccessToken(token);
+                    String username = jwtTokenUtil.getUsernameFromToken(token);
                     User user = userMapper.selectByName(username);
                     return new ApiResponse(true, "获取用户信息成功", user);
                 }
