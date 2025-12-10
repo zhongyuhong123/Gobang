@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.example.gobang.mapper.UserMapper">
+<mapper namespace="com.yangshengzhou.gobang.mapper.UserMapper">
 
-    <select id="selectByName" resultType="org.example.gobang.model.User">
+    <select id="selectByName" resultType="com.yangshengzhou.gobang.entity.User">
         select * from user where username = #{username};
     </select>
 
 
-    <insert id="insert" parameterType="org.example.gobang.model.User">
+    <insert id="insert" parameterType="com.yangshengzhou.gobang.entity.User">
         insert into user values(null, #{username}, #{password}, 1000, 0, 0);
     </insert>
 

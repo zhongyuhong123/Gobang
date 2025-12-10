@@ -95,7 +95,7 @@ server:
 logging:
   level:
     root: INFO
-    org.example.gobang: DEBUG
+    com.yangshengzhou.gobang: DEBUG
     org.springframework.web: INFO
     org.springframework.security: INFO
     org.mybatis: DEBUG
@@ -129,7 +129,7 @@ mybatis-plus:
       logic-delete-value: 1
       logic-not-delete-value: 0
     banner: false
-  type-aliases-package: org.example.gobang.model
+  type-aliases-package: com.yangshengzhou.gobang.entity
 
 # JWT 配置
 jwt:
