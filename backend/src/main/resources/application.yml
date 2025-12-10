@@ -5,5 +5,28 @@ spring:
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+# 禁用Spring Security的默认登录页面
+server:
+  servlet:
+    session:
+      timeout: 30m
+
+# JWT配置
+jwt:
+  secret: gobang-jwt-secret-key-2024-dev-environment
+  expiration: 86400000 # 24小时
+
+# 安全配置
+security:
+  ignored:
+    urls:
+      - "/user/login"
+      - "/user/register"
+      - "/user/info"
+      - "/test/**"
+      - "/ws/**"
+      - "/findMatch"
+      - "/game"
+
 mybatis:
   mapper-locations: classpath:mapper/**Mapper.xml

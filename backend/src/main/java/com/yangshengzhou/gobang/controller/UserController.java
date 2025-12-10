@@ -5,10 +5,7 @@ import com.yangshengzhou.gobang.mapper.UserMapper;
 import com.yangshengzhou.gobang.util.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,6 +14,50 @@ import java.util.Map;
 
 @RestController
 public class UserController {
+
+    // 登录请求DTO
+    private static class LoginRequest {
+        private String username;
+        private String password;
+
+        public String getUsername() {
+            return username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+    }
+
+    // 注册请求DTO
+    private static class RegisterRequest {
+        private String username;
+        private String password;
+
+        public String getUsername() {
+            return username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+    }
 
     // 内部类，用于统一API响应格式
     private static class ApiResponse {
@@ -65,12 +106,17 @@ public class UserController {
 
     @PostMapping("/login")
     @ResponseBody
-    public Object login(String username, String password, HttpServletRequest req) {
+    public Object login(@RequestBody LoginRequest loginRequest, HttpServletRequest req) {
+        String username = loginRequest.getUsername();
+        String password = loginRequest.getPassword();
+        
+        System.out.println("[login] Attempting login for username: " + username);
+        
         //根据username去数据库中查找，如果能查到并密码一致则成功登入
         User user = userMapper.selectByName(username);
         System.out.println("[login] user="+user);
         if(user==null || !passwordEncoder.matches(password, user.getPassword())){
-            System.out.println("登入失败!");
+            System.out.println("[login] 登入失败!");
             return new ApiResponse(false, "用户名或密码错误", null);
         }
         
@@ -86,25 +132,34 @@ public class UserController {
         loginData.put("tokenType", "Bearer");
         loginData.put("expiresIn", 86400); // 24小时，单位秒
         
+        System.out.println("[login] 登录成功!");
         return new ApiResponse(true, "登录成功", loginData);
     }
 
     @PostMapping("/register")
     @ResponseBody
-    public Object register(String username, String password) {
+    public Object register(@RequestBody RegisterRequest registerRequest) {
         try{
+            String username = registerRequest.getUsername();
+            String password = registerRequest.getPassword();
+            
+            System.out.println("[register] Attempting registration for username: " + username);
+            
             User user = new User();
             user.setUsername(username);
             // 对密码进行加密
             user.setPassword(passwordEncoder.encode(password));
             userMapper.insert(user);
+            
+            System.out.println("[register] 注册成功!");
             return new ApiResponse(true, "注册成功", user);
         }catch (org.springframework.dao.DuplicateKeyException e){
+            System.out.println("[register] 用户名已存在!");
             return new ApiResponse(false, "用户名已存在", null);
         }
     }
 
-    @GetMapping("/userInfo")
+    @GetMapping("/user/info")
     @ResponseBody
     public Object getUserInfo(HttpServletRequest req) {
         try{
