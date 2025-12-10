@@ -56,22 +56,7 @@
         </div>
       </div>
     </div>
-    <el-dialog v-model="errorDialog.visible" title="注册失败" width="380px" class="error-dialog" :close-on-click-modal="false">
-      <div class="error-content">
-        <div class="error-icon">
-          <el-icon color="#F56C6C" :size="48">
-            <CircleClose />
-          </el-icon>
-        </div>
-        <h3 class="error-title">{{ errorDialog.title }}</h3>
-        <p class="error-message">{{ errorDialog.message }}</p>
-      </div>
-      <template #footer>
-        <el-button @click="errorDialog.visible = false" type="primary" class="error-btn">
-          确定
-        </el-button>
-      </template>
-    </el-dialog>
+
   </div>
 </template>
 
@@ -79,13 +64,12 @@
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { CircleClose } from '@element-plus/icons-vue'
+
 import { userAPI } from '../api/index.js'
 
 export default {
   name: 'RegisterView',
   components: {
-    CircleClose
   },
   setup() {
     const router = useRouter()
@@ -99,11 +83,7 @@ export default {
       confirmPassword: ''
     })
 
-    const errorDialog = reactive({
-      visible: false,
-      title: '注册失败',
-      message: ''
-    })
+
 
     const validateConfirmPassword = (rule, value, callback) => {
       if (value === '') {
@@ -154,15 +134,11 @@ export default {
                 router.push('/login')
               }, 1500)
             } else {
-              errorDialog.title = '注册失败'
-              errorDialog.message = response.message || '注册失败，请重试'
-              errorDialog.visible = true
+              ElMessage.error(response.message || '注册失败，请重试')
             }
           } catch (error) {
             console.error('注册错误:', error)
-            errorDialog.title = '注册失败'
-            errorDialog.message = '网络连接失败，请检查网络连接后重试'
-            errorDialog.visible = true
+            ElMessage.error('网络连接失败，请检查网络连接后重试')
           } finally {
             loading.value = false
           }
@@ -192,7 +168,6 @@ export default {
       rules,
       registerFormRef,
       loading,
-      errorDialog,
       handleRegister,
       getParticleStyle
     }

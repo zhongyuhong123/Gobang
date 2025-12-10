@@ -53,23 +53,7 @@
         </div>
       </div>
     </div>
-    <el-dialog v-model="errorDialog.visible" title="登录失败" width="380px" class="error-dialog"
-      :close-on-click-modal="false">
-      <div class="error-content">
-        <div class="error-icon">
-          <el-icon color="#F56C6C" :size="48">
-            <CircleClose />
-          </el-icon>
-        </div>
-        <h3 class="error-title">{{ errorDialog.title }}</h3>
-        <p class="error-message">{{ errorDialog.message }}</p>
-      </div>
-      <template #footer>
-        <el-button @click="errorDialog.visible = false" type="primary" class="error-btn">
-          确定
-        </el-button>
-      </template>
-    </el-dialog>
+
   </div>
 </template>
 
@@ -77,13 +61,12 @@
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { CircleClose } from '@element-plus/icons-vue'
+
 import { userAPI } from '../api/index.js'
 
 export default {
   name: 'LoginView',
   components: {
-    CircleClose
   },
   setup() {
     const router = useRouter()
@@ -97,11 +80,7 @@ export default {
       remember: false
     })
 
-    const errorDialog = reactive({
-      visible: false,
-      title: '登录失败',
-      message: ''
-    })
+
 
     const loginAttempts = reactive({
       count: 0,
@@ -124,9 +103,7 @@ export default {
       const now = Date.now()
       if (loginAttempts.lockoutTime > now) {
         const remainingTime = Math.ceil((loginAttempts.lockoutTime - now) / 1000)
-        errorDialog.title = '账户暂时锁定'
-        errorDialog.message = `由于多次登录失败，您的账户已被锁定。请等待 ${remainingTime} 秒后重试。`
-        errorDialog.visible = true
+        ElMessage.error(`由于多次登录失败，您的账户已被锁定。请等待 ${remainingTime} 秒后重试。`)
         return true
       }
       return false
@@ -208,9 +185,7 @@ export default {
             } else {
               updateLoginAttempts(false)
 
-              errorDialog.title = '登录失败'
-              errorDialog.message = response.message || '用户名或密码错误'
-              errorDialog.visible = true
+              ElMessage.error(response.message || '用户名或密码错误')
 
               if (loginAttempts.count > 0 && loginAttempts.count < 5) {
                 const remaining = 5 - loginAttempts.count
@@ -221,9 +196,7 @@ export default {
             updateLoginAttempts(false)
 
             console.error('登录错误:', error)
-            errorDialog.title = '登录失败'
-            errorDialog.message = '网络连接失败，请检查网络连接后重试'
-            errorDialog.visible = true
+            ElMessage.error('网络连接失败，请检查网络连接后重试')
           } finally {
             loading.value = false
           }
@@ -258,7 +231,6 @@ export default {
       rules,
       loginFormRef,
       loading,
-      errorDialog,
       handleLogin,
       getParticleStyle
     }
