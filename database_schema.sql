@@ -4,12 +4,12 @@
 -- 创建时间: 2024-01-01
 
 -- 创建数据库
-CREATE DATABASE IF NOT EXISTS `java_gobang` 
+CREATE DATABASE IF NOT EXISTS `gobang` 
 DEFAULT CHARACTER SET utf8mb4 
 COLLATE utf8mb4_unicode_ci;
 
 -- 使用数据库
-USE `java_gobang`;
+USE `gobang`;
 
 -- 用户表
 CREATE TABLE IF NOT EXISTS `user` (

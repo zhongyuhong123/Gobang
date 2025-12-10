@@ -12,7 +12,7 @@ spring:
   # 数据源配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/java_gobang?useSSL=false&serverTimezone=UTC&characterEncoding=utf8&useUnicode=true&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3306/gobang?useSSL=false&serverTimezone=UTC&characterEncoding=utf8&useUnicode=true&allowPublicKeyRetrieval=true
     username: root
     password: 123456
     # 连接池配置
@@ -69,8 +69,6 @@ spring:
     serialization:
       write-dates-as-timestamps: false
       write-date-keys-as-timestamps: false
-    # 开发环境美化输出
-    serialization:
       indent-output: true
   
   # 文件上传配置
@@ -118,9 +116,6 @@ logging:
     max-size: 50MB
     max-history: 7
     total-size-cap: 1GB
-  # 开发环境控制台彩色输出
-  pattern:
-    console: "%clr(%d{yyyy-MM-dd HH:mm:ss}){faint} %clr([%thread]){magenta} %clr(%-5level){cyan} %clr([%X{traceId}]){yellow} %clr(%logger{36}){blue} - %clr(%msg){noline}%n"
 
 # MyBatis Plus 配置
 mybatis-plus:

@@ -153,8 +153,8 @@ export const wsManager = {
       return wsManager.matchSocket
     }
 
-    // 根据后端API文档，WebSocket连接路径为/gameHall
-    const wsUrl = `${process.env.VUE_APP_WS_BASE_URL || 'ws://localhost:8080'}/gameHall?userId=${userId}`
+    // 根据后端WebSocket配置，匹配WebSocket连接路径为/findMatch
+    const wsUrl = `${process.env.VUE_APP_WS_BASE_URL || 'ws://localhost:8080'}/findMatch?userId=${userId}`
     wsManager.matchSocket = new WebSocket(wsUrl)
 
     wsManager.matchSocket.onopen = () => {
@@ -191,8 +191,8 @@ export const wsManager = {
       return wsManager.gameSocket
     }
 
-    // 根据后端API文档，游戏WebSocket连接路径为/gameRoom/{roomId}
-    const wsUrl = `${process.env.VUE_APP_WS_BASE_URL || 'ws://localhost:8080'}/gameRoom/${roomId}?userId=${userId}`
+    // 根据后端WebSocket配置，游戏WebSocket连接路径为/game
+    const wsUrl = `${process.env.VUE_APP_WS_BASE_URL || 'ws://localhost:8080'}/game?userId=${userId}&roomId=${roomId}`
     wsManager.gameSocket = new WebSocket(wsUrl)
 
     wsManager.gameSocket.onopen = () => {

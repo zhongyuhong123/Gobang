@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.example.java_gobang.model.UserMapper">
+<mapper namespace="org.example.gobang.mapper.UserMapper">
 
-    <select id="selectByName" resultType="org.example.java_gobang.model.User">
+    <select id="selectByName" resultType="org.example.gobang.model.User">
         select * from user where username = #{username};
     </select>
 
 
-    <insert id="insert" parameterType="org.example.java_gobang.model.User">
+    <insert id="insert" parameterType="org.example.gobang.model.User">
         insert into user values(null, #{username}, #{password}, 1000, 0, 0);
     </insert>
 
@@ -15,13 +15,13 @@
     <update id = "userWin">
         update user set totalCount = totalCount + 1,
                         winCount = winCount + 1,
-                        score = score + 30
+                        score = score + 10
         where userId = #{userId}
     </update>
 
     <update id = "userLose">
         update user set totalCount = totalCount + 1,
-                        score = score - 30
+                        score = score - 5
         where userId = #{userId}
     </update>
 </mapper>
