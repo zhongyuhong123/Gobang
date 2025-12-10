@@ -1,29 +1,21 @@
 <template>
   <div class="login-container">
-    <!-- 液态玻璃背景效果 -->
     <div class="glass-bg">
       <div class="glass-blob glass-blob-1"></div>
       <div class="glass-blob glass-blob-2"></div>
       <div class="glass-blob glass-blob-3"></div>
       <div class="glass-blob glass-blob-4"></div>
     </div>
-    
-    <!-- 粒子动画背景 -->
     <div class="particles-bg">
       <div v-for="n in 15" :key="n" class="particle" :style="getParticleStyle(n)"></div>
     </div>
-
-    <!-- 主登录卡片 -->
     <div class="login-wrapper">
       <div class="login-card">
-        <!-- 左侧品牌区域 -->
         <div class="brand-panel">
           <div class="brand-content">
             <div class="logo-section">
               <h1 class="brand-title">五子棋</h1>
             </div>
-            
-            <!-- 简约棋盘展示 -->
             <div class="board-showcase">
               <div class="simple-board">
                 <div class="simple-piece black"></div>
@@ -31,81 +23,38 @@
                 <div class="simple-piece black"></div>
               </div>
             </div>
-            
-
           </div>
         </div>
-        
-        <!-- 右侧表单区域 -->
         <div class="form-panel">
           <div class="form-content">
             <div class="form-header">
               <h2 class="form-title">欢迎回来</h2>
               <p class="form-subtitle">登录您的账户</p>
             </div>
-            
-            <el-form
-              ref="loginFormRef"
-              :model="loginForm"
-              :rules="rules"
-              class="login-form"
-              @keyup.enter="handleLogin"
-              size="large"
-            >
+            <el-form ref="loginFormRef" :model="loginForm" :rules="rules" class="login-form" @keyup.enter="handleLogin"
+              size="large">
               <el-form-item prop="username">
-                 <el-input 
-                   v-model="loginForm.username" 
-                   placeholder="用户名"
-                   clearable
-                   autofocus
-                   class="form-input"
-                 />
-               </el-form-item>
-
-               <el-form-item prop="password">
-                 <el-input
-                   v-model="loginForm.password"
-                   type="password"
-                   placeholder="密码"
-                   show-password
-                   clearable
-                   class="form-input"
-                 />
-               </el-form-item>
-
-
-
-              <el-button 
-                 type="primary"
-                 class="login-button"
-                 @click="handleLogin" 
-                 :loading="loading"
-                 :disabled="!loginForm.username || !loginForm.password"
-               >
-                 登录
-               </el-button>
+                <el-input v-model="loginForm.username" placeholder="用户名" clearable autofocus class="form-input" />
+              </el-form-item>
+              <el-form-item prop="password">
+                <el-input v-model="loginForm.password" type="password" placeholder="密码" show-password clearable
+                  class="form-input" />
+              </el-form-item>
+              <el-button type="primary" class="login-button" @click="handleLogin" :loading="loading">
+                登录
+              </el-button>
             </el-form>
-            
             <div class="form-links">
-               <a href="/forgot-password" class="link-text">忘记密码？</a>
-               <span class="link-separator">|</span>
-               <a href="/register" class="link-text">立即注册</a>
-             </div>
-            
-
+              <a href="/forgot-password" class="link-text">忘记密码？</a>
+              <span class="link-separator">|</span>
+              <a href="/register" class="link-text">立即注册</a>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    
-    <!-- 错误提示对话框 -->
-    <el-dialog
-      v-model="errorDialog.visible"
-      title="登录失败"
-      width="380px"
-      class="error-dialog"
-      :close-on-click-modal="false"
-    >
+    <el-dialog v-model="errorDialog.visible" title="登录失败" width="380px" class="error-dialog"
+      :close-on-click-modal="false">
       <div class="error-content">
         <div class="error-icon">
           <el-icon color="#F56C6C" :size="48">
@@ -128,9 +77,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import {
-  CircleClose
-} from '@element-plus/icons-vue'
+import { CircleClose } from '@element-plus/icons-vue'
 import { userAPI } from '../api/index.js'
 
 export default {
@@ -150,14 +97,12 @@ export default {
       remember: false
     })
 
-    // 错误对话框
     const errorDialog = reactive({
       visible: false,
       title: '登录失败',
       message: ''
     })
 
-    // 登录失败计数
     const loginAttempts = reactive({
       count: 0,
       lastAttempt: null,
@@ -175,7 +120,6 @@ export default {
       ]
     }
 
-    // 检查是否被锁定
     const checkLockout = () => {
       const now = Date.now()
       if (loginAttempts.lockoutTime > now) {
@@ -188,30 +132,25 @@ export default {
       return false
     }
 
-    // 更新登录尝试计数
     const updateLoginAttempts = (success) => {
       const now = Date.now()
-      
+
       if (success) {
-        // 重置计数
         loginAttempts.count = 0
         loginAttempts.lastAttempt = null
         loginAttempts.lockoutTime = 0
       } else {
         loginAttempts.count++
         loginAttempts.lastAttempt = now
-        
-        // 连续失败5次，锁定5分钟
+
         if (loginAttempts.count >= 5) {
-          loginAttempts.lockoutTime = now + 5 * 60 * 1000 // 5分钟
+          loginAttempts.lockoutTime = now + 5 * 60 * 1000
         }
       }
-      
-      // 保存到本地存储
+
       localStorage.setItem('loginAttempts', JSON.stringify(loginAttempts))
     }
 
-    // 加载登录尝试记录
     const loadLoginAttempts = () => {
       const saved = localStorage.getItem('loginAttempts')
       if (saved) {
@@ -220,7 +159,6 @@ export default {
       }
     }
 
-    // 自动填充记住的用户名
     const autoFillUsername = () => {
       const rememberedUsername = localStorage.getItem('rememberedUsername')
       if (rememberedUsername) {
@@ -232,7 +170,6 @@ export default {
     const handleLogin = async () => {
       if (!loginFormRef.value) return
 
-      // 检查锁定状态
       if (checkLockout()) {
         return
       }
@@ -245,42 +182,36 @@ export default {
               username: loginForm.username,
               password: loginForm.password
             })
-            
+
             if (response.success || response.code === 200) {
-              // 登录成功
               updateLoginAttempts(true)
-              
-              // 处理记住我功能
+
               if (loginForm.remember) {
                 localStorage.setItem('rememberedUsername', loginForm.username)
               } else {
                 localStorage.removeItem('rememberedUsername')
               }
-              
-              // 保存token和用户信息
+
               const token = response.data?.token || response.token
               const userInfo = response.data?.user || response.user
-              
+
               if (token) {
                 localStorage.setItem('token', token)
                 localStorage.setItem('userInfo', JSON.stringify(userInfo))
               }
-              
+
               ElMessage.success('登录成功！')
-              
-              // 跳转到首页或原始目标页面
+
               const redirect = route.query.redirect || '/'
               router.push(redirect)
-              
+
             } else {
-              // 登录失败
               updateLoginAttempts(false)
-              
+
               errorDialog.title = '登录失败'
               errorDialog.message = response.message || '用户名或密码错误'
               errorDialog.visible = true
-              
-              // 显示剩余尝试次数
+
               if (loginAttempts.count > 0 && loginAttempts.count < 5) {
                 const remaining = 5 - loginAttempts.count
                 ElMessage.warning(`登录失败，还有 ${remaining} 次尝试机会`)
@@ -288,7 +219,7 @@ export default {
             }
           } catch (error) {
             updateLoginAttempts(false)
-            
+
             console.error('登录错误:', error)
             errorDialog.title = '登录失败'
             errorDialog.message = '网络连接失败，请检查网络连接后重试'
@@ -300,39 +231,13 @@ export default {
       })
     }
 
-    // 忘记密码
-    const handleForgotPassword = () => {
-      ElMessage.info('密码重置功能开发中，请联系客服')
-    }
-
-    // 社交登录
-    const handleSocialLogin = (type) => {
-      ElMessage.info(`${type === 'wechat' ? '微信' : 'QQ'}登录功能开发中`)
-    }
-
-    // 获取棋盘棋子样式
-    const getBoardPiece = (i, j) => {
-      const pieces = {
-        'black-piece': [[3, 3], [5, 5], [7, 7], [2, 6], [6, 2]],
-        'white-piece': [[4, 3], [3, 4], [5, 4], [4, 5], [6, 7]]
-      }
-      
-      for (const [className, positions] of Object.entries(pieces)) {
-        if (positions.some(([pi, pj]) => pi === i && pj === j)) {
-          return className
-        }
-      }
-      return ''
-    }
-
-    // 获取粒子样式
     const getParticleStyle = () => {
       const size = Math.random() * 4 + 2
       const left = Math.random() * 100
       const top = Math.random() * 100
       const delay = Math.random() * 8
       const duration = Math.random() * 15 + 10
-      
+
       return {
         width: `${size}px`,
         height: `${size}px`,
@@ -355,9 +260,6 @@ export default {
       loading,
       errorDialog,
       handleLogin,
-      handleForgotPassword,
-      handleSocialLogin,
-      getBoardPiece,
       getParticleStyle
     }
   }
@@ -395,7 +297,7 @@ export default {
   backdrop-filter: blur(80px) saturate(200%);
   -webkit-backdrop-filter: blur(80px) saturate(200%);
   border: 1px solid rgba(255, 255, 255, 0.5);
-  box-shadow: 
+  box-shadow:
     0 0 100px rgba(255, 255, 255, 0.3),
     inset 0 0 50px rgba(255, 255, 255, 0.15),
     0 12px 40px rgba(0, 0, 0, 0.08),
@@ -438,27 +340,33 @@ export default {
 }
 
 @keyframes liquid-float {
-  0%, 100% { 
+
+  0%,
+  100% {
     transform: translate(0, 0) scale(1) rotate(0deg);
     border-radius: 50%;
     filter: blur(0px);
   }
-  20% { 
+
+  20% {
     transform: translate(40px, -20px) scale(1.15) rotate(72deg);
     border-radius: 60% 40% 50% 70%;
     filter: blur(1px);
   }
-  40% { 
+
+  40% {
     transform: translate(-30px, 30px) scale(0.85) rotate(144deg);
     border-radius: 40% 70% 60% 50%;
     filter: blur(0.5px);
   }
-  60% { 
+
+  60% {
     transform: translate(20px, -40px) scale(1.25) rotate(216deg);
     border-radius: 70% 50% 40% 60%;
     filter: blur(1.5px);
   }
-  80% { 
+
+  80% {
     transform: translate(-40px, 20px) scale(0.95) rotate(288deg);
     border-radius: 50% 60% 70% 40%;
     filter: blur(0.8px);
@@ -489,14 +397,17 @@ export default {
     transform: translateY(100vh) translateX(0) scale(0.5);
     opacity: 0;
   }
+
   10% {
     opacity: 1;
     transform: translateY(90vh) translateX(10px) scale(1);
   }
+
   90% {
     opacity: 1;
     transform: translateY(10vh) translateX(40px) scale(1);
   }
+
   100% {
     transform: translateY(-100vh) translateX(50px) scale(0.5);
     opacity: 0;
@@ -519,7 +430,7 @@ export default {
   -webkit-backdrop-filter: blur(100px) saturate(220%);
   border-radius: 28px;
   border: 1px solid rgba(255, 255, 255, 0.6);
-  box-shadow: 
+  box-shadow:
     0 40px 80px rgba(0, 0, 0, 0.08),
     0 0 0 1px rgba(255, 255, 255, 0.8) inset,
     0 0 120px rgba(59, 130, 246, 0.2),
@@ -539,10 +450,10 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, 
-    rgba(30, 64, 175, 0.04) 0%, 
-    transparent 50%, 
-    rgba(30, 41, 59, 0.02) 100%);
+  background: linear-gradient(135deg,
+      rgba(30, 64, 175, 0.04) 0%,
+      transparent 50%,
+      rgba(30, 41, 59, 0.02) 100%);
   pointer-events: none;
   z-index: 1;
 }
@@ -552,6 +463,7 @@ export default {
     opacity: 0;
     transform: translateY(30px) scale(0.95);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -562,6 +474,7 @@ export default {
   0% {
     transform: translateX(-100%) translateY(-100%) rotate(45deg);
   }
+
   100% {
     transform: translateX(100%) translateY(100%) rotate(45deg);
   }
@@ -709,7 +622,7 @@ export default {
   backdrop-filter: blur(30px) saturate(180%);
   -webkit-backdrop-filter: blur(30px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.5);
-  box-shadow: 
+  box-shadow:
     0 12px 40px rgba(0, 0, 0, 0.08),
     inset 0 0 0 1px rgba(255, 255, 255, 0.6),
     inset 0 0 30px rgba(59, 130, 246, 0.15);
@@ -734,7 +647,7 @@ export default {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  box-shadow: 
+  box-shadow:
     0 4px 12px rgba(0, 0, 0, 0.3),
     inset 0 2px 4px rgba(255, 255, 255, 0.4),
     inset 0 -2px 4px rgba(0, 0, 0, 0.1);
@@ -745,7 +658,7 @@ export default {
 
 .simple-piece:hover {
   transform: scale(1.15) translateY(-2px);
-  box-shadow: 
+  box-shadow:
     0 6px 20px rgba(0, 0, 0, 0.4),
     inset 0 2px 6px rgba(255, 255, 255, 0.5),
     inset 0 -2px 6px rgba(0, 0, 0, 0.15);
@@ -754,7 +667,7 @@ export default {
 .simple-piece.black {
   background: radial-gradient(circle at 35% 35%, #1e293b, #0f172a, #020617);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 
+  box-shadow:
     0 4px 12px rgba(0, 0, 0, 0.3),
     inset 0 2px 4px rgba(255, 255, 255, 0.3),
     inset 0 -2px 4px rgba(0, 0, 0, 0.2);
@@ -763,7 +676,7 @@ export default {
 .simple-piece.white {
   background: radial-gradient(circle at 35% 35%, #f8fafc, #e2e8f0, #cbd5e1);
   border: 1px solid rgba(255, 255, 255, 0.6);
-  box-shadow: 
+  box-shadow:
     0 4px 12px rgba(0, 0, 0, 0.15),
     inset 0 2px 4px rgba(255, 255, 255, 0.8),
     inset 0 -2px 4px rgba(0, 0, 0, 0.1);
@@ -801,11 +714,11 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(45deg, 
-    rgba(30, 64, 175, 0.05) 0%, 
-    transparent 30%, 
-    transparent 70%, 
-    rgba(15, 23, 42, 0.03) 100%);
+  background: linear-gradient(45deg,
+      rgba(30, 64, 175, 0.05) 0%,
+      transparent 30%,
+      transparent 70%,
+      rgba(15, 23, 42, 0.03) 100%);
   pointer-events: none;
   z-index: 1;
 }
@@ -838,11 +751,11 @@ export default {
 
 /* 表单样式 - 清新风格 */
 .login-form {
-  margin-bottom: 16px;
+  margin-bottom: 24px;
 }
 
 .form-input {
-  --el-input-border-radius: 12px;
+  --el-border-radius-base: 12px;
   --el-input-bg-color: rgba(255, 255, 255, 0.25);
   --el-input-border-color: rgba(255, 255, 255, 0.4);
   --el-input-hover-border-color: rgba(59, 130, 246, 0.6);
@@ -852,73 +765,99 @@ export default {
 .form-input :deep(.el-input__wrapper) {
   background: rgba(255, 255, 255, 0.25);
   border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: none;
-  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-.form-input :deep(.el-input__wrapper):hover {
+.form-input:hover :deep(.el-input__wrapper) {
   border-color: rgba(59, 130, 246, 0.6);
   background: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
 }
 
-.form-input :deep(.el-input__wrapper).is-focus {
+.form-input :deep(.el-input__wrapper.is-focus) {
   border-color: rgba(59, 130, 246, 0.9);
   background: rgba(255, 255, 255, 0.4);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
 .login-button {
   width: 100%;
-  height: 40px;
-  border-radius: 8px;
-  background: linear-gradient(135deg, rgba(30, 64, 175, 0.9), rgba(59, 130, 246, 0.9));
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  font-size: 14px;
+  height: 48px;
+  font-size: 16px;
   font-weight: 500;
-  transition: all 0.3s ease;
-  box-shadow: 
-    0 4px 20px rgba(30, 64, 175, 0.3),
-    inset 0 1px 2px rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+  border: none;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  position: relative;
+  overflow: hidden;
 }
 
 .login-button:hover {
-  background: linear-gradient(135deg, rgba(30, 64, 175, 1), rgba(59, 130, 246, 1));
-  box-shadow: 
-    0 6px 24px rgba(30, 64, 175, 0.4),
-    inset 0 1px 2px rgba(255, 255, 255, 0.3);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
 }
 
 .login-button:active {
   transform: translateY(0);
 }
 
+.login-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.6s ease;
+}
+
+.login-button:hover::before {
+  left: 100%;
+}
+
 /* 表单链接 */
 .form-links {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 16px;
-  font-size: 13px;
+  text-align: center;
+  margin-top: 24px;
 }
 
 .link-text {
-  color: rgba(59, 130, 246, 0.9);
+  color: #3b82f6;
   text-decoration: none;
-  padding: 4px 8px;
-  transition: all 0.3s ease;
+  font-size: 14px;
   font-weight: 500;
+  transition: all 0.3s ease;
+  position: relative;
 }
 
 .link-text:hover {
-  color: rgba(30, 64, 175, 1);
-  text-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
+  color: #60a5fa;
+  text-decoration: none;
+}
+
+.link-text::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: linear-gradient(90deg, #3b82f6, #60a5fa);
+  transition: width 0.3s ease;
+}
+
+.link-text:hover::after {
+  width: 100%;
 }
 
 .link-separator {
-  color: rgba(255, 255, 255, 0.4);
-  margin: 0 4px;
-  font-weight: 300;
+  color: #cbd5e1;
+  margin: 0 12px;
+  font-size: 14px;
 }
 
 /* 社交登录 */
@@ -928,11 +867,21 @@ export default {
 
 /* 错误对话框 */
 .error-dialog {
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  background: rgba(255, 255, 255, 0.9) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 16px;
+  overflow: hidden;
+}
+
+.error-dialog :deep(.el-dialog__header) {
+  padding: 20px 24px 0;
+  margin-bottom: 0;
+}
+
+.error-dialog :deep(.el-dialog__body) {
+  padding: 24px;
+}
+
+.error-dialog :deep(.el-dialog__footer) {
+  padding: 0 24px 20px;
 }
 
 .error-content {
@@ -942,98 +891,120 @@ export default {
 
 .error-icon {
   margin-bottom: 16px;
-  animation: shake 0.5s ease-in-out;
-}
-
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  75% { transform: translateX(5px); }
 }
 
 .error-title {
   font-size: 18px;
   font-weight: 600;
   color: #1f2937;
-  margin: 0 0 8px 0;
+  margin-bottom: 8px;
 }
 
 .error-message {
   font-size: 14px;
   color: #6b7280;
-  margin: 0;
   line-height: 1.5;
+  margin: 0;
 }
 
 .error-btn {
-  width: 100%;
-  background: linear-gradient(135deg, rgba(79, 70, 229, 0.9), rgba(124, 58, 237, 0.9)) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  min-width: 80px;
+  border-radius: 8px;
 }
 
 /* 响应式设计 */
 @media (max-width: 768px) {
   .login-card {
     flex-direction: column;
-    max-width: 400px;
+    min-height: auto;
   }
-  
+
   .brand-panel {
-    padding: 40px 30px;
+    padding: 30px 20px;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
   }
-  
+
   .form-panel {
-    padding: 40px 30px;
+    padding: 30px 20px;
   }
-  
+
+  .form-content {
+    max-width: 100%;
+  }
+
   .brand-title {
-    font-size: 24px;
+    font-size: 28px;
   }
-  
+
   .form-title {
     font-size: 24px;
+  }
+
+  .login-button {
+    height: 44px;
+    font-size: 15px;
+  }
+
+  .glass-blob-1 {
+    width: 200px;
+    height: 200px;
+    top: -100px;
+    left: -100px;
+  }
+
+  .glass-blob-2 {
+    width: 150px;
+    height: 150px;
+    top: 30%;
+    right: -75px;
+  }
+
+  .glass-blob-3 {
+    width: 120px;
+    height: 120px;
+    bottom: -60px;
+    left: 20%;
+  }
+
+  .glass-blob-4 {
+    width: 80px;
+    height: 80px;
+    top: 15%;
+    left: 70%;
   }
 }
 
 @media (max-width: 480px) {
+  .login-container {
+    padding: 10px;
+  }
+
   .login-wrapper {
     padding: 10px;
   }
-  
-  .login-card {
-    border-radius: 20px;
-  }
-  
+
   .brand-panel {
-    padding: 30px 20px;
+    padding: 20px 15px;
   }
-  
+
   .form-panel {
-    padding: 30px 20px;
+    padding: 20px 15px;
   }
-  
-  .logo-circle {
-    width: 60px;
-    height: 60px;
+
+  .simple-board {
+    padding: 12px;
+    gap: 6px;
   }
-  
-  .logo-text {
-    font-size: 28px;
+
+  .simple-piece {
+    width: 20px;
+    height: 20px;
   }
-  
-  .mini-board {
-    padding: 10px;
-  }
-  
-  .board-cell {
-    width: 16px;
-    height: 16px;
-  }
-  
-  .board-cell.black-piece::after,
-  .board-cell.white-piece::after {
-    width: 12px;
-    height: 12px;
+
+  .error-dialog {
+    width: 90% !important;
+    max-width: 380px;
   }
 }
 </style>
