@@ -113,6 +113,20 @@
           </button>
         </div>
       </div>
+      
+      <!-- 匹配状态显示 -->
+      <div class="matching-status" v-if="isMatching">
+        <div class="matching-content">
+          <div class="matching-spinner"></div>
+          <div class="matching-text">
+            <div class="matching-title">匹配中</div>
+            <div class="matching-time">已等待 {{ matchingElapsedTime }} 秒</div>
+          </div>
+          <button class="cancel-match-btn" @click="stopMatchingTimer(); matchingLoading = false;">
+            取消匹配
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -151,6 +165,76 @@
 .user-avatar:hover {
   transform: scale(1.05);
 }
+
+/* 匹配状态样式 */
+.matching-status {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(17, 34, 64, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(100, 255, 218, 0.3);
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  min-width: 300px;
+}
+
+.matching-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.matching-spinner {
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(100, 255, 218, 0.2);
+  border-top: 3px solid rgba(100, 255, 218, 0.8);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.matching-text {
+  text-align: center;
+  color: #e8e8e8;
+}
+
+.matching-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: rgba(100, 255, 218, 0.9);
+}
+
+.matching-time {
+  font-size: 14px;
+  color: rgba(232, 232, 232, 0.8);
+}
+
+.cancel-match-btn {
+  background: rgba(255, 77, 77, 0.2);
+  border: 1px solid rgba(255, 77, 77, 0.4);
+  color: #ff4d4d;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cancel-match-btn:hover {
+  background: rgba(255, 77, 77, 0.3);
+  border-color: rgba(255, 77, 77, 0.6);
+}
 </style>
 
 <script>
@@ -166,6 +250,9 @@ export default {
     const selectedGameMode = ref('gobang')
     const matchingLoading = ref(false)
     const creatingRoom = ref(false)
+    const isMatching = ref(false)
+    const matchingElapsedTime = ref(0)
+    let matchingTimer = null
 
     const userInfo = ref(null)
 
@@ -313,6 +400,23 @@ export default {
       settingsDialog.visible = true
     }
 
+    const startMatchingTimer = () => {
+      matchingElapsedTime.value = 0
+      isMatching.value = true
+      matchingTimer = setInterval(() => {
+        matchingElapsedTime.value++
+      }, 1000)
+    }
+
+    const stopMatchingTimer = () => {
+      if (matchingTimer) {
+        clearInterval(matchingTimer)
+        matchingTimer = null
+      }
+      isMatching.value = false
+      matchingElapsedTime.value = 0
+    }
+
     const startQuickMatch = async () => {
       if (!userInfo.value) {
         ElMessage.warning('请先登录')
@@ -321,24 +425,33 @@ export default {
       }
 
       matchingLoading.value = true
+      startMatchingTimer() // 开始匹配计时器
+      
       try {
         const response = await gameAPI.quickMatch(selectedGameMode.value)
         if (response.success) {
           if (response.data && response.data.gameId) {
+            stopMatchingTimer() // 停止匹配计时器
             ElMessage.success('匹配成功，正在进入游戏...')
             router.push(`/game/${response.data.gameId}`)
           } else {
-            // 匹配中但还未找到对手
+            // 匹配中但还未找到对手 - 保持计时器运行
             ElMessage.info(response.message || '正在匹配中，请稍后...')
           }
         } else {
+          stopMatchingTimer() // 停止匹配计时器
           ElMessage.error(response.message || '匹配失败')
         }
       } catch (error) {
+        stopMatchingTimer() // 停止匹配计时器
         console.error('快速匹配失败:', error)
         ElMessage.error('匹配失败，请重试')
       } finally {
-        matchingLoading.value = false
+        // 注意：matchingLoading.value = false 不在finally中设置，
+        // 因为匹配中状态需要保持按钮禁用状态
+        if (!isMatching.value) {
+          matchingLoading.value = false
+        }
       }
     }
 
@@ -401,6 +514,8 @@ export default {
       selectedGameMode,
       matchingLoading,
       creatingRoom,
+      isMatching,
+      matchingElapsedTime,
       userInfo,
       gameStats,
       settingsDialog,
@@ -420,7 +535,8 @@ export default {
       goToHome,
       goToFriends,
       goToRanking,
-      showSettings
+      showSettings,
+      stopMatchingTimer
     }
   }
 }
