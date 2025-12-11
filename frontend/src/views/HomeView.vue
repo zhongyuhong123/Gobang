@@ -19,12 +19,8 @@
       <div class="top-bar">
         <div class="user-info" v-if="userInfo">
           <div class="user-avatar">
-            <el-avatar 
-              :src="userInfo.avatar || '/default-avatar.png'" 
-              :size="48"
-              fit="cover"
-              @error="() => userInfo.avatar = '/default-avatar.png'">
-              <User />
+            <el-avatar :size="48" :style="{ backgroundColor: getAvatarColor(userInfo.username) }">
+              {{ getUsernameInitial(userInfo.username) }}
             </el-avatar>
           </div>
           <div class="user-details">
@@ -42,7 +38,7 @@
             <span class="game-count">对局: {{ totalGames }}</span>
           </div>
           <div class="user-actions" v-if="userInfo">
-      </div>
+          </div>
           <div class="guest-actions" v-else>
             <el-button type="primary" size="small" @click="$router.push('/login')">登录</el-button>
             <el-button type="success" size="small" @click="$router.push('/register')">注册</el-button>
@@ -52,32 +48,32 @@
 
       <div class="game-modes">
         <div class="game-header">
-      </div>
+        </div>
       </div>
 
       <div class="game-actions">
         <div class="game-tabs">
-          <div class="game-tab" 
-               :class="{ active: selectedGameMode === 'gobang' }" 
-               @click="selectGameMode('gobang')"
-               title="五子棋">
-            <span class="tab-icon"><Check /></span>
+          <div class="game-tab" :class="{ active: selectedGameMode === 'gobang' }" @click="selectGameMode('gobang')"
+            title="五子棋">
+            <span class="tab-icon">
+              <Check />
+            </span>
             <span class="tab-name">五子棋</span>
           </div>
 
-          <div class="game-tab" 
-               :class="{ active: selectedGameMode === 'military' }"
-               @click="selectGameMode('military')"
-               title="军棋">
-            <span class="tab-icon"><Flag /></span>
+          <div class="game-tab" :class="{ active: selectedGameMode === 'military' }" @click="selectGameMode('military')"
+            title="军棋">
+            <span class="tab-icon">
+              <Flag />
+            </span>
             <span class="tab-name">军棋</span>
           </div>
 
-          <div class="game-tab" 
-               :class="{ active: selectedGameMode === 'chinese-chess' }"
-               @click="selectGameMode('chinese-chess')"
-               title="中国象棋">
-            <span class="tab-icon"><PieChart /></span>
+          <div class="game-tab" :class="{ active: selectedGameMode === 'chinese-chess' }"
+            @click="selectGameMode('chinese-chess')" title="中国象棋">
+            <span class="tab-icon">
+              <PieChart />
+            </span>
             <span class="tab-name">中国象棋</span>
           </div>
         </div>
@@ -139,9 +135,11 @@
   0% {
     box-shadow: 0 0 0 0 rgba(100, 255, 218, 0.4);
   }
+
   70% {
     box-shadow: 0 0 0 10px rgba(100, 255, 218, 0);
   }
+
   100% {
     box-shadow: 0 0 0 0 rgba(100, 255, 218, 0);
   }
@@ -150,10 +148,34 @@
 /* 图标动画 */
 .nav-icon svg {
   transition: transform 0.3s ease;
+  width: 18px;
+  height: 18px;
 }
 
 .nav-icon:hover svg {
-  transform: scale(1.1);
+  transform: scale(1.15);
+}
+
+/* 导航图标悬停光效 */
+.nav-icon::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(100, 255, 218, 0.2), transparent);
+  transition: left 0.6s ease;
+}
+
+.nav-icon:hover::before {
+  left: 100%;
+}
+
+/* 导航图标激活状态 */
+.nav-icon:active {
+  transform: scale(0.95);
+  background: rgba(100, 255, 218, 0.15);
 }
 
 /* 头像悬停效果 */
@@ -342,18 +364,39 @@ export default {
       return statsMap[mode] || null
     }
 
+    const getUsernameInitial = (username) => {
+      if (!username) return '用'
+      return username.charAt(0).toUpperCase()
+    }
+
+    const getAvatarColor = (username) => {
+      if (!username) return '#64ffda'
+
+      const colors = [
+        '#64ffda', '#4fc3f7', '#81c784', '#ffb74d', '#ff8a65',
+        '#ba68c8', '#4db6ac', '#7986cb', '#a1887f', '#90a4ae'
+      ]
+
+      let hash = 0
+      for (let i = 0; i < username.length; i++) {
+        hash = username.charCodeAt(i) + ((hash << 5) - hash)
+      }
+
+      return colors[Math.abs(hash) % colors.length]
+    }
+
     const goToHome = () => {
       router.push('/')
     }
-    
+
     const goToFriends = () => {
       router.push('/friends')
     }
-    
+
     const goToRanking = () => {
       router.push('/ranking')
     }
-    
+
     const showSettings = () => {
       settingsDialog.visible = true
     }
@@ -451,6 +494,8 @@ export default {
       getRankName,
       getWinRate,
       getGameStats,
+      getUsernameInitial,
+      getAvatarColor,
       startQuickMatch,
       createRoom,
       goToHome,
@@ -472,38 +517,41 @@ export default {
 }
 
 .left-nav {
-  width: 70px;
+  width: 60px;
   background: rgba(17, 34, 64, 0.95);
   backdrop-filter: blur(20px);
   border-right: 1px solid rgba(100, 255, 218, 0.15);
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 25px;
-  gap: 25px;
+  padding-top: 20px;
+  gap: 20px;
   box-shadow: 0 0 25px rgba(0, 0, 0, 0.25);
 }
 
 .nav-icon {
-  width: 42px;
-  height: 42px;
-  background: rgba(100, 255, 218, 0.08);
-  border: 1px solid rgba(100, 255, 218, 0.2);
-  border-radius: 10px;
+  width: 36px;
+  height: 36px;
+  background: rgba(100, 255, 218, 0.05);
+  border: 1px solid rgba(100, 255, 218, 0.15);
+  border-radius: 8px;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: rgba(100, 255, 218, 0.7);
-  font-size: 18px;
+  color: rgba(100, 255, 218, 0.6);
+  font-size: 16px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
 }
 
 .nav-icon:hover {
-  background: rgba(100, 255, 218, 0.15);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(100, 255, 218, 0.15);
+  background: rgba(100, 255, 218, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(100, 255, 218, 0.2);
   color: rgba(100, 255, 218, 0.9);
+  border-color: rgba(100, 255, 218, 0.3);
 }
 
 .main-content {
@@ -542,6 +590,13 @@ export default {
   box-shadow: 0 0 16px rgba(100, 255, 218, 0.2);
   cursor: default;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 18px;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .user-details {
@@ -695,8 +750,13 @@ export default {
 }
 
 @keyframes shine {
-  0% { left: -100%; }
-  100% { left: 100%; }
+  0% {
+    left: -100%;
+  }
+
+  100% {
+    left: 100%;
+  }
 }
 
 .tab-icon {
@@ -914,12 +974,12 @@ export default {
     width: 100%;
     min-width: unset;
   }
-  
+
   .game-stats {
     flex-wrap: wrap;
     gap: 10px;
   }
-  
+
   .stat-item {
     font-size: 13px;
     padding: 6px 12px;
@@ -953,19 +1013,19 @@ export default {
     gap: 10px;
     justify-content: center;
   }
-  
+
   .game-tab {
     padding: 10px 18px;
   }
-  
+
   .tab-name {
     font-size: 14px;
   }
-  
+
   .game-description {
     font-size: 15px;
   }
-  
+
   .game-tips {
     font-size: 13px;
   }
@@ -993,28 +1053,28 @@ export default {
   .game-actions {
     padding: 15px;
   }
-  
+
   .user-avatar {
     width: 50px;
     height: 50px;
   }
-  
+
   .username {
     font-size: 18px;
   }
-  
+
   .user-stats {
     flex-wrap: wrap;
     gap: 8px;
     font-size: 12px;
   }
-  
+
   .top-stats {
     flex-wrap: wrap;
     gap: 8px;
     font-size: 12px;
   }
-  
+
   .game-title-section h2 {
     font-size: 1.5rem;
   }
