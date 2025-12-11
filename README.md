@@ -56,7 +56,8 @@
 ## 项目预览
 
 ### 主界面
-![Gobang](preview/Gobang.png)
+![项目首页](preview/首页.png)
+![游戏大厅](preview/游戏大厅.png)
 
 ## 快速开始
 
