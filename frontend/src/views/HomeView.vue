@@ -120,7 +120,7 @@
           <div class="matching-spinner"></div>
           <div class="matching-text">
             <div class="matching-title">匹配中</div>
-            <div class="matching-time">已等待 {{ matchingElapsedTime }} 秒</div>
+            <div class="matching-time" :class="{ warning: matchingElapsedTime >= 150 }">已等待 {{ formatMatchingTime(matchingElapsedTime) }}</div>
           </div>
           <button class="cancel-match-btn" @click="stopMatchingTimer(); matchingLoading = false;">
             取消匹配
@@ -216,8 +216,21 @@
 }
 
 .matching-time {
-  font-size: 14px;
+  font-size: 16px;
   color: rgba(232, 232, 232, 0.8);
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.matching-time.warning {
+  color: #ffb74d;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.6; }
+  100% { opacity: 1; }
 }
 
 .cancel-match-btn {
@@ -400,11 +413,28 @@ export default {
       settingsDialog.visible = true
     }
 
+    const formatMatchingTime = (seconds) => {
+      if (seconds < 60) {
+        return `${seconds}秒`
+      } else {
+        const minutes = Math.floor(seconds / 60)
+        const remainingSeconds = seconds % 60
+        return `${minutes}分${remainingSeconds}秒`
+      }
+    }
+
     const startMatchingTimer = () => {
       matchingElapsedTime.value = 0
       isMatching.value = true
       matchingTimer = setInterval(() => {
         matchingElapsedTime.value++
+        
+        // 检查是否超过3分钟（180秒）
+        if (matchingElapsedTime.value >= 180) {
+          stopMatchingTimer()
+          matchingLoading.value = false
+          ElMessage.error('匹配失败')
+        }
       }, 1000)
     }
 
@@ -425,30 +455,27 @@ export default {
       }
 
       matchingLoading.value = true
-      startMatchingTimer() // 开始匹配计时器
+      startMatchingTimer()
       
       try {
         const response = await gameAPI.quickMatch(selectedGameMode.value)
         if (response.success) {
           if (response.data && response.data.gameId) {
-            stopMatchingTimer() // 停止匹配计时器
-            ElMessage.success('匹配成功，正在进入游戏...')
+            stopMatchingTimer()
+            ElMessage.success('匹配成功')
             router.push(`/game/${response.data.gameId}`)
           } else {
-            // 匹配中但还未找到对手 - 保持计时器运行
-            ElMessage.info(response.message || '正在匹配中，请稍后...')
+            ElMessage.info(response.message || '正在匹配')
           }
         } else {
-          stopMatchingTimer() // 停止匹配计时器
+          stopMatchingTimer()
           ElMessage.error(response.message || '匹配失败')
         }
       } catch (error) {
-        stopMatchingTimer() // 停止匹配计时器
+        stopMatchingTimer()
         console.error('快速匹配失败:', error)
         ElMessage.error('匹配失败，请重试')
       } finally {
-        // 注意：matchingLoading.value = false 不在finally中设置，
-        // 因为匹配中状态需要保持按钮禁用状态
         if (!isMatching.value) {
           matchingLoading.value = false
         }
@@ -536,7 +563,8 @@ export default {
       goToFriends,
       goToRanking,
       showSettings,
-      stopMatchingTimer
+      stopMatchingTimer,
+      formatMatchingTime
     }
   }
 }

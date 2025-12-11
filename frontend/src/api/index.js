@@ -164,7 +164,9 @@ export const wsManager = {
     }
 
     const token = localStorage.getItem('token')
-    const wsUrl = `${process.env.VUE_APP_WS_BASE_URL || 'ws://localhost:8080'}/findMatch?userId=${userId}${token ? `&token=${token}` : ''}`
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
+    const host = process.env.VUE_APP_WS_BASE_URL ? process.env.VUE_APP_WS_BASE_URL.replace(/^https?:/, protocol) : 'ws://localhost:8080'
+    const wsUrl = `${host}/findMatch?userId=${userId}${token ? `&token=${token}` : ''}`
     wsManager.matchSocket = new WebSocket(wsUrl)
 
     wsManager.matchSocket.onopen = () => {
@@ -201,7 +203,9 @@ export const wsManager = {
     }
 
     const token = localStorage.getItem('token')
-    const wsUrl = `${process.env.VUE_APP_WS_BASE_URL || 'ws://localhost:8080'}/game?userId=${userId}&roomId=${roomId}${token ? `&token=${token}` : ''}`
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
+    const host = process.env.VUE_APP_WS_BASE_URL ? process.env.VUE_APP_WS_BASE_URL.replace(/^https?:/, protocol) : 'ws://localhost:8080'
+    const wsUrl = `${host}/game?userId=${userId}&roomId=${roomId}${token ? `&token=${token}` : ''}`
     wsManager.gameSocket = new WebSocket(wsUrl)
 
     wsManager.gameSocket.onopen = () => {

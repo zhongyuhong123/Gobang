@@ -75,10 +75,6 @@ export default {
 </script>
 
 <style scoped>
-
-
-
-
 .welcome-container {
   min-height: 100vh;
   background: var(--bg-primary);
@@ -361,8 +357,6 @@ export default {
   position: relative;
   z-index: 1;
 }
-
-
 
 @media (max-width: 992px) {
   .hero-section {

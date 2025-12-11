@@ -79,8 +79,6 @@ export default {
       confirmPassword: ''
     })
 
-
-
     const validateConfirmPassword = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请再次输入密码'))
@@ -98,11 +96,13 @@ export default {
       ],
       password: [
         { required: true, message: '请输入密码', trigger: 'blur' },
-        { min: 6, message: '密码长度至少为 6 个字符', trigger: 'blur' }
+        { min: 6, message: '密码长度至少为 6 个字符', trigger: 'blur' },
+        { pattern: /^[a-zA-Z0-9!@#$%^&*]{6,20}$/, message: '密码只能包含字母、数字和特殊字符(!@#$%^&*)，长度为6-20个字符', trigger: 'blur' }
       ],
       confirmPassword: [
         { required: true, message: '请再次输入密码', trigger: 'blur' },
-        { validator: validateConfirmPassword, trigger: 'blur' }
+        { validator: validateConfirmPassword, trigger: 'blur' },
+        { pattern: /^[a-zA-Z0-9!@#$%^&*]{6,20}$/, message: '确认密码只能包含字母、数字和特殊字符(!@#$%^&*)，长度为6-20个字符', trigger: 'blur' }
       ]
     }
 

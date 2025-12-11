@@ -6,6 +6,7 @@ import com.yangshengzhou.gobang.game.MatchRequest;
 import com.yangshengzhou.gobang.game.MatchResponse;
 import com.yangshengzhou.gobang.game.Matcher;
 import com.yangshengzhou.gobang.game.OnlineUserManager;
+import com.yangshengzhou.gobang.game.MatchTimeoutService;
 import com.yangshengzhou.gobang.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,9 @@ public class MatchController extends TextWebSocketHandler {
 
     @Autowired
     private Matcher matcher;
+
+    @Autowired
+    private MatchTimeoutService matchTimeoutService;
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -88,12 +92,16 @@ public class MatchController extends TextWebSocketHandler {
         if(request.getMessage().equals("startMatch")) {
             //进入匹配队列
             matcher.add(user);
+            //记录匹配开始时间，用于超时检测
+            matchTimeoutService.recordMatchStart(user);
             //把玩家信息放入匹配队列之后，就可以返回一个响应客户端
             response.setOk(true);
             response.setMessage("startMatch");
         }else if(request.getMessage().equals("stopMatch")){
             //退出匹配队列
             matcher.remove(user);
+            //移除匹配超时记录
+            matchTimeoutService.removeMatchRecord(user);
             //移除之后，就可以返回一个响应给客户端了
             response.setOk(true);
             response.setMessage("stopMatch");
@@ -119,6 +127,8 @@ public class MatchController extends TextWebSocketHandler {
             }
             //玩家在匹配中，而websocket连接断开，则移除队列
             matcher.remove(user);
+            //移除匹配超时记录
+            matchTimeoutService.removeMatchRecord(user);
         } catch (NullPointerException e){
 //            e.printStackTrace();
             System.out.println("[MatchController.handleTransportError] 当前用户未登录！");

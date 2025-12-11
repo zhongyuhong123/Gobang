@@ -163,8 +163,6 @@ onMounted(() => {
   z-index: 2;
 }
 
-
-
 .login-btn {
   color: #007AFF;
   background: linear-gradient(135deg, 
@@ -316,8 +314,6 @@ onMounted(() => {
 .liquid-btn:hover {
   animation: none;
 }
-
-
 
 @media (max-width: 768px) {
   .nav-container {

@@ -170,14 +170,12 @@ export default {
       if (data.userId !== undefined && data.row !== undefined && data.col !== undefined) {
         const currentUser = JSON.parse(localStorage.getItem('userInfo') || '{}')
         
-        board.value[data.row][data.col] = currentPlayer.value === 1 ? 1 : 2
+        board.value[data.row][data.col] = data.userId === currentUser.userId ? (currentPlayer.value === 1 ? 1 : 2) : (currentPlayer.value === 1 ? 2 : 1)
         
-        if (data.userId === currentUser.userId) {
-          lastMoveRow.value = data.row
-          lastMoveCol.value = data.col
-          
-          currentPlayer.value = currentPlayer.value === 1 ? 2 : 1
-        }
+        lastMoveRow.value = data.row
+        lastMoveCol.value = data.col
+        
+        currentPlayer.value = currentPlayer.value === 1 ? 2 : 1
       } else if (data.message) {
         ElMessage.info(data.message)
         
@@ -188,6 +186,10 @@ export default {
     }
     
     const handleBoardClick = (row, col) => {
+      if (gameStatus.value !== 'playing') {
+        ElMessage.warning('游戏未开始或已结束')
+        return
+      }
       if (board.value[row][col] !== 0) {
         ElMessage.warning('该位置已有棋子')
         return
@@ -227,8 +229,8 @@ export default {
       if (websocket.value) {
         websocket.value.close()
       }
-    router.push('/')
-  }
+      router.push('/')
+    }
 
     onUnmounted(() => {
       if (websocket.value) {

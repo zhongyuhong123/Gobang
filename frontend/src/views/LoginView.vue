@@ -80,10 +80,6 @@ export default {
       remember: false
     })
 
-
-
-
-
     const rules = {
       username: [
         { required: true, message: '请输入用户名', trigger: 'blur' },
@@ -94,12 +90,6 @@ export default {
         { min: 6, message: '密码长度至少为 6 个字符', trigger: 'blur' }
       ]
     }
-
-
-
-
-
-
 
     const autoFillUsername = () => {
       const rememberedUsername = localStorage.getItem('rememberedUsername')
