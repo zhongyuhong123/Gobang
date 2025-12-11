@@ -542,11 +542,6 @@ export default {
   align-items: center;
   box-shadow: var(--shadow-xl);
   border: 1px solid rgba(255, 255, 255, 0.25);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.user-bar:hover {
-  box-shadow: var(--shadow-lg);
 }
 
 .user-bar.guest {
@@ -598,12 +593,6 @@ export default {
   background: var(--color-background-secondary);
   border-radius: var(--radius-pill);
   border: 1px solid var(--color-border);
-  transition: all 0.3s ease;
-}
-
-.user-stats span:hover {
-  background: var(--color-background-hover);
-  border-color: var(--color-primary);
 }
 
 .user-actions {
@@ -655,25 +644,10 @@ export default {
   border-radius: var(--radius-xl);
   padding: 2.5rem 2rem;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: var(--shadow-lg);
   border: 1px solid rgba(255, 255, 255, 0.25);
-  animation: fadeInUp 0.6s ease-out;
   position: relative;
   overflow: hidden;
-}
-
-.mode-card:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-.mode-card:nth-child(3) {
-  animation-delay: 0.4s;
-}
-
-.mode-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
 }
 
 .mode-card.active {
@@ -686,11 +660,6 @@ export default {
   font-size: 3rem;
   margin-bottom: 1rem;
   display: block;
-  transition: transform 0.3s ease;
-}
-
-.mode-card:hover .mode-icon {
-  transform: scale(1.1);
 }
 
 .mode-card h3 {
@@ -734,8 +703,6 @@ export default {
   margin: 40px auto;
   box-shadow: var(--shadow-xl);
   text-align: center;
-  animation: fadeInUp 0.8s ease-out 0.5s both;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .game-actions h2 {
@@ -761,12 +728,6 @@ export default {
   border-radius: var(--radius-small);
   border-left: 4px solid var(--color-primary);
   text-align: left;
-  transition: all 0.3s ease;
-}
-
-.game-tips:hover {
-  background: var(--color-background-hover);
-  box-shadow: var(--shadow-sm);
 }
 
 .action-buttons {
@@ -782,7 +743,6 @@ export default {
   padding: 15px 30px;
   border-radius: var(--radius-lg);
   font-weight: 700;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   min-width: 140px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -805,10 +765,10 @@ export default {
   pointer-events: none;
 }
 
-.action-buttons .el-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 40px rgba(31, 38, 135, 0.15);
-  border-color: rgba(255, 255, 255, 0.35);
+.action-buttons .el-button--primary {
+  background: rgba(64, 158, 255, 0.8);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.25);
 }
 
 .action-buttons .el-button--primary {
@@ -817,31 +777,16 @@ export default {
   border-color: rgba(255, 255, 255, 0.25);
 }
 
-.action-buttons .el-button--primary:hover {
-  background: rgba(64, 158, 255, 0.9);
-  box-shadow: 0 12px 40px rgba(64, 158, 255, 0.3);
-}
-
 .action-buttons .el-button--success {
   background: rgba(103, 194, 58, 0.8);
   color: white;
   border-color: rgba(255, 255, 255, 0.25);
 }
 
-.action-buttons .el-button--success:hover {
-  background: rgba(103, 194, 58, 0.9);
-  box-shadow: 0 12px 40px rgba(103, 194, 58, 0.3);
-}
-
 .action-buttons .el-button--warning {
   background: rgba(230, 162, 60, 0.8);
   color: white;
   border-color: rgba(255, 255, 255, 0.25);
-}
-
-.action-buttons .el-button--warning:hover {
-  background: rgba(230, 162, 60, 0.9);
-  box-shadow: 0 12px 40px rgba(230, 162, 60, 0.3);
 }
 
 /* 房间列表 */
@@ -937,17 +882,7 @@ export default {
   color: var(--color-text-tertiary);
 }
 
-/* 动画效果 */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+
 
 /* 深色模式支持 */
 @media (prefers-color-scheme: dark) {
@@ -1032,9 +967,7 @@ export default {
     border: 1px solid #555;
   }
   
-  .room-item:hover {
-    background: #444;
-  }
+  
   
   .room-id, .room-players, .room-details {
     color: #e8e8e8;

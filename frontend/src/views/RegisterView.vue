@@ -202,7 +202,6 @@ export default {
     0 12px 40px rgba(0, 0, 0, 0.08),
     inset 0 2px 0 rgba(255, 255, 255, 0.7),
     0 0 0 1px rgba(255, 255, 255, 0.2);
-  animation: liquid-float 18s infinite cubic-bezier(0.45, 0, 0.55, 1);
   transform-origin: center;
 }
 
@@ -238,33 +237,7 @@ export default {
   animation-delay: -15s;
 }
 
-@keyframes liquid-float {
-  0%, 100% { 
-    transform: translate(0, 0) scale(1) rotate(0deg);
-    border-radius: 50%;
-    filter: blur(0px);
-  }
-  20% { 
-    transform: translate(40px, -20px) scale(1.15) rotate(72deg);
-    border-radius: 60% 40% 50% 70%;
-    filter: blur(1px);
-  }
-  40% { 
-    transform: translate(-30px, 30px) scale(0.85) rotate(144deg);
-    border-radius: 40% 70% 60% 50%;
-    filter: blur(0.5px);
-  }
-  60% { 
-    transform: translate(20px, -40px) scale(1.25) rotate(216deg);
-    border-radius: 70% 50% 40% 60%;
-    filter: blur(1.5px);
-  }
-  80% { 
-    transform: translate(-40px, 20px) scale(0.95) rotate(288deg);
-    border-radius: 50% 60% 70% 40%;
-    filter: blur(0.8px);
-  }
-}
+
 
 .particles-bg {
   position: absolute;
@@ -279,29 +252,11 @@ export default {
   position: absolute;
   background: radial-gradient(circle, rgba(59, 130, 246, 0.4), rgba(147, 197, 253, 0.15), rgba(219, 234, 254, 0.05));
   border-radius: 50%;
-  animation: particle-float 25s infinite linear;
   pointer-events: none;
   box-shadow: 0 0 12px rgba(59, 130, 246, 0.2);
 }
 
-@keyframes particle-float {
-  0% {
-    transform: translateY(100vh) translateX(0) scale(0.5);
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-    transform: translateY(90vh) translateX(10px) scale(1);
-  }
-  90% {
-    opacity: 1;
-    transform: translateY(10vh) translateX(40px) scale(1);
-  }
-  100% {
-    transform: translateY(-100vh) translateX(50px) scale(0.5);
-    opacity: 0;
-  }
-}
+
 
 .register-wrapper {
   position: relative;
@@ -327,7 +282,6 @@ export default {
   width: 100%;
   max-width: 900px;
   min-height: 500px;
-  animation: card-appear 0.8s cubic-bezier(0.23, 1, 0.32, 1);
   position: relative;
 }
 
@@ -346,16 +300,7 @@ export default {
   z-index: 1;
 }
 
-@keyframes card-appear {
-  0% {
-    opacity: 0;
-    transform: translateY(30px) scale(0.95);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
+
 
 .brand-panel {
   flex: 1;
@@ -431,17 +376,9 @@ export default {
   width: 200%;
   height: 200%;
   background: linear-gradient(45deg, transparent 30%, rgba(30, 64, 175, 0.06) 50%, transparent 70%);
-  animation: shimmer 3s infinite;
 }
 
-@keyframes shimmer {
-  0% {
-    transform: translateX(-100%) translateY(-100%) rotate(45deg);
-  }
-  100% {
-    transform: translateX(100%) translateY(100%) rotate(45deg);
-  }
-}
+
 
 .simple-piece {
   width: 24px;
@@ -451,17 +388,8 @@ export default {
     0 4px 12px rgba(0, 0, 0, 0.3),
     inset 0 2px 4px rgba(255, 255, 255, 0.4),
     inset 0 -2px 4px rgba(0, 0, 0, 0.1);
-  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
   position: relative;
   overflow: hidden;
-}
-
-.simple-piece:hover {
-  transform: scale(1.15) translateY(-2px);
-  box-shadow: 
-    0 6px 20px rgba(0, 0, 0, 0.4),
-    inset 0 2px 6px rgba(255, 255, 255, 0.5),
-    inset 0 -2px 6px rgba(0, 0, 0, 0.15);
 }
 
 .simple-piece.black {
@@ -564,13 +492,6 @@ export default {
   background: rgba(255, 255, 255, 0.25);
   border: 1px solid rgba(255, 255, 255, 0.4);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-.form-input:hover :deep(.el-input__wrapper) {
-  border-color: rgba(59, 130, 246, 0.6);
-  background: rgba(255, 255, 255, 0.35);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
 }
 
 .form-input :deep(.el-input__wrapper.is-focus) {
@@ -588,33 +509,8 @@ export default {
   background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
   border: none;
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
   position: relative;
   overflow: hidden;
-}
-
-.register-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
-}
-
-.register-button:active {
-  transform: translateY(0);
-}
-
-.register-button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.6s ease;
-}
-
-.register-button:hover::before {
-  left: 100%;
 }
 
 .form-links {
@@ -623,32 +519,10 @@ export default {
 }
 
 .link-text {
-  color: #3b82f6;
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  position: relative;
-}
-
-.link-text:hover {
   color: #60a5fa;
   text-decoration: none;
-}
-
-.link-text::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 0;
-  height: 1px;
-  background: linear-gradient(90deg, #3b82f6, #60a5fa);
-  transition: width 0.3s ease;
-}
-
-.link-text:hover::after {
-  width: 100%;
+  font-weight: 500;
+  position: relative;
 }
 
 .error-dialog :deep(.el-dialog__body) {
