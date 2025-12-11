@@ -37,9 +37,7 @@
             <span class="online-count">在线: {{ totalOnline }}</span>
             <span class="game-count">对局: {{ totalGames }}</span>
           </div>
-          <div class="user-actions" v-if="userInfo">
-          </div>
-          <div class="guest-actions" v-else>
+          <div class="guest-actions" v-if="!userInfo">
             <el-button type="primary" size="small" @click="$router.push('/login')">登录</el-button>
             <el-button type="success" size="small" @click="$router.push('/register')">注册</el-button>
           </div>
@@ -53,16 +51,15 @@
 
       <div class="game-actions">
         <div class="game-tabs">
-          <div class="game-tab" :class="{ active: selectedGameMode === 'gobang' }" @click="selectGameMode('gobang')"
-            title="五子棋">
+          <div class="game-tab" :class="{ active: selectedGameMode === 'gobang' }" @click="selectGameMode('gobang')">
             <span class="tab-icon">
               <Check />
             </span>
             <span class="tab-name">五子棋</span>
           </div>
 
-          <div class="game-tab" :class="{ active: selectedGameMode === 'military' }" @click="selectGameMode('military')"
-            title="军棋">
+          <div class="game-tab" :class="{ active: selectedGameMode === 'military' }"
+            @click="selectGameMode('military')">
             <span class="tab-icon">
               <Flag />
             </span>
@@ -70,7 +67,7 @@
           </div>
 
           <div class="game-tab" :class="{ active: selectedGameMode === 'chinese-chess' }"
-            @click="selectGameMode('chinese-chess')" title="中国象棋">
+            @click="selectGameMode('chinese-chess')">
             <span class="tab-icon">
               <PieChart />
             </span>
@@ -126,26 +123,6 @@
 </template>
 
 <style>
-/* 全局动画和过渡效果 */
-.game-tab.active {
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(100, 255, 218, 0.4);
-  }
-
-  70% {
-    box-shadow: 0 0 0 10px rgba(100, 255, 218, 0);
-  }
-
-  100% {
-    box-shadow: 0 0 0 0 rgba(100, 255, 218, 0);
-  }
-}
-
-/* 图标动画 */
 .nav-icon svg {
   transition: transform 0.3s ease;
   width: 18px;
@@ -156,57 +133,17 @@
   transform: scale(1.15);
 }
 
-/* 导航图标悬停光效 */
-.nav-icon::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(100, 255, 218, 0.2), transparent);
-  transition: left 0.6s ease;
-}
-
-.nav-icon:hover::before {
-  left: 100%;
-}
-
-/* 导航图标激活状态 */
 .nav-icon:active {
   transform: scale(0.95);
   background: rgba(100, 255, 218, 0.15);
 }
 
-/* 头像悬停效果 */
 .user-avatar {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s ease;
 }
 
 .user-avatar:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 25px rgba(100, 255, 218, 0.3);
-}
-
-/* 按钮点击效果 */
-.action-buttons .el-button:active {
-  transform: scale(0.98);
-}
-
-/* 游戏标签悬停动画 */
-.game-tab::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(100, 255, 218, 0.1), transparent);
-  transition: left 0.5s ease;
-}
-
-.game-tab:hover::before {
-  left: 100%;
 }
 </style>
 
@@ -263,17 +200,15 @@ export default {
     const loadUserInfo = async () => {
       try {
         const token = localStorage.getItem('token')
-        if (token) {
-          const savedUserInfo = localStorage.getItem('userInfo')
-          if (savedUserInfo) {
-            userInfo.value = JSON.parse(savedUserInfo)
-          }
+        if (!token) return
 
-          const response = await userAPI.getUserInfo()
-          if (response.success && response.data) {
-            userInfo.value = response.data
-            localStorage.setItem('userInfo', JSON.stringify(response.data))
-          }
+        const savedUserInfo = localStorage.getItem('userInfo')
+        if (savedUserInfo) userInfo.value = JSON.parse(savedUserInfo)
+
+        const response = await userAPI.getUserInfo()
+        if (response.success && response.data) {
+          userInfo.value = response.data
+          localStorage.setItem('userInfo', JSON.stringify(response.data))
         }
       } catch (error) {
         console.error('获取用户信息失败:', error)
@@ -297,9 +232,6 @@ export default {
         }
       } catch (error) {
         console.error('获取游戏统计失败:', error)
-        if (error.code === 'ECONNREFUSED' || error.message?.includes('ERR_CONNECTION_REFUSED')) {
-          console.warn('服务器连接失败，游戏统计数据加载失败')
-        }
       }
     }
 
@@ -338,15 +270,7 @@ export default {
     }
 
     const getRankName = (rank) => {
-      const ranks = {
-        0: '新手',
-        1: '初级',
-        2: '中级',
-        3: '高级',
-        4: '专家',
-        5: '大师',
-        6: '宗师'
-      }
+      const ranks = ['新手', '初级', '中级', '高级', '专家', '大师', '宗师']
       return ranks[rank] || '新手'
     }
 
@@ -365,8 +289,7 @@ export default {
     }
 
     const getUsernameInitial = (username) => {
-      if (!username) return '用'
-      return username.charAt(0).toUpperCase()
+      return username ? username.charAt(0).toUpperCase() : '用'
     }
 
     const getAvatarColor = (username) => {
@@ -402,7 +325,6 @@ export default {
     }
 
     const startQuickMatch = async () => {
-      if (!selectedGameMode.value) return
       if (!userInfo.value) {
         ElMessage.warning('请先登录')
         router.push('/login')
@@ -427,7 +349,6 @@ export default {
     }
 
     const createRoom = async () => {
-      if (!selectedGameMode.value) return
       if (!userInfo.value) {
         ElMessage.warning('请先登录')
         router.push('/login')
@@ -526,7 +447,6 @@ export default {
   align-items: center;
   padding-top: 20px;
   gap: 20px;
-  box-shadow: 0 0 25px rgba(0, 0, 0, 0.25);
 }
 
 .nav-icon {
@@ -541,7 +461,7 @@ export default {
   color: rgba(100, 255, 218, 0.6);
   font-size: 16px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
 }
@@ -549,7 +469,6 @@ export default {
 .nav-icon:hover {
   background: rgba(100, 255, 218, 0.1);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(100, 255, 218, 0.2);
   color: rgba(100, 255, 218, 0.9);
   border-color: rgba(100, 255, 218, 0.3);
 }
@@ -572,7 +491,6 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
 }
 
 .user-info {
@@ -713,7 +631,7 @@ export default {
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s ease;
   background: transparent;
   border: 1px solid transparent;
   color: rgba(232, 232, 232, 0.7);
@@ -726,37 +644,14 @@ export default {
   color: rgba(100, 255, 218, 0.9);
   border-color: rgba(100, 255, 218, 0.5);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(100, 255, 218, 0.15);
 }
 
 .game-tab.active {
   background: rgba(100, 255, 218, 0.15);
   border: 1px solid rgba(100, 255, 218, 0.4);
   color: rgba(100, 255, 218, 1);
-  box-shadow: 0 5px 15px rgba(100, 255, 218, 0.2);
-  transform: scale(1.05);
   box-shadow: 0 0 20px rgba(100, 255, 218, 0.25);
-}
-
-.game-tab.active::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(100, 255, 218, 0.2), transparent);
-  animation: shine 1.5s infinite;
-}
-
-@keyframes shine {
-  0% {
-    left: -100%;
-  }
-
-  100% {
-    left: 100%;
-  }
+  transform: scale(1.05);
 }
 
 .tab-icon {
@@ -777,7 +672,6 @@ export default {
   border: 1px solid rgba(100, 255, 218, 0.15);
   border-radius: 14px;
   padding: 24px;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
 }
 
 .game-info-section {
@@ -844,6 +738,7 @@ export default {
   gap: 20px;
   margin-bottom: 30px;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .action-buttons .el-button {
