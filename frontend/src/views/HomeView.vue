@@ -1,7 +1,5 @@
 <template>
-  <div class="home-container">
-    <GameNavbar />
-    
+  <div class="home-container">  
     <div class="user-bar glass-user-bar" v-if="userInfo">
       <div class="user-info">
         <div class="user-avatar">
@@ -182,13 +180,9 @@ import { ref, reactive, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { gameAPI, userAPI } from '../api/index.js'
-import GameNavbar from '../components/GameNavbar.vue'
 
 export default {
   name: 'HomeView',
-  components: {
-    GameNavbar
-  },
   setup() {
     const router = useRouter()
     const selectedGameMode = ref(null)
@@ -240,6 +234,15 @@ export default {
         }
       } catch (error) {
         console.error('获取用户信息失败:', error)
+        // 如果是网络连接错误或用户信息缺失，清除token并跳转到登录页
+        if (error.code === 'ECONNREFUSED' || error.message?.includes('ERR_CONNECTION_REFUSED') || 
+            error.message?.includes('用户信息缺失')) {
+          localStorage.removeItem('token')
+          localStorage.removeItem('userInfo')
+          userInfo.value = null
+          ElMessage.error('连接服务器失败，请重新登录')
+          router.push('/login')
+        }
       }
     }
 
@@ -251,6 +254,10 @@ export default {
         }
       } catch (error) {
         console.error('获取游戏统计失败:', error)
+        // 如果是连接错误，不需要清除token，只记录错误
+        if (error.code === 'ECONNREFUSED' || error.message?.includes('ERR_CONNECTION_REFUSED')) {
+          console.warn('服务器连接失败，游戏统计数据加载失败')
+        }
       }
     }
 
@@ -264,6 +271,10 @@ export default {
         }
       } catch (error) {
         console.error('获取房间列表失败:', error)
+        // 如果是连接错误，不需要清除token，只记录错误
+        if (error.code === 'ECONNREFUSED' || error.message?.includes('ERR_CONNECTION_REFUSED')) {
+          console.warn('服务器连接失败，房间列表加载失败')
+        }
       }
     }
 

@@ -119,11 +119,38 @@ export default {
             })
 
             if (response.success || response.code === 200 || response.status === true) {
-              ElMessage.success('注册成功！')
+              ElMessage.success('注册成功！正在自动登录...')
               
-              setTimeout(() => {
-                router.push('/login')
-              }, 1500)
+              // 自动登录
+              try {
+                const loginResponse = await userAPI.login({
+                  username: registerForm.username,
+                  password: registerForm.password
+                })
+                
+                if (loginResponse.success || loginResponse.code === 200 || loginResponse.status === true) {
+                  const token = loginResponse.data?.accessToken || loginResponse.data?.token || loginResponse.token
+                  const userInfo = loginResponse.data?.user || loginResponse.user
+                  
+                  if (token) {
+                    localStorage.setItem('token', token)
+                    localStorage.setItem('userInfo', JSON.stringify(userInfo))
+                  }
+                  
+                  setTimeout(() => {
+                    router.push('/home')
+                  }, 1500)
+                } else {
+                  setTimeout(() => {
+                    router.push('/login')
+                  }, 1500)
+                }
+              } catch (loginError) {
+                console.error('自动登录失败:', loginError)
+                setTimeout(() => {
+                  router.push('/login')
+                }, 1500)
+              }
             } else {
               ElMessage.error(response.message || response.reason || '注册失败，请重试')
             }

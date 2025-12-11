@@ -121,14 +121,14 @@ export default {
               password: loginForm.password
             })
 
-            if (response.success || response.code === 200) {
+            if (response.success || response.code === 200 || response.status === true) {
               if (loginForm.remember) {
                 localStorage.setItem('rememberedUsername', loginForm.username)
               } else {
                 localStorage.removeItem('rememberedUsername')
               }
 
-              const token = response.data?.token || response.token
+              const token = response.data?.accessToken || response.data?.token || response.token
               const userInfo = response.data?.user || response.user
 
               if (token) {
@@ -138,7 +138,7 @@ export default {
 
               ElMessage.success('登录成功！')
 
-              const redirect = route.query.redirect || '/'
+              const redirect = route.query.redirect || '/home'
               router.push(redirect)
 
             } else {

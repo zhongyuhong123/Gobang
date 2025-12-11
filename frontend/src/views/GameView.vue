@@ -32,15 +32,15 @@
               <div v-for="i in 14" :key="'h-' + i" class="horizontal-line" :style="{ top: `${i * (100 / 15)}%` }"></div>
               <div v-for="i in 14" :key="'v-' + i" class="vertical-line" :style="{ left: `${i * (100 / 15)}%` }"></div>
               
-              <div class="star-point" style="top: 3*(100/15)%; left: 3*(100/15)%;"></div>
-              <div class="star-point" style="top: 3*(100/15)%; left: 7*(100/15)%;"></div>
-              <div class="star-point" style="top: 3*(100/15)%; left: 11*(100/15)%;"></div>
-              <div class="star-point" style="top: 7*(100/15)%; left: 3*(100/15)%;"></div>
-              <div class="star-point" style="top: 7*(100/15)%; left: 7*(100/15)%;"></div>
-              <div class="star-point" style="top: 7*(100/15)%; left: 11*(100/15)%;"></div>
-              <div class="star-point" style="top: 11*(100/15)%; left: 3*(100/15)%;"></div>
-              <div class="star-point" style="top: 11*(100/15)%; left: 7*(100/15)%;"></div>
-              <div class="star-point" style="top: 11*(100/15)%; left: 11*(100/15)%;"></div>
+              <div class="star-point" style="top: 20%; left: 20%;"></div>
+              <div class="star-point" style="top: 20%; left: 46.67%;"></div>
+              <div class="star-point" style="top: 20%; left: 73.33%;"></div>
+              <div class="star-point" style="top: 46.67%; left: 20%;"></div>
+              <div class="star-point" style="top: 46.67%; left: 46.67%;"></div>
+              <div class="star-point" style="top: 46.67%; left: 73.33%;"></div>
+              <div class="star-point" style="top: 73.33%; left: 20%;"></div>
+              <div class="star-point" style="top: 73.33%; left: 46.67%;"></div>
+              <div class="star-point" style="top: 73.33%; left: 73.33%;"></div>
             </div>
             
             <div 
@@ -125,7 +125,7 @@ export default {
       lastMoveRow.value = -1
       lastMoveCol.value = -1
       
-      const user = JSON.parse(localStorage.getItem('user') || '{}')
+      const user = JSON.parse(localStorage.getItem('userInfo') || '{}')
       if (user.userId) {
         connectWebSocket()
       } else {
@@ -139,7 +139,7 @@ export default {
         websocket.value.close()
       }
       
-      const currentUser = JSON.parse(localStorage.getItem('user') || '{}')
+      const currentUser = JSON.parse(localStorage.getItem('userInfo') || '{}')
       const userId = currentUser.userId
       
       if (!userId || !roomId.value) {
@@ -168,7 +168,7 @@ export default {
       console.log('收到游戏消息:', data)
       
       if (data.userId !== undefined && data.row !== undefined && data.col !== undefined) {
-        const currentUser = JSON.parse(localStorage.getItem('user') || '{}')
+        const currentUser = JSON.parse(localStorage.getItem('userInfo') || '{}')
         
         board.value[data.row][data.col] = currentPlayer.value === 1 ? 1 : 2
         
@@ -193,7 +193,7 @@ export default {
         return
       }
       
-      const currentUser = JSON.parse(localStorage.getItem('user') || '{}')
+      const currentUser = JSON.parse(localStorage.getItem('userInfo') || '{}')
       
       const moveData = {
         userId: currentUser.userId,
