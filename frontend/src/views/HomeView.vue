@@ -95,16 +95,21 @@
         </div>
 
         <div class="action-buttons">
-          <el-button type="primary" size="large" @click="startQuickMatch" :loading="matchingLoading"
-            :disabled="!userInfo" class="glass-button">
-            <Refresh />
-            快速匹配
-          </el-button>
-          <el-button type="success" size="large" @click="createRoom" :loading="creatingRoom" :disabled="!userInfo"
-            class="glass-button">
-            <Plus />
-            创建房间
-          </el-button>
+          <button class="hero-button hero-button-primary" @click="startQuickMatch" :disabled="matchingLoading || !userInfo">
+            <div class="button-content">
+              <span class="button-title">快速匹配</span>
+              <span class="button-subtitle">立即开始对战</span>
+            </div>
+            <div class="button-glow"></div>
+          </button>
+          
+          <button class="hero-button hero-button-success" @click="createRoom" :disabled="creatingRoom || !userInfo">
+            <div class="button-content">
+              <span class="button-title">创建房间</span>
+              <span class="button-subtitle">邀请好友对战</span>
+            </div>
+            <div class="button-glow"></div>
+          </button>
         </div>
       </div>
     </div>
@@ -787,6 +792,102 @@ export default {
 .action-buttons .el-button i {
   margin-right: 8px;
   font-size: 18px;
+}
+
+/* 王者荣耀风格异形按钮 */
+.hero-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 48px;
+  border: none;
+  border-radius: 50px 15px 50px 15px;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  min-width: 220px;
+  transform: perspective(1000px) rotateX(5deg);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.hero-button-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: 2px solid rgba(102, 126, 234, 0.5);
+}
+
+.hero-button-success {
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  color: white;
+  border: 2px solid rgba(17, 153, 142, 0.5);
+  border-radius: 15px 50px 15px 50px;
+}
+
+.hero-button:hover {
+  transform: perspective(1000px) rotateX(0deg) translateY(-3px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+.hero-button-primary:hover {
+  background: linear-gradient(135deg, #7c8ff0 0%, #8a5fb8 100%);
+  box-shadow: 0 12px 40px rgba(102, 126, 234, 0.4);
+}
+
+.hero-button-success:hover {
+  background: linear-gradient(135deg, #13b2a7 0%, #4cf996 100%);
+  box-shadow: 0 12px 40px rgba(17, 153, 142, 0.4);
+}
+
+.hero-button:active {
+  transform: perspective(1000px) rotateX(5deg) translateY(0px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.hero-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: perspective(1000px) rotateX(5deg);
+}
+
+.button-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.button-title {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.button-subtitle {
+  font-size: 13px;
+  opacity: 0.8;
+  font-weight: 400;
+  letter-spacing: 0.3px;
+}
+
+.button-glow {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.hero-button:hover .button-glow {
+  opacity: 1;
 }
 
 .settings-content {
