@@ -12,7 +12,7 @@ spring:
   # 数据源配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:gobang_test}?useSSL=true&serverTimezone=UTC&characterEncoding=utf8&useUnicode=true
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:gobang_test}?useSSL=true&serverTimezone=UTC&characterEncoding=utf8&useUnicode=true&allowPublicKeyRetrieval=true
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD:123456}
     # 连接池配置
@@ -145,6 +145,9 @@ security:
   # 忽略认证的URL
   ignored:
     urls:
+      - "/user/login"
+      - "/user/register"
+      - "/user/info"
       - "/api/user/login"
       - "/api/user/register"
       - "/api/test/**"

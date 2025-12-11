@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/user")
 public class UserController {
 
     // 登录请求DTO
@@ -155,6 +156,27 @@ public class UserController {
             return new ApiResponse(true, "注册成功", user);
         }catch (org.springframework.dao.DuplicateKeyException e){
             System.out.println("[register] 用户名已存在!");
+            return new ApiResponse(false, "用户名已存在", null);
+        }
+    }
+
+    // 添加GET方法的注册接口用于测试
+    @GetMapping("/register")
+    @ResponseBody
+    public Object registerGet(@RequestParam String username, @RequestParam String password) {
+        try{
+            System.out.println("[register GET] Attempting registration for username: " + username);
+            
+            User user = new User();
+            user.setUsername(username);
+            // 对密码进行加密
+            user.setPassword(passwordEncoder.encode(password));
+            userMapper.insert(user);
+            
+            System.out.println("[register GET] 注册成功!");
+            return new ApiResponse(true, "注册成功", user);
+        }catch (org.springframework.dao.DuplicateKeyException e){
+            System.out.println("[register GET] 用户名已存在!");
             return new ApiResponse(false, "用户名已存在", null);
         }
     }

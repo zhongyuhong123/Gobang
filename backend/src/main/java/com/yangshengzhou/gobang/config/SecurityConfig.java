@@ -1,5 +1,6 @@
 package com.yangshengzhou.gobang.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,31 +19,31 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .csrf(csrf -> csrf
-                .ignoringRequestMatchers("/user/login")
-                .ignoringRequestMatchers("/user/register")
-                .ignoringRequestMatchers("/login")
-                .ignoringRequestMatchers("/register")
-                .csrfTokenRepository(csrfTokenRepository())
-            )
+            .csrf(csrf -> csrf.disable()) // 完全禁用CSRF保护
             .authorizeHttpRequests(authz -> authz
-                // 允许所有用户访问的公开接口 - 特别注意登录接口
+                // 允许所有用户访问的公开接口 - 特别注意登录和注册接口
                 .requestMatchers("/user/login").permitAll()
                 .requestMatchers("/user/register").permitAll()
                 .requestMatchers("/user/info").permitAll()
+                .requestMatchers("/api/user/login").permitAll()
+                .requestMatchers("/api/user/register").permitAll()
                 .requestMatchers("/test/**").permitAll()
                 .requestMatchers("/swagger-ui/**").permitAll()
                 .requestMatchers("/v3/api-docs/**").permitAll()
-                .requestMatchers("/actuator/health").permitAll()
+                .requestMatchers("/actuator/**").permitAll()
                 .requestMatchers("/ws/**").permitAll()
                 .requestMatchers("/findMatch").permitAll()
                 .requestMatchers("/game").permitAll()
                 .requestMatchers("/login").permitAll()
                 .requestMatchers("/register").permitAll()
+                .requestMatchers("/error").permitAll()
                 // 其他所有请求都需要认证
                 .anyRequest().authenticated()
             )
@@ -53,7 +54,9 @@ public class SecurityConfig {
             // 禁用session管理，因为使用JWT
             .sessionManagement(session -> session.disable())
             // 禁用匿名用户
-            .anonymous(anonymous -> anonymous.disable());
+            .anonymous(anonymous -> anonymous.disable())
+            // 添加JWT认证过滤器
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
