@@ -121,7 +121,6 @@ export default {
             if (response.success || response.code === 200 || response.status === true) {
               ElMessage.success('注册成功！正在自动登录...')
               
-              // 自动登录
               try {
                 const loginResponse = await userAPI.login({
                   username: registerForm.username,

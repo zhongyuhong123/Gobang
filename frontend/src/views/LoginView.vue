@@ -377,66 +377,8 @@ export default {
   margin: 0;
 }
 
-/* 棋盘展示 */
-.chess-showcase {
-  margin: 30px 0;
-}
-
-.mini-board {
-  background: #8b7355;
-  padding: 15px;
-  border-radius: 12px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  display: inline-block;
-}
-
-.board-row {
-  display: flex;
-}
-
-.board-cell {
-  width: 20px;
-  height: 20px;
-  background: #d4c5a0;
-  border: 1px solid #8b7355;
-  position: relative;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.board-cell:hover {
-  background: #e5d6b3;
-}
-
-.board-cell.black-piece::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 16px;
-  height: 16px;
-  background: radial-gradient(circle at 30% 30%, #333, #000);
-  border-radius: 50%;
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.board-cell.white-piece::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 16px;
-  height: 16px;
-  background: radial-gradient(circle at 30% 30%, #fff, #ddd);
-  border-radius: 50%;
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-}
 
 
-
-/* 简约棋盘展示 - 顶级液态玻璃效果 */
 .board-showcase {
   margin: 20px 0;
 }
@@ -564,7 +506,6 @@ export default {
   font-weight: 400;
 }
 
-/* 表单样式 - 清新风格 */
 .login-form {
   margin-bottom: 24px;
 }
@@ -602,7 +543,6 @@ export default {
   overflow: hidden;
 }
 
-/* 表单链接 */
 .form-links {
   text-align: center;
   margin-top: 24px;
@@ -622,12 +562,10 @@ export default {
   font-size: 14px;
 }
 
-/* 社交登录 */
 .social-login {
   display: none;
 }
 
-/* 错误对话框 */
 .error-dialog {
   border-radius: 16px;
   overflow: hidden;
@@ -674,7 +612,6 @@ export default {
   border-radius: 8px;
 }
 
-/* 响应式设计 */
 @media (max-width: 768px) {
   .login-card {
     flex-direction: column;

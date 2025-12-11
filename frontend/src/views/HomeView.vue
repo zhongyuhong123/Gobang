@@ -169,7 +169,6 @@
   transform: scale(1.05);
 }
 
-/* 遮罩层样式 */
 .overlay-mask {
   position: fixed;
   top: 0;
@@ -182,7 +181,6 @@
   animation: fadeIn 0.3s ease-out;
 }
 
-/* 匹配状态样式 */
 .matching-status {
   position: fixed;
   top: 50%;
@@ -466,7 +464,6 @@ export default {
       isMatching.value = false
       matchingElapsedTime.value = 0
       
-      // 如果正在使用WebSocket匹配，关闭连接
       if (wsManager.matchSocket) {
         wsManager.matchSocket.close()
         wsManager.matchSocket = null
@@ -484,14 +481,11 @@ export default {
       startMatchingTimer()
       
       try {
-        // 使用WebSocket进行匹配
         const userId = userInfo.value.userId
         
-        // 连接WebSocket匹配服务器
         wsManager.connectMatchSocket(userId, {
           onOpen: () => {
             console.log('匹配WebSocket连接成功')
-            // 发送开始匹配消息
             wsManager.matchSocket.send(JSON.stringify({
               message: 'startMatch'
             }))
@@ -503,7 +497,6 @@ export default {
                   console.log('匹配成功！房间ID:', data.reason)
                   stopMatchingTimer()
                   ElMessage.success('匹配成功！正在进入游戏...')
-                  // 跳转到游戏页面，带上房间ID
                   router.push({
                     path: '/game',
                     query: { gameId: data.reason }
@@ -590,7 +583,7 @@ export default {
 
     onUnmounted(() => {
       stopDataRefresh()
-      stopMatchingTimer() // 确保清理WebSocket连接和计时器
+      stopMatchingTimer()
     })
 
     return {

@@ -240,7 +240,6 @@ export default {
     })
 
     return {
-      // 游戏状态
       boardSize,
       cellSize,
       board,
@@ -249,11 +248,9 @@ export default {
       lastMoveRow,
       lastMoveCol,
       
-      // 玩家信息
       user1,
       user2,
       
-      // 方法
       handleBoardClick,
       restartGame,
       exitGame
@@ -392,7 +389,6 @@ export default {
   gap: 30px;
 }
 
-/* 游戏信息栏样式 */
 .game-info-bar {
   max-width: 1200px;
   margin: 0 auto;
@@ -431,13 +427,10 @@ export default {
 }
 
 .white-player {
-  /* 使用稍暗的白色以提高对比度 */
   color: rgba(255, 255, 255, 0.95);
-  /* 增强文字阴影以提高可读性 */
   text-shadow: 0 0 2px rgba(0, 0, 0, 0.5), 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
-/* 游戏棋盘样式 */
 .board-container {
   padding: 20px;
   background: rgba(255, 255, 255, 0.25);
@@ -471,7 +464,6 @@ export default {
   box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1), 0 0 20px rgba(24, 144, 255, 0.1);
 }
 
-/* 棋盘线 */
 .board-lines {
   position: absolute;
   top: 0;
@@ -497,7 +489,6 @@ export default {
   background-color: var(--board-line);
 }
 
-/* 星位 */
 .star-point {
   position: absolute;
   width: 6px;
@@ -508,7 +499,6 @@ export default {
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
 }
 
-/* 棋盘格子 */
 .board-row {
   display: flex;
   position: relative;
@@ -526,7 +516,6 @@ export default {
   background-color: rgba(139, 69, 19, 0.1);
 }
 
-/* 棋子样式 */
 .board-cell .chess-piece {
   position: absolute;
   top: 50%;
@@ -552,7 +541,6 @@ export default {
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
 }
 
-/* 最后一步高亮 */
 .board-cell .chess-piece.last-move {
   box-shadow: 0 0 15px rgba(255, 215, 0, 0.6), 0 2px 12px rgba(0, 0, 0, 0.5);
   animation: pulse 1.5s infinite;
@@ -589,7 +577,6 @@ export default {
   transform: translateY(0);
 }
 
-/* 响应式设计 */
 @media (max-width: 768px) {
   .board {
     --cell-size: 35px;
