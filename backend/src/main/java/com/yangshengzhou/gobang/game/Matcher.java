@@ -72,6 +72,47 @@ public class Matcher {
         }
     }
 
+    // 检查用户是否在匹配队列中
+    public boolean isInMatchQueue(User user) {
+        if(user.getScore()<2000){
+            synchronized (normalQueue) {
+                return normalQueue.contains(user);
+            }
+        }else if(user.getScore()>=2000 && user.getScore()<3000){
+            synchronized (highQueue) {
+                return highQueue.contains(user);
+            }
+        }else{
+            synchronized (veryHighQueue) {
+                return veryHighQueue.contains(user);
+            }
+        }
+    }
+
+    // 快速匹配：为用户寻找对手
+    public User findOpponent(User user, String gameMode) {
+        // 简化实现：从相同分数段的队列中寻找第一个可用的对手
+        Queue<User> targetQueue;
+        if(user.getScore()<2000){
+            targetQueue = normalQueue;
+        }else if(user.getScore()>=2000 && user.getScore()<3000){
+            targetQueue = highQueue;
+        }else{
+            targetQueue = veryHighQueue;
+        }
+
+        synchronized (targetQueue) {
+            for (User candidate : targetQueue) {
+                if (!candidate.equals(user) && onlineUserManager.getFromGameHall(candidate.getUserId()) != null) {
+                    // 找到合适的对手，从队列中移除并返回
+                    targetQueue.remove(candidate);
+                    return candidate;
+                }
+            }
+        }
+        return null;
+    }
+
     //构造方法中创建线程，分别针对三个匹配队列，进行操作
     public Matcher(){
         Thread t1 = new Thread(){

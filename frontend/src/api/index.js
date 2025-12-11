@@ -141,6 +141,10 @@ export const gameAPI = {
     return service.post('/game/match/stop')
   },
 
+  quickMatch: (gameMode) => {
+    return service.post('/game/match/quick', { gameMode })
+  },
+
   getGameHistory: () => {
     return service.get('/game/history')
   },
