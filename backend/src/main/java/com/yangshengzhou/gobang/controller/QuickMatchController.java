@@ -5,9 +5,12 @@ import com.yangshengzhou.gobang.game.Matcher;
 import com.yangshengzhou.gobang.game.OnlineUserManager;
 import com.yangshengzhou.gobang.game.RoomManager;
 import com.yangshengzhou.gobang.entity.Room;
+import com.yangshengzhou.gobang.mapper.UserMapper;
+import com.yangshengzhou.gobang.util.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -25,9 +28,18 @@ public class QuickMatchController {
     @Autowired
     private RoomManager roomManager;
 
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+
+    @Autowired
+    private UserMapper userMapper;
+
     @PostMapping("/quick")
-    public Object quickMatch(@RequestBody QuickMatchRequest request, @SessionAttribute(value = "user", required = false) User user) {
+    public Object quickMatch(@RequestBody QuickMatchRequest request, HttpServletRequest httpRequest) {
         try {
+            // 从JWT token中获取用户信息
+            User user = getUserFromToken(httpRequest);
+            
             // 检查用户是否登录
             if (user == null) {
                 return new ApiResponse(false, "用户未登录", null);
@@ -89,6 +101,25 @@ public class QuickMatchController {
         } catch (Exception e) {
             return new ApiResponse(false, "快速匹配失败：" + e.getMessage(), null);
         }
+    }
+
+    /**
+     * 从JWT token中提取用户信息
+     */
+    private User getUserFromToken(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7);
+            try {
+                if (jwtTokenUtil.validateAccessToken(token)) {
+                    String username = jwtTokenUtil.getUsernameFromToken(token);
+                    return userMapper.selectByName(username);
+                }
+            } catch (Exception e) {
+                System.err.println("JWT token验证失败: " + e.getMessage());
+            }
+        }
+        return null;
     }
 
     // 内部请求类

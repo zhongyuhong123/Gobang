@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
-import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
 
 @Configuration
 @EnableWebSocket
@@ -23,12 +22,15 @@ public class WebSocketConfig implements WebSocketConfigurer{
     @Autowired
     private GameController gameController;
 
+    @Autowired
+    private JwtHandshakeInterceptor jwtHandshakeInterceptor;
+
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(testController,"/test");
         registry.addHandler(matchController,"/findMatch")
-                .addInterceptors(new HttpSessionHandshakeInterceptor());//把之前httpsession中的数据借到了websocket会话
+                .addInterceptors(jwtHandshakeInterceptor);//使用JWT握手拦截器替代HTTP会话拦截器
         registry.addHandler(gameController,"/game")
-                .addInterceptors(new HttpSessionHandshakeInterceptor());
+                .addInterceptors(jwtHandshakeInterceptor);
     }
 }

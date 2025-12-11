@@ -163,7 +163,8 @@ export const wsManager = {
       return wsManager.matchSocket
     }
 
-    const wsUrl = `${process.env.VUE_APP_WS_BASE_URL || 'ws://localhost:8080'}/findMatch?userId=${userId}`
+    const token = localStorage.getItem('token')
+    const wsUrl = `${process.env.VUE_APP_WS_BASE_URL || 'ws://localhost:8080'}/findMatch?userId=${userId}${token ? `&token=${token}` : ''}`
     wsManager.matchSocket = new WebSocket(wsUrl)
 
     wsManager.matchSocket.onopen = () => {
@@ -199,7 +200,8 @@ export const wsManager = {
       return wsManager.gameSocket
     }
 
-    const wsUrl = `${process.env.VUE_APP_WS_BASE_URL || 'ws://localhost:8080'}/game?userId=${userId}&roomId=${roomId}`
+    const token = localStorage.getItem('token')
+    const wsUrl = `${process.env.VUE_APP_WS_BASE_URL || 'ws://localhost:8080'}/game?userId=${userId}&roomId=${roomId}${token ? `&token=${token}` : ''}`
     wsManager.gameSocket = new WebSocket(wsUrl)
 
     wsManager.gameSocket.onopen = () => {
