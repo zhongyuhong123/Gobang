@@ -2,7 +2,6 @@
   <div class="home-container">
     <GameNavbar />
     
-    <!-- 顶部用户信息栏 -->
     <div class="user-bar glass-user-bar" v-if="userInfo">
       <div class="user-info">
         <div class="user-avatar">

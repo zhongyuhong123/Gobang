@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-// 路由懒加载
 const WelcomeView = () => import('../views/WelcomeView.vue')
 const LoginView = () => import('../views/LoginView.vue')
 const RegisterView = () => import('../views/RegisterView.vue')
@@ -45,22 +44,15 @@ const router = createRouter({
   routes
 })
 
-// 全局路由守卫 - 登录状态检测
 router.beforeEach((to, from, next) => {
-  // 检查是否需要登录
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
   const isLoggedIn = !!localStorage.getItem('token')
   
-  // 如果路由需要登录但用户未登录，重定向到登录页面
   if (requiresAuth && !isLoggedIn) {
     next('/login')
-  } 
-  // 如果用户已登录但访问的是登录或注册页面，重定向到游戏大厅
-  else if (isLoggedIn && (to.path === '/login' || to.path === '/register')) {
+  } else if (isLoggedIn && (to.path === '/login' || to.path === '/register')) {
     next('/home')
-  }
-  // 其他情况正常导航
-  else {
+  } else {
     next()
   }
 })

@@ -200,7 +200,6 @@ export default {
   padding: 10px;
 }
 
-/* 液态玻璃背景效果 - iOS 26级别增强版 */
 .glass-bg {
   position: absolute;
   top: 0;
@@ -259,9 +258,6 @@ export default {
   animation-delay: -15s;
 }
 
-
-
-/* 粒子背景 - 清新蓝白调 */
 .particles-bg {
   position: absolute;
   top: 0;
@@ -279,9 +275,6 @@ export default {
   box-shadow: 0 0 12px rgba(59, 130, 246, 0.2);
 }
 
-
-
-/* 主登录卡片 - 顶级液态玻璃效果 */
 .login-wrapper {
   position: relative;
   z-index: 10;
@@ -324,9 +317,6 @@ export default {
   z-index: 1;
 }
 
-
-
-/* 品牌面板 - 顶级液态玻璃效果 */
 .brand-panel {
   flex: 1;
   background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 50%, #93c5fd 100%);
@@ -530,7 +520,6 @@ export default {
   filter: blur(1px);
 }
 
-/* 表单面板 - 顶级液态玻璃效果 */
 .form-panel {
   flex: 1;
   padding: 40px;

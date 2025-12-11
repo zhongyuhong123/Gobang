@@ -1,54 +1,43 @@
-/* 设计系统基础变量 - 遵循Apple设计哲学 */
 :root {
-  /* 主色调 - 系统蓝系 */
   --primary-color: #0071e3;
   --primary-hover: #0077ed;
   --primary-active: #0056b3;
   
-  /* 功能色 */
   --success-color: #34c759;
   --warning-color: #ff9500;
   --error-color: #ff3b30;
   --info-color: #007aff;
   
-  /* 游戏主题色 */
   --board-color: #f0d9b5;
   --board-border: #8b4513;
   --board-line: #8b4513;
   --black-stone: #000000;
   --white-stone: #ffffff;
   
-  /* 中性色 */
   --bg-primary: #ffffff;
   --bg-secondary: #f2f2f7;
   --bg-tertiary: #e5e5ea;
   
-  /* 文本色 */
   --text-primary: #1d1d1f;
   --text-secondary: #6e6e73;
   --text-tertiary: #8e8e93;
   
-  /* 边框色 */
   --border-light: #c6c6c8;
   --border-medium: #aeaeb2;
   
-  /* 阴影 */
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
   --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.12);
   --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.16);
   
-  /* 圆角 - 适度圆角，避免大圆角 */
   --radius-xs: 4px;
   --radius-sm: 6px;
   --radius-md: 8px;
   
-  /* 过渡动画 */
-  --transition-fast: 150ms ease-in-out;
-  --transition-normal: 200ms ease-in-out;
-  --transition-slow: 300ms ease-in-out;
+  --transition-fast: 0ms;
+  --transition-normal: 0ms;
+  --transition-slow: 0ms;
 }
 
-/* 全局样式重置 */
 * {
   margin: 0;
   padding: 0;
@@ -64,7 +53,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* 背景图案 - 简化设计 */
 .bg-pattern {
   position: fixed;
   top: 0;
@@ -77,11 +65,10 @@ body {
   z-index: -1;
 }
 
-/* 动画效果 - 精简高效 */
 @keyframes fadeIn {
   from {
-    opacity: 0;
-    transform: translateY(10px);
+    opacity: 1;
+    transform: translateY(0);
   }
   to {
     opacity: 1;
@@ -94,14 +81,14 @@ body {
     opacity: 1;
   }
   50% {
-    opacity: 0.6;
+    opacity: 1;
   }
 }
 
 @keyframes scaleIn {
   from {
-    transform: scale(0.95);
-    opacity: 0;
+    transform: scale(1);
+    opacity: 1;
   }
   to {
     transform: scale(1);
@@ -114,24 +101,16 @@ body {
     transform: translateY(0px);
   }
   50% {
-    transform: translateY(-5px);
+    transform: translateY(0px);
   }
 }
 
-/* 游戏卡片样式 - 简约高级 */
 .game-card {
   background-color: var(--bg-primary);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
   padding: 2rem;
-  animation: fadeIn var(--transition-normal);
   border: 1px solid var(--border-light);
-  transition: all var(--transition-normal);
-}
-
-.game-card:hover {
-  box-shadow: var(--shadow-md);
-  border-color: var(--border-medium);
 }
 
 .game-card.active {
@@ -139,24 +118,12 @@ body {
   box-shadow: var(--shadow-md);
 }
 
-/* 游戏按钮样式 - 精简设计 */
 .game-button {
   border-radius: var(--radius-sm) !important;
   font-weight: 500 !important;
-  transition: all var(--transition-fast) !important;
   box-shadow: var(--shadow-sm) !important;
 }
 
-.game-button:hover {
-  transform: translateY(-1px) !important;
-  box-shadow: var(--shadow-md) !important;
-}
-
-.game-button:active {
-  transform: translateY(0) !important;
-}
-
-/* 输入框样式 - 简洁清晰 */
 .el-input__wrapper {
   background-color: var(--bg-secondary) !important;
   border-radius: var(--radius-xs) !important;
@@ -178,13 +145,11 @@ body {
   color: var(--text-tertiary) !important;
 }
 
-/* 表单样式 */
 .el-form-item__label {
   color: var(--text-secondary) !important;
   font-weight: 500 !important;
 }
 
-/* 标题样式 */
 .game-title {
   font-size: 2rem;
   font-weight: 600;
@@ -194,7 +159,6 @@ body {
   letter-spacing: -0.5px;
 }
 
-/* 响应式设计 */
 @media (max-width: 768px) {
   .game-card {
     padding: 1.5rem;
@@ -206,7 +170,6 @@ body {
   }
 }
 
-/* 液态玻璃效果 */
 .glass-effect {
   background: rgba(255, 255, 255, 0.25) !important;
   backdrop-filter: blur(10px) !important;
@@ -283,15 +246,15 @@ body {
   box-shadow: var(--shadow-lg) !important;
 }
 
-/* 过渡效果工具类 */
+/* 过渡效果工具类 - 已优化，移除动画效果 */
 .transition-fast {
-  transition: all var(--transition-fast) !important;
+  transition: none !important;
 }
 
 .transition-normal {
-  transition: all var(--transition-normal) !important;
+  transition: none !important;
 }
 
 .transition-slow {
-  transition: all var(--transition-slow) !important;
+  transition: none !important;
 }

@@ -237,8 +237,6 @@ export default {
   animation-delay: -15s;
 }
 
-
-
 .particles-bg {
   position: absolute;
   top: 0;
@@ -255,8 +253,6 @@ export default {
   pointer-events: none;
   box-shadow: 0 0 12px rgba(59, 130, 246, 0.2);
 }
-
-
 
 .register-wrapper {
   position: relative;
@@ -299,8 +295,6 @@ export default {
   pointer-events: none;
   z-index: 1;
 }
-
-
 
 .brand-panel {
   flex: 1;

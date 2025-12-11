@@ -1,8 +1,6 @@
 <template>
   <div id="app">
-    <!-- 背景图案 -->
     <div class="bg-pattern"></div>
-    <!-- 主要内容区域 -->
     <router-view />
   </div>
 </template>
@@ -14,7 +12,6 @@ export default {
 </script>
 
 <style>
-/* CSS变量定义 - 支持移动端适配 */
 :root {
   --bg-primary: #f5f5f5;
   --bg-secondary: #ffffff;
@@ -37,7 +34,6 @@ export default {
   --transition-slow: 0.5s ease;
 }
 
-/* 基础样式重置 */
 * {
   margin: 0;
   padding: 0;
@@ -52,12 +48,10 @@ html, body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
-/* 防止点击高亮 */
 * {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* 禁止文本选择 */
 .no-select {
   user-select: none;
   -webkit-user-select: none;
@@ -76,8 +70,6 @@ html, body {
   background-color: var(--bg-primary);
 }
 
-
-/* 响应式字体大小 */
 @media (max-width: 768px) {
   html {
     font-size: 14px;

@@ -2,7 +2,6 @@ import axios from 'axios'
 import { ElMessage } from 'element-plus'
 import router from '../router'
 
-// 创建axios实例
 const service = axios.create({
   baseURL: process.env.VUE_APP_API_BASE_URL || 'http://localhost:8080',
   timeout: 15000,
@@ -12,7 +11,6 @@ const service = axios.create({
   withCredentials: true
 })
 
-// 请求拦截器
 service.interceptors.request.use(
   config => {
     const token = localStorage.getItem('token')
@@ -27,11 +25,9 @@ service.interceptors.request.use(
   }
 )
 
-// 响应拦截器
 service.interceptors.response.use(
   response => {
     const { data } = response
-    // Handle both old and new response formats
     if (data.code === 200 || data.success === true || data.status === true) {
       return data
     } else {
@@ -77,9 +73,7 @@ service.interceptors.response.use(
   }
 )
 
-// 用户相关API
 export const userAPI = {
-  // 用户注册
   register: (data) => {
     return service.post('/user/register', {
       username: data.username,
@@ -87,7 +81,6 @@ export const userAPI = {
     })
   },
 
-  // 用户登录
   login: (data) => {
     return service.post('/user/login', {
       username: data.username,
@@ -95,70 +88,54 @@ export const userAPI = {
     })
   },
 
-  // 获取用户信息
   getUserInfo: () => {
     return service.get('/user/info')
   },
 
-  // 更新用户信息
   updateUserInfo: (data) => {
     return service.put('/user/update', data)
   },
 
-  // 获取排行榜
   getLeaderboard: (type = 'score') => {
     return service.get(`/user/leaderboard/${type}`)
   }
 }
 
-// 游戏相关API
 export const gameAPI = {
-  // 创建房间
   createRoom: (data) => {
     return service.post('/game/room/create', data)
   },
 
-  // 获取房间列表
   getRoomList: () => {
     return service.get('/game/room/list')
   },
 
-  // 加入房间
   joinRoom: (roomId) => {
     return service.post(`/game/room/join/${roomId}`)
   },
 
-  // 开始匹配
   startMatch: () => {
     return service.post('/game/match/start')
   },
 
-  // 停止匹配
   stopMatch: () => {
     return service.post('/game/match/stop')
   },
 
-  // 获取游戏记录
   getGameHistory: () => {
     return service.get('/game/history')
   }
 }
 
-// WebSocket管理
 export const wsManager = {
-  // 游戏大厅WebSocket
   matchSocket: null,
-  
-  // 游戏房间WebSocket
   gameSocket: null,
 
-  // 连接匹配WebSocket
   connectMatchSocket: (userId, callbacks) => {
     if (wsManager.matchSocket && wsManager.matchSocket.readyState === WebSocket.OPEN) {
       return wsManager.matchSocket
     }
 
-    // 根据后端WebSocket配置，匹配WebSocket连接路径为/findMatch
     const wsUrl = `${process.env.VUE_APP_WS_BASE_URL || 'ws://localhost:8080'}/findMatch?userId=${userId}`
     wsManager.matchSocket = new WebSocket(wsUrl)
 
@@ -190,13 +167,11 @@ export const wsManager = {
     return wsManager.matchSocket
   },
 
-  // 连接游戏WebSocket
   connectGameSocket: (userId, roomId, callbacks) => {
     if (wsManager.gameSocket && wsManager.gameSocket.readyState === WebSocket.OPEN) {
       return wsManager.gameSocket
     }
 
-    // 根据后端WebSocket配置，游戏WebSocket连接路径为/game
     const wsUrl = `${process.env.VUE_APP_WS_BASE_URL || 'ws://localhost:8080'}/game?userId=${userId}&roomId=${roomId}`
     wsManager.gameSocket = new WebSocket(wsUrl)
 
@@ -228,7 +203,6 @@ export const wsManager = {
     return wsManager.gameSocket
   },
 
-  // 关闭所有WebSocket连接
   closeAll: () => {
     if (wsManager.matchSocket) {
       wsManager.matchSocket.close()
@@ -240,7 +214,6 @@ export const wsManager = {
     }
   },
 
-  // 发送消息
   sendMessage: (socket, message) => {
     if (socket && socket.readyState === WebSocket.OPEN) {
       socket.send(JSON.stringify(message))

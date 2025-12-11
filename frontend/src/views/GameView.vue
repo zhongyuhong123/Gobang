@@ -223,20 +223,17 @@ export default {
       ElMessage.success('游戏已重新开始')
     }
     
-    // 退出游戏
     const exitGame = () => {
       if (websocket.value) {
         websocket.value.close()
       }
-      router.push('/')
-    }
+    router.push('/')
+  }
 
-    // 组件卸载时关闭WebSocket连接
     onUnmounted(() => {
       if (websocket.value) {
         websocket.value.close()
       }
-      // 关闭所有WebSocket连接
       wsManager.closeAll()
     })
 
@@ -368,10 +365,8 @@ export default {
 }
 
 .white-player {
-  /* 使用稍暗的白色以提高对比度 */
   color: rgba(255, 255, 255, 0.95);
   font-weight: 700;
-  /* 增强文字阴影以提高可读性 */
   text-shadow: 0 0 2px rgba(0, 0, 0, 0.5), 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
