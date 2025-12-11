@@ -324,8 +324,13 @@ export default {
       try {
         const response = await gameAPI.quickMatch(selectedGameMode.value)
         if (response.success) {
-          ElMessage.success('匹配成功，正在进入游戏...')
-          router.push(`/game/${response.data.gameId}`)
+          if (response.data && response.data.gameId) {
+            ElMessage.success('匹配成功，正在进入游戏...')
+            router.push(`/game/${response.data.gameId}`)
+          } else {
+            // 匹配中但还未找到对手
+            ElMessage.info(response.message || '正在匹配中，请稍后...')
+          }
         } else {
           ElMessage.error(response.message || '匹配失败')
         }
@@ -348,8 +353,12 @@ export default {
       try {
         const response = await gameAPI.createRoom(selectedGameMode.value)
         if (response.success) {
-          ElMessage.success('房间创建成功')
-          router.push(`/room/${response.data.roomId}`)
+          if (response.data && response.data.roomId) {
+            ElMessage.success('房间创建成功')
+            router.push(`/room/${response.data.roomId}`)
+          } else {
+            ElMessage.error('创建房间响应数据异常')
+          }
         } else {
           ElMessage.error(response.message || '创建房间失败')
         }
