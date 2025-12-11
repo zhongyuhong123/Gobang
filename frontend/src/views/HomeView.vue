@@ -275,7 +275,7 @@
 import { ref, reactive, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { gameAPI, userAPI } from '../api/index.js'
+import { gameAPI, userAPI, wsManager } from '../api/index.js'
 
 export default {
   name: 'HomeView',
@@ -465,6 +465,12 @@ export default {
       }
       isMatching.value = false
       matchingElapsedTime.value = 0
+      
+      // 如果正在使用WebSocket匹配，关闭连接
+      if (wsManager.matchSocket) {
+        wsManager.matchSocket.close()
+        wsManager.matchSocket = null
+      }
     }
 
     const startQuickMatch = async () => {
@@ -478,27 +484,56 @@ export default {
       startMatchingTimer()
       
       try {
-        const response = await gameAPI.quickMatch(selectedGameMode.value)
-        if (response.success) {
-          if (response.data && response.data.gameId) {
+        // 使用WebSocket进行匹配
+        const userId = userInfo.value.userId
+        
+        // 连接WebSocket匹配服务器
+        wsManager.connectMatchSocket(userId, {
+          onOpen: () => {
+            console.log('匹配WebSocket连接成功')
+            // 发送开始匹配消息
+            wsManager.matchSocket.send(JSON.stringify({
+              message: 'startMatch'
+            }))
+          },
+          onMessage: (data) => {
+                console.log('收到匹配消息:', data)
+                
+                if (data.message === 'matchSuccess') {
+                  console.log('匹配成功！房间ID:', data.reason)
+                  stopMatchingTimer()
+                  ElMessage.success('匹配成功！正在进入游戏...')
+                  // 跳转到游戏页面，带上房间ID
+                  router.push({
+                    path: '/game',
+                    query: { gameId: data.reason }
+                  })
+                } else if (data.message === 'matchTimeout') {
+                  stopMatchingTimer()
+                  ElMessage.error('匹配超时')
+                  matchingLoading.value = false
+                }
+              },
+          onError: (error) => {
+            console.error('匹配WebSocket错误:', error)
             stopMatchingTimer()
-            ElMessage.success('匹配成功')
-            router.push(`/game/${response.data.gameId}`)
-          } else {
-            ElMessage.info(response.message || '正在匹配')
+            ElMessage.error('匹配连接失败')
+            matchingLoading.value = false
+          },
+          onClose: () => {
+            console.log('匹配WebSocket连接关闭')
+            if (isMatching.value) {
+              stopMatchingTimer()
+              matchingLoading.value = false
+            }
           }
-        } else {
-          stopMatchingTimer()
-          ElMessage.error(response.message || '匹配失败')
-        }
+        })
+        
       } catch (error) {
         stopMatchingTimer()
         console.error('快速匹配失败:', error)
         ElMessage.error('匹配失败')
-      } finally {
-        if (!isMatching.value) {
-          matchingLoading.value = false
-        }
+        matchingLoading.value = false
       }
     }
 
@@ -555,6 +590,7 @@ export default {
 
     onUnmounted(() => {
       stopDataRefresh()
+      stopMatchingTimer() // 确保清理WebSocket连接和计时器
     })
 
     return {

@@ -186,15 +186,18 @@ public class Matcher {
                 //5.给玩家反馈信息：你匹配到对手了~
                 //      通过 websocket 返回一个 message 为'matchSuccess' 这样的响应
                 //      两个玩家都需要返回
+                //      包含房间ID信息，方便前端跳转到游戏页面
                 MatchResponse response1 = new MatchResponse();
                 response1.setOk(true);
                 response1.setMessage("matchSuccess");
+                response1.setReason(room.getRoomId()); // 使用reason字段传递房间ID
                 String json1 = objectMapper.writeValueAsString(response1);
                 session1.sendMessage(new TextMessage(json1));
 
                 MatchResponse response2 = new MatchResponse();
                 response2.setOk(true);
                 response2.setMessage("matchSuccess");
+                response2.setReason(room.getRoomId()); // 使用reason字段传递房间ID
                 String json2 = objectMapper.writeValueAsString(response2);
                 session2.sendMessage(new TextMessage(json2));
 
