@@ -82,11 +82,7 @@ export default {
 
 
 
-    const loginAttempts = reactive({
-      count: 0,
-      lastAttempt: null,
-      lockoutTime: 0
-    })
+
 
     const rules = {
       username: [
@@ -99,42 +95,11 @@ export default {
       ]
     }
 
-    const checkLockout = () => {
-      const now = Date.now()
-      if (loginAttempts.lockoutTime > now) {
-        const remainingTime = Math.ceil((loginAttempts.lockoutTime - now) / 1000)
-        ElMessage.error(`由于多次登录失败，您的账户已被锁定。请等待 ${remainingTime} 秒后重试。`)
-        return true
-      }
-      return false
-    }
 
-    const updateLoginAttempts = (success) => {
-      const now = Date.now()
 
-      if (success) {
-        loginAttempts.count = 0
-        loginAttempts.lastAttempt = null
-        loginAttempts.lockoutTime = 0
-      } else {
-        loginAttempts.count++
-        loginAttempts.lastAttempt = now
 
-        if (loginAttempts.count >= 5) {
-          loginAttempts.lockoutTime = now + 5 * 60 * 1000
-        }
-      }
 
-      localStorage.setItem('loginAttempts', JSON.stringify(loginAttempts))
-    }
 
-    const loadLoginAttempts = () => {
-      const saved = localStorage.getItem('loginAttempts')
-      if (saved) {
-        const data = JSON.parse(saved)
-        Object.assign(loginAttempts, data)
-      }
-    }
 
     const autoFillUsername = () => {
       const rememberedUsername = localStorage.getItem('rememberedUsername')
@@ -147,10 +112,6 @@ export default {
     const handleLogin = async () => {
       if (!loginFormRef.value) return
 
-      if (checkLockout()) {
-        return
-      }
-
       await loginFormRef.value.validate(async (valid) => {
         if (valid) {
           loading.value = true
@@ -161,8 +122,6 @@ export default {
             })
 
             if (response.success || response.code === 200) {
-              updateLoginAttempts(true)
-
               if (loginForm.remember) {
                 localStorage.setItem('rememberedUsername', loginForm.username)
               } else {
@@ -183,18 +142,9 @@ export default {
               router.push(redirect)
 
             } else {
-              updateLoginAttempts(false)
-
               ElMessage.error(response.message || '用户名或密码错误')
-
-              if (loginAttempts.count > 0 && loginAttempts.count < 5) {
-                const remaining = 5 - loginAttempts.count
-                ElMessage.warning(`登录失败，还有 ${remaining} 次尝试机会`)
-              }
             }
           } catch (error) {
-            updateLoginAttempts(false)
-
             console.error('登录错误:', error)
             ElMessage.error('网络连接失败，请检查网络连接后重试')
           } finally {
@@ -222,7 +172,6 @@ export default {
     }
 
     onMounted(() => {
-      loadLoginAttempts()
       autoFillUsername()
     })
 

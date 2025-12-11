@@ -146,17 +146,27 @@ public class UserController {
             
             System.out.println("[register] Attempting registration for username: " + username);
             
+            // 检查用户名是否已存在
+            User existingUser = userMapper.selectByName(username);
+            if (existingUser != null) {
+                System.out.println("[register] 用户名已存在!");
+                return new ApiResponse(false, "用户名已存在", null);
+            }
+            
             User user = new User();
             user.setUsername(username);
+            user.setNickname(username); // 默认昵称使用用户名
+            user.setEmail(username + "@default.com"); // 默认邮箱
             // 对密码进行加密
             user.setPassword(passwordEncoder.encode(password));
             userMapper.insert(user);
             
             System.out.println("[register] 注册成功!");
             return new ApiResponse(true, "注册成功", user);
-        }catch (org.springframework.dao.DuplicateKeyException e){
-            System.out.println("[register] 用户名已存在!");
-            return new ApiResponse(false, "用户名已存在", null);
+        }catch (Exception e){
+            System.out.println("[register] 注册失败: " + e.getMessage());
+            e.printStackTrace();
+            return new ApiResponse(false, "注册失败: " + e.getMessage(), null);
         }
     }
 
@@ -167,17 +177,27 @@ public class UserController {
         try{
             System.out.println("[register GET] Attempting registration for username: " + username);
             
+            // 检查用户名是否已存在
+            User existingUser = userMapper.selectByName(username);
+            if (existingUser != null) {
+                System.out.println("[register GET] 用户名已存在!");
+                return new ApiResponse(false, "用户名已存在", null);
+            }
+            
             User user = new User();
             user.setUsername(username);
+            user.setNickname(username); // 默认昵称使用用户名
+            user.setEmail(username + "@default.com"); // 默认邮箱
             // 对密码进行加密
             user.setPassword(passwordEncoder.encode(password));
             userMapper.insert(user);
             
             System.out.println("[register GET] 注册成功!");
             return new ApiResponse(true, "注册成功", user);
-        }catch (org.springframework.dao.DuplicateKeyException e){
-            System.out.println("[register GET] 用户名已存在!");
-            return new ApiResponse(false, "用户名已存在", null);
+        }catch (Exception e){
+            System.out.println("[register GET] 注册失败: " + e.getMessage());
+            e.printStackTrace();
+            return new ApiResponse(false, "注册失败: " + e.getMessage(), null);
         }
     }
 

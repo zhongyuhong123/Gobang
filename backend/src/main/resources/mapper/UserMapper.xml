@@ -8,7 +8,8 @@
 
 
     <insert id="insert" parameterType="com.yangshengzhou.gobang.entity.User">
-        insert into user values(null, #{username}, #{password}, 1000, 0, 0);
+        INSERT INTO user (username, password, email, nickname, score, level, total_games, win_games, lose_games, draw_games, status, create_time, update_time)
+        VALUES (#{username}, #{password}, #{email}, #{nickname}, 1000, 1, 0, 0, 0, 0, 1, NOW(), NOW())
     </insert>
 
 

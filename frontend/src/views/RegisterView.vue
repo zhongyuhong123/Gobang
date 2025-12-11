@@ -118,14 +118,14 @@ export default {
               password: registerForm.password
             })
 
-            if (response.success || response.code === 200) {
+            if (response.success || response.code === 200 || response.status === true) {
               ElMessage.success('注册成功！')
               
               setTimeout(() => {
                 router.push('/login')
               }, 1500)
             } else {
-              ElMessage.error(response.message || '注册失败，请重试')
+              ElMessage.error(response.message || response.reason || '注册失败，请重试')
             }
           } catch (error) {
             console.error('注册错误:', error)

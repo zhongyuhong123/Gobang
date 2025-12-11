@@ -31,11 +31,12 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   response => {
     const { data } = response
-    if (data.code === 200 || data.success === true) {
+    // Handle both old and new response formats
+    if (data.code === 200 || data.success === true || data.status === true) {
       return data
     } else {
-      ElMessage.error(data.message || '请求失败')
-      return Promise.reject(new Error(data.message || '请求失败'))
+      ElMessage.error(data.message || data.reason || '请求失败')
+      return Promise.reject(new Error(data.message || data.reason || '请求失败'))
     }
   },
   error => {
@@ -45,6 +46,9 @@ service.interceptors.response.use(
       const { status, data } = error.response
       
       switch (status) {
+        case 400:
+          ElMessage.error(data.message || data.reason || '请求参数错误')
+          break
         case 401:
           ElMessage.error('未授权，请重新登录')
           localStorage.removeItem('token')
@@ -61,7 +65,7 @@ service.interceptors.response.use(
           ElMessage.error('服务器内部错误')
           break
         default:
-          ElMessage.error(data.message || '请求失败')
+          ElMessage.error(data.message || data.reason || '请求失败')
       }
     } else if (error.request) {
       ElMessage.error('网络连接失败，请检查网络设置')
