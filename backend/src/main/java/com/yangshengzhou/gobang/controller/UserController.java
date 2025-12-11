@@ -201,7 +201,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/user/info")
+    @GetMapping("/info")
     @ResponseBody
     public Object getUserInfo(HttpServletRequest req) {
         try{
