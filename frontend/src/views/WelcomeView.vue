@@ -10,15 +10,15 @@
           <div class="hero-features">
             <div class="feature-item glass-effect">
               <h4>经典玩法</h4>
-              <p>黑白对弈，连五取胜</p>
+              <p>黑白对弈<br>连五取胜</p>
             </div>
             <div class="feature-item glass-effect">
               <h4>在线对战</h4>
-              <p>与全球玩家实时竞技</p>
+              <p>全球玩家<br>实时竞技</p>
             </div>
             <div class="feature-item glass-effect">
               <h4>段位系统</h4>
-              <p>挑战自我，提升棋艺</p>
+              <p>挑战自我<br>提升棋艺</p>
             </div>
           </div>
         </div>
