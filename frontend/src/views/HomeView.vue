@@ -95,14 +95,15 @@
         </div>
 
         <div class="action-buttons">
-          <button class="hero-button hero-button-primary" @click="startQuickMatch" :disabled="matchingLoading || !userInfo">
+          <button class="hero-button hero-button-primary" @click="startQuickMatch"
+            :disabled="matchingLoading || !userInfo">
             <div class="button-content">
               <span class="button-title">快速匹配</span>
               <span class="button-subtitle">立即开始对战</span>
             </div>
             <div class="button-glow"></div>
           </button>
-          
+
           <button class="hero-button hero-button-success" @click="createRoom" :disabled="creatingRoom || !userInfo">
             <div class="button-content">
               <span class="button-title">创建房间</span>
@@ -178,22 +179,12 @@ export default {
     const totalGames = ref(0)
 
     const updateTotalStats = () => {
-      let online = 0
-      let games = 0
-
-      if (gameStats.gobang) {
-        online += gameStats.gobang.online || 0
-        games += gameStats.gobang.activeGames || 0
-      }
-      if (gameStats.military) {
-        online += gameStats.military.online || 0
-        games += gameStats.military.activeGames || 0
-      }
-      if (gameStats.chineseChess) {
-        online += gameStats.chineseChess.online || 0
-        games += gameStats.chineseChess.activeGames || 0
-      }
-
+      const online = (gameStats.gobang?.online || 0) +
+        (gameStats.military?.online || 0) +
+        (gameStats.chineseChess?.online || 0)
+      const games = (gameStats.gobang?.activeGames || 0) +
+        (gameStats.military?.activeGames || 0) +
+        (gameStats.chineseChess?.activeGames || 0)
       totalOnline.value = online
       totalGames.value = games
     }
@@ -284,14 +275,7 @@ export default {
       return Math.round((user.winGames || 0) / user.totalGames * 100) + '%'
     }
 
-    const getGameStats = (mode) => {
-      const statsMap = {
-        'gobang': gameStats.gobang,
-        'military': gameStats.military,
-        'chinese-chess': gameStats.chineseChess
-      }
-      return statsMap[mode] || null
-    }
+    const getGameStats = (mode) => gameStats[mode === 'chinese-chess' ? 'chineseChess' : mode] || null
 
     const getUsernameInitial = (username) => {
       return username ? username.charAt(0).toUpperCase() : '用'
@@ -746,55 +730,8 @@ export default {
   justify-content: center;
 }
 
-.action-buttons .el-button {
-  font-size: 1.1rem;
-  padding: 18px 32px;
-  border-radius: 12px;
-  font-weight: 700;
-  min-width: 160px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  background: rgba(64, 158, 255, 0.15);
-  border: 1px solid rgba(64, 158, 255, 0.4);
-  color: rgba(64, 158, 255, 0.9);
-  transition: all 0.3s ease;
-  box-shadow: 0 5px 20px rgba(64, 158, 255, 0.1);
-}
 
-.action-buttons .el-button:hover {
-  background: rgba(64, 158, 255, 0.25);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(64, 158, 255, 0.2);
-}
 
-.action-buttons .el-button--primary {
-  background: rgba(64, 158, 255, 0.8);
-  color: white;
-  border-color: rgba(64, 158, 255, 0.5);
-}
-
-.action-buttons .el-button--primary:hover {
-  background: rgba(64, 158, 255, 0.9);
-  box-shadow: 0 8px 30px rgba(64, 158, 255, 0.4);
-}
-
-.action-buttons .el-button--success {
-  background: rgba(103, 194, 58, 0.8);
-  color: white;
-  border-color: rgba(103, 194, 58, 0.5);
-}
-
-.action-buttons .el-button--success:hover {
-  background: rgba(103, 194, 58, 0.9);
-  box-shadow: 0 8px 30px rgba(103, 194, 58, 0.4);
-}
-
-.action-buttons .el-button i {
-  margin-right: 8px;
-  font-size: 18px;
-}
-
-/* 王者荣耀风格异形按钮 */
 .hero-button {
   position: relative;
   display: flex;
@@ -806,7 +743,6 @@ export default {
   font-size: 20px;
   font-weight: 700;
   letter-spacing: 0.05em;
-  text-transform: uppercase;
   cursor: pointer;
   transition: all 0.3s ease;
   overflow: hidden;
@@ -835,12 +771,10 @@ export default {
 
 .hero-button-primary:hover {
   background: linear-gradient(135deg, #7c8ff0 0%, #8a5fb8 100%);
-  box-shadow: 0 12px 40px rgba(102, 126, 234, 0.4);
 }
 
 .hero-button-success:hover {
   background: linear-gradient(135deg, #13b2a7 0%, #4cf996 100%);
-  box-shadow: 0 12px 40px rgba(17, 153, 142, 0.4);
 }
 
 .hero-button:active {
@@ -880,14 +814,14 @@ export default {
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
   opacity: 0;
   transition: opacity 0.3s ease;
   pointer-events: none;
 }
 
 .hero-button:hover .button-glow {
-  opacity: 1;
+  opacity: 0.8;
 }
 
 .settings-content {
