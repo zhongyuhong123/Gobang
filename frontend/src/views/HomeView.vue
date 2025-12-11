@@ -1,16 +1,16 @@
 <template>
   <div class="home-container">
-    <div class="left-nav">
-      <div class="nav-icon" @click="goToHome" title="首页">
+    <div class="left-nav" :class="{ disabled: isMatching }">
+      <div class="nav-icon" @click="goToHome" title="首页" :class="{ disabled: isMatching }">
         <House />
       </div>
-      <div class="nav-icon" @click="goToFriends" title="好友">
+      <div class="nav-icon" @click="goToFriends" title="好友" :class="{ disabled: isMatching }">
         <User />
       </div>
-      <div class="nav-icon" @click="goToRanking" title="排行榜">
+      <div class="nav-icon" @click="goToRanking" title="排行榜" :class="{ disabled: isMatching }">
         <Trophy />
       </div>
-      <div class="nav-icon" @click="showSettings" title="设置">
+      <div class="nav-icon" @click="showSettings" title="设置" :class="{ disabled: isMatching }">
         <Setting />
       </div>
     </div>
@@ -50,24 +50,24 @@
       </div>
 
       <div class="game-actions">
-        <div class="game-tabs">
-          <div class="game-tab" :class="{ active: selectedGameMode === 'gobang' }" @click="selectGameMode('gobang')">
+        <div class="game-tabs" :class="{ disabled: isMatching }">
+          <div class="game-tab" :class="{ active: selectedGameMode === 'gobang', disabled: isMatching }" @click="!isMatching && selectGameMode('gobang')">
             <span class="tab-icon">
               <Check />
             </span>
             <span class="tab-name">五子棋</span>
           </div>
 
-          <div class="game-tab" :class="{ active: selectedGameMode === 'military' }"
-            @click="selectGameMode('military')">
+          <div class="game-tab" :class="{ active: selectedGameMode === 'military', disabled: isMatching }"
+            @click="!isMatching && selectGameMode('military')">
             <span class="tab-icon">
               <Flag />
             </span>
             <span class="tab-name">军棋</span>
           </div>
 
-          <div class="game-tab" :class="{ active: selectedGameMode === 'chinese-chess' }"
-            @click="selectGameMode('chinese-chess')">
+          <div class="game-tab" :class="{ active: selectedGameMode === 'chinese-chess', disabled: isMatching }"
+            @click="!isMatching && selectGameMode('chinese-chess')">
             <span class="tab-icon">
               <PieChart />
             </span>
@@ -94,9 +94,9 @@
           </div>
         </div>
 
-        <div class="action-buttons">
+        <div class="action-buttons" :class="{ disabled: isMatching }">
           <button class="hero-button hero-button-primary" @click="startQuickMatch"
-            :disabled="matchingLoading || !userInfo">
+            :disabled="matchingLoading || !userInfo || isMatching">
             <div class="button-content">
               <span class="button-title">快速匹配</span>
               <span class="button-subtitle">立即开始对战</span>
@@ -104,7 +104,7 @@
             <div class="button-glow"></div>
           </button>
 
-          <button class="hero-button hero-button-success" @click="createRoom" :disabled="creatingRoom || !userInfo">
+          <button class="hero-button hero-button-success" @click="createRoom" :disabled="creatingRoom || !userInfo || isMatching">
             <div class="button-content">
               <span class="button-title">创建房间</span>
               <span class="button-subtitle">邀请好友对战</span>
@@ -113,6 +113,9 @@
           </button>
         </div>
       </div>
+      
+      <!-- 遮罩层 -->
+      <div class="overlay-mask" v-if="isMatching"></div>
       
       <!-- 匹配状态显示 -->
       <div class="matching-status" v-if="isMatching">
@@ -166,6 +169,19 @@
   transform: scale(1.05);
 }
 
+/* 遮罩层样式 */
+.overlay-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
+  z-index: 999;
+  animation: fadeIn 0.3s ease-out;
+}
+
 /* 匹配状态样式 */
 .matching-status {
   position: fixed;
@@ -201,6 +217,11 @@
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
 }
 
 .matching-text {
@@ -378,7 +399,7 @@ export default {
     const getGameStats = (mode) => gameStats[mode === 'chinese-chess' ? 'chineseChess' : mode] || null
 
     const getUsernameInitial = (username) => {
-      return username ? username.charAt(0).toUpperCase() : '用'
+      return username ? username.charAt(0).toUpperCase() : '棋'
     }
 
     const getAvatarColor = (username) => {
@@ -429,7 +450,6 @@ export default {
       matchingTimer = setInterval(() => {
         matchingElapsedTime.value++
         
-        // 检查是否超过3分钟（180秒）
         if (matchingElapsedTime.value >= 180) {
           stopMatchingTimer()
           matchingLoading.value = false
@@ -474,7 +494,7 @@ export default {
       } catch (error) {
         stopMatchingTimer()
         console.error('快速匹配失败:', error)
-        ElMessage.error('匹配失败，请重试')
+        ElMessage.error('匹配失败')
       } finally {
         if (!isMatching.value) {
           matchingLoading.value = false
@@ -589,6 +609,12 @@ export default {
   align-items: center;
   padding-top: 20px;
   gap: 20px;
+  transition: opacity 0.3s ease;
+}
+
+.left-nav.disabled {
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 .nav-icon {
@@ -606,6 +632,11 @@ export default {
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+}
+
+.nav-icon.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .nav-icon:hover {
@@ -764,6 +795,12 @@ export default {
   border-radius: 10px;
   border: 1px solid rgba(100, 255, 218, 0.1);
   margin-bottom: 16px;
+  transition: opacity 0.3s ease;
+}
+
+.game-tabs.disabled {
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 .game-tab {
@@ -779,6 +816,11 @@ export default {
   color: rgba(232, 232, 232, 0.7);
   position: relative;
   overflow: hidden;
+}
+
+.game-tab.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .game-tab:hover {
@@ -881,6 +923,12 @@ export default {
   margin-bottom: 30px;
   flex-wrap: wrap;
   justify-content: center;
+  transition: opacity 0.3s ease;
+}
+
+.action-buttons.disabled {
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 
