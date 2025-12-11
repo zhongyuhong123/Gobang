@@ -57,6 +57,7 @@
 
 ### 主界面
 ![项目首页](preview/首页.png)
+![登录](preview/登录.png)
 ![游戏大厅](preview/游戏大厅.png)
 
 ## 快速开始

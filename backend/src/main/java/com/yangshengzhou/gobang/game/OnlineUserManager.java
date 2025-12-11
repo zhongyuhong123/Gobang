@@ -36,4 +36,12 @@ public class OnlineUserManager {
     public WebSocketSession getFromGameRoom(int userId) {
         return gameRoom.get(userId);
     }
+
+    public int getGameHallUserCount() {
+        return gameHall.size();
+    }
+
+    public int getGameRoomUserCount() {
+        return gameRoom.size();
+    }
 }
