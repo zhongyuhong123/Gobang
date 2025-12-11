@@ -76,35 +76,6 @@ body {
   }
 }
 
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-
-@keyframes scaleIn {
-  from {
-    transform: scale(1);
-    opacity: 1;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(0px);
-  }
-}
-
 .game-card {
   background-color: var(--bg-primary);
   border-radius: var(--radius-md);
@@ -179,7 +150,6 @@ body {
   border-radius: var(--radius-md) !important;
 }
 
-/* 深色模式下的液态玻璃效果 */
 .glass-effect-dark {
   background: rgba(17, 17, 17, 0.25) !important;
   backdrop-filter: blur(10px) !important;
@@ -189,7 +159,6 @@ body {
   border-radius: var(--radius-md) !important;
 }
 
-/* 通用工具类 */
 .text-primary {
   color: var(--text-primary) !important;
 }
@@ -246,7 +215,6 @@ body {
   box-shadow: var(--shadow-lg) !important;
 }
 
-/* 过渡效果工具类 - 已优化，移除动画效果 */
 .transition-fast {
   transition: none !important;
 }

@@ -119,7 +119,6 @@ onMounted(() => {
   background-clip: text;
   user-select: none;
   outline: none;
-  -webkit-user-select: none;
 }
 
 .nav-logo h1:hover {
@@ -155,7 +154,6 @@ onMounted(() => {
   text-align: center;
   user-select: none;
   outline: none;
-  -webkit-user-select: none;
 }
 
 .btn-text {
@@ -338,7 +336,6 @@ onMounted(() => {
     padding: 6px 12px;
   font-size: 12px;
   min-width: 70px;
-  -webkit-user-select: none;
 }
   
   .back-btn {

@@ -28,13 +28,10 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   response => {
     const { data } = response
-    // 检查后端返回的status字段（boolean类型）
     if (data.code === 200 || data.success === true || data.status === true) {
       return data
     } else {
-      // 只在真正失败时显示错误消息
       if (data.message || data.reason) {
-        // 处理用户信息缺失的特殊情况
         if (data.message === '用户信息缺失，请重新登录') {
           localStorage.removeItem('token')
           localStorage.removeItem('userInfo')
@@ -74,16 +71,13 @@ service.interceptors.response.use(
           ElMessage.error(data.message || data.reason || '请求失败')
       }
     } else if (error.request) {
-      // 处理网络连接错误，包括连接被拒绝
       if (error.code === 'ECONNREFUSED' || error.message?.includes('ECONNREFUSED')) {
         ElMessage.error('服务器连接被拒绝，请检查服务器状态')
-        // 清除token并跳转到登录页
         localStorage.removeItem('token')
         localStorage.removeItem('userInfo')
         router.push('/login')
       } else if (error.message?.includes('Network Error')) {
         ElMessage.error('网络连接失败，请检查网络设置')
-        // 对于网络错误也清除token
         localStorage.removeItem('token')
         localStorage.removeItem('userInfo')
         router.push('/login')

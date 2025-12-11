@@ -498,11 +498,6 @@ export default {
       stopDataRefresh()
     })
 
-    // 组件卸载时停止定时器
-    onUnmounted(() => {
-      stopDataRefresh()
-    })
-
     return {
       selectedGameMode,
       matchingLoading,
