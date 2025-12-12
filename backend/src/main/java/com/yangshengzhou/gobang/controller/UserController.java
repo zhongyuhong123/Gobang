@@ -16,7 +16,6 @@ import java.util.Map;
 @RequestMapping("/user")
 public class UserController {
 
-    // 登录请求DTO
     private static class LoginRequest {
         private String username;
         private String password;
@@ -38,7 +37,6 @@ public class UserController {
         }
     }
 
-    // 注册请求DTO
     private static class RegisterRequest {
         private String username;
         private String password;
@@ -60,7 +58,6 @@ public class UserController {
         }
     }
 
-    // 内部类，用于统一API响应格式
     private static class ApiResponse {
         private boolean status;
         private String message;
@@ -113,7 +110,6 @@ public class UserController {
         
         System.out.println("[login] Attempting login for username: " + username);
         
-        //根据username去数据库中查找，如果能查到并密码一致则成功登入
         User user = userMapper.selectByName(username);
         System.out.println("[login] user="+user);
         if(user==null || !passwordEncoder.matches(password, user.getPassword())){
@@ -121,17 +117,15 @@ public class UserController {
             return new ApiResponse(false, "用户名或密码错误", null);
         }
         
-        // 生成双token
         String accessToken = jwtTokenUtil.generateAccessToken(String.valueOf(user.getUserId()), user.getUsername());
         String refreshToken = jwtTokenUtil.generateRefreshToken(String.valueOf(user.getUserId()), user.getUsername());
         
-        // 创建登录响应数据
         Map<String, Object> loginData = new HashMap<>();
         loginData.put("user", user);
         loginData.put("accessToken", accessToken);
         loginData.put("refreshToken", refreshToken);
         loginData.put("tokenType", "Bearer");
-        loginData.put("expiresIn", 86400); // 24小时，单位秒
+        loginData.put("expiresIn", 86400);
         
         System.out.println("[login] 登录成功!");
         return new ApiResponse(true, "登录成功", loginData);
@@ -146,7 +140,6 @@ public class UserController {
             
             System.out.println("[register] Attempting registration for username: " + username);
             
-            // 检查用户名是否已存在
             User existingUser = userMapper.selectByName(username);
             if (existingUser != null) {
                 System.out.println("[register] 用户名已存在!");
@@ -155,9 +148,8 @@ public class UserController {
             
             User user = new User();
             user.setUsername(username);
-            user.setNickname(username); // 默认昵称使用用户名
-            user.setEmail(username + "@default.com"); // 默认邮箱
-            // 对密码进行加密
+            user.setNickname(username);
+            user.setEmail(username + "@default.com");
             user.setPassword(passwordEncoder.encode(password));
             userMapper.insert(user);
             
@@ -170,14 +162,12 @@ public class UserController {
         }
     }
 
-    // 添加GET方法的注册接口用于测试
     @GetMapping("/register")
     @ResponseBody
     public Object registerGet(@RequestParam String username, @RequestParam String password) {
         try{
             System.out.println("[register GET] Attempting registration for username: " + username);
             
-            // 检查用户名是否已存在
             User existingUser = userMapper.selectByName(username);
             if (existingUser != null) {
                 System.out.println("[register GET] 用户名已存在!");
@@ -186,9 +176,8 @@ public class UserController {
             
             User user = new User();
             user.setUsername(username);
-            user.setNickname(username); // 默认昵称使用用户名
-            user.setEmail(username + "@default.com"); // 默认邮箱
-            // 对密码进行加密
+            user.setNickname(username);
+            user.setEmail(username + "@default.com");
             user.setPassword(passwordEncoder.encode(password));
             userMapper.insert(user);
             

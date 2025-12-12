@@ -14,7 +14,7 @@ https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <artifactId>gobang</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>gobang</name>
-    <description>Come下棋 - 多棋类在线对战平台</description>
+    <description>多棋类在线对战平台</description>
     <properties>
         <java.version>17</java.version>
         <spring-boot.version>3.2.1</spring-boot.version>

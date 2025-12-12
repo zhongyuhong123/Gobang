@@ -26,9 +26,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .csrf(csrf -> csrf.disable()) // 完全禁用CSRF保护
+            .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(authz -> authz
-                // 允许所有用户访问的公开接口 - 特别注意登录和注册接口
                 .requestMatchers("/user/login").permitAll()
                 .requestMatchers("/user/register").permitAll()
                 .requestMatchers("/user/info").permitAll()
@@ -44,18 +43,12 @@ public class SecurityConfig {
                 .requestMatchers("/login").permitAll()
                 .requestMatchers("/register").permitAll()
                 .requestMatchers("/error").permitAll()
-                // 其他所有请求都需要认证
                 .anyRequest().authenticated()
             )
-            // 禁用默认的登录表单，因为使用JWT
             .formLogin(form -> form.disable())
-            // 禁用HTTP Basic认证
             .httpBasic(basic -> basic.disable())
-            // 禁用session管理，因为使用JWT
             .sessionManagement(session -> session.disable())
-            // 禁用匿名用户
             .anonymous(anonymous -> anonymous.disable())
-            // 添加JWT认证过滤器
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

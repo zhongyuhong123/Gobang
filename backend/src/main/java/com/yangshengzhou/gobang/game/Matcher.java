@@ -12,10 +12,8 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
 
-//这个类表示"匹配器"，通过这个类负责完成整个匹配功能
 @Component
 public class Matcher {
-    //创建三个匹配队列
     private Queue<User> normalQueue = new LinkedList<>();
     private Queue<User> highQueue = new LinkedList<>();
     private Queue<User> veryHighQueue = new LinkedList<>();
@@ -28,8 +26,6 @@ public class Matcher {
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    //操作匹配队列的方法
-    //把玩家放到匹配队列中
     public void add(User user) {
         if(user.getScore()<2000){
             synchronized (normalQueue) {
@@ -52,7 +48,6 @@ public class Matcher {
         }
     }
 
-    //当玩家点击停止匹配的时候，就需要把玩家从匹配队列中删除
     public void remove(User user) {
         if(user.getScore()<2000){
             synchronized (normalQueue) {
@@ -72,7 +67,6 @@ public class Matcher {
         }
     }
 
-    // 检查用户是否在匹配队列中
     public boolean isInMatchQueue(User user) {
         if(user.getScore()<2000){
             synchronized (normalQueue) {
@@ -89,9 +83,7 @@ public class Matcher {
         }
     }
 
-    // 快速匹配：为用户寻找对手
     public User findOpponent(User user, String gameMode) {
-        // 简化实现：从相同分数段的队列中寻找第一个可用的对手
         Queue<User> targetQueue;
         if(user.getScore()<2000){
             targetQueue = normalQueue;
@@ -150,21 +142,14 @@ public class Matcher {
     private void handlerMatch(Queue<User> matchQueue) {
         synchronized (matchQueue) {
             try{
-                //1.检测队列中元素个数是否达到2
-                //当前队列元素不足2，持续等待~~
                 while(matchQueue.size()<2){
                     matchQueue.wait();
                 }
-                //2.尝试从队列中取出两个玩家
                 User player1 = matchQueue.poll();
                 User player2 = matchQueue.poll();
                 System.out.println("匹配出两个玩家：" + player1.getUsername() + ", " + player2.getUsername());
-                //3.获取到玩家的 websocket 的会话
-                //     获取到会话的木器是为了告诉玩家，匹配成功
                 WebSocketSession session1 = onlineUserManager.getFromGameHall(player1.getUserId());
                 WebSocketSession session2 = onlineUserManager.getFromGameHall(player2.getUserId());
-                //再对用户的在线状态进行一次判定~
-                //如果一个玩家为空，则吧另一玩家放回队列
                 if(session1==null){
                     matchQueue.offer(player2);
                     return;
@@ -179,14 +164,8 @@ public class Matcher {
                     return;
                 }
 
-                //4.  把这两个玩家放到一个游戏房间中
                 Room room = new Room();
                 roomManager.add(room, player1.getUserId(), player2.getUserId());
-
-                //5.给玩家反馈信息：你匹配到对手了~
-                //      通过 websocket 返回一个 message 为'matchSuccess' 这样的响应
-                //      两个玩家都需要返回
-                //      包含房间ID信息，方便前端跳转到游戏页面
                 MatchResponse response1 = new MatchResponse();
                 response1.setOk(true);
                 response1.setMessage("matchSuccess");

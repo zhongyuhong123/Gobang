@@ -35,7 +35,6 @@ public class GameStatsController {
         try {
             Map<String, Object> stats = new HashMap<>();
             
-            // 模拟游戏统计数据
             Map<String, Object> gobangStats = new HashMap<>();
             gobangStats.put("online", onlineUserManager.getGameHallUserCount());
             gobangStats.put("activeGames", Math.max(0, onlineUserManager.getGameHallUserCount() / 2));
@@ -61,29 +60,24 @@ public class GameStatsController {
     @PostMapping("/room/create")
     public Object createRoom(@RequestBody CreateRoomRequest request, HttpServletRequest httpRequest) {
         try {
-            // 从JWT token中获取用户信息
             User user = getUserFromToken(httpRequest);
             
-            // 检查用户是否登录
             if (user == null) {
                 return new ApiResponse(false, "用户未登录", null);
             }
 
-            // 检查用户是否已经在游戏中
             if (onlineUserManager.getFromGameRoom(user.getUserId()) != null) {
                 return new ApiResponse(false, "用户已在游戏中", null);
             }
 
-            // 创建新房间
             String roomId = UUID.randomUUID().toString();
             Room room = new Room();
             room.setRoomId(roomId);
             room.setUser1(user);
-            room.setWhiteUser(user); // 设置创建者为先手
+            room.setWhiteUser(user);
             
             roomManager.add(room, user.getUserId(), user.getUserId());
             
-            // 返回房间信息
             Map<String, Object> result = new HashMap<>();
             result.put("roomId", roomId);
             result.put("gameMode", request.getGameMode());
@@ -95,9 +89,6 @@ public class GameStatsController {
         }
     }
 
-    /**
-     * 从JWT token中提取用户信息
-     */
     private User getUserFromToken(HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
         if (authHeader != null && authHeader.startsWith("Bearer ")) {

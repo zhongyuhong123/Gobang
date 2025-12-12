@@ -5,8 +5,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-//房间管理器
-//这个类希望有唯一实例
 @Component
 public class RoomManager {
     private ConcurrentHashMap<String, Room> rooms = new ConcurrentHashMap<>();
@@ -31,7 +29,6 @@ public class RoomManager {
     public Room getRoomByUserId(int userId) {
         String roomId = userIdToRoomId.get(userId);
         if(roomId == null) {
-            //userId->roomId映射不存在
             return null;
         }
         return rooms.get(roomId);

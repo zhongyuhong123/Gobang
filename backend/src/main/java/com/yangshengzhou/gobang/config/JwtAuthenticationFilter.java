@@ -15,10 +15,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 
-/**
- * JWT认证过滤器
- * 用于验证JWT token并设置认证信息
- */
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 

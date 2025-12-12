@@ -218,7 +218,7 @@ export const wsManager = {
         const data = JSON.parse(event.data)
         callbacks?.onMessage && callbacks.onMessage(data)
       } catch (error) {
-        console.error('解析WebSocket消息失败:', error)
+        console.error(error)
       }
     }
 

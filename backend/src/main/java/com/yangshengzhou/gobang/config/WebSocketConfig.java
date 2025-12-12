@@ -29,7 +29,7 @@ public class WebSocketConfig implements WebSocketConfigurer{
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(testController,"/test");
         registry.addHandler(matchController,"/findMatch")
-                .addInterceptors(jwtHandshakeInterceptor);//使用JWT握手拦截器替代HTTP会话拦截器
+                .addInterceptors(jwtHandshakeInterceptor);
         registry.addHandler(gameController,"/game")
                 .addInterceptors(jwtHandshakeInterceptor);
     }

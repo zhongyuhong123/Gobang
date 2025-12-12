@@ -7,10 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class OnlineUserManager {
-    //这个哈希表就用来表示当前用户在游戏大厅的在线状态
-    //这里的hash表存在多个用户和服务器建立连接断开连接，此时服务器就是并发
     private ConcurrentHashMap<Integer, WebSocketSession> gameHall = new ConcurrentHashMap<>();
-    //这个哈希表就用来表示用户在游戏房间的在线状态
     private ConcurrentHashMap<Integer, WebSocketSession> gameRoom = new ConcurrentHashMap<>();
 
     public void enterGameHall(int userId, WebSocketSession webSocketSession) {

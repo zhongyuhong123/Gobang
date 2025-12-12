@@ -1,21 +1,15 @@
-# Come 下棋 - 开发环境配置
-# 开发环境配置文件
-
 spring:
   profiles:
     active: dev
   
-  # 应用配置
   application:
     name: gobang-game-platform-dev
   
-  # 数据源配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/gobang?useSSL=false&serverTimezone=UTC&characterEncoding=utf8&useUnicode=true&allowPublicKeyRetrieval=true
     username: root
     password: 123456
-    # 连接池配置
     hikari:
       minimum-idle: 5
       maximum-pool-size: 20
@@ -24,7 +18,6 @@ spring:
       max-lifetime: 1200000
       connection-test-query: SELECT 1
   
-  # Redis 配置
   redis:
     host: localhost
     port: 6379
@@ -39,16 +32,14 @@ spring:
         min-idle: 2
         max-wait: 1000ms
   
-  # 缓存配置
   cache:
     type: redis
     redis:
-      time-to-live: 1800000 # 30分钟
+      time-to-live: 1800000
       cache-null-values: true
       use-key-prefix: true
       key-prefix: gobang:dev:cache
   
-  # 会话配置
   session:
     store-type: redis
     timeout: 3600 # 1小时
@@ -56,12 +47,10 @@ spring:
       namespace: gobang:dev:session
       flush-mode: on-save
   
-  # 事务配置
   transaction:
     default-timeout: 30
     rollback-on-commit-failure: true
   
-  # Jackson 配置
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
@@ -71,14 +60,12 @@ spring:
       write-date-keys-as-timestamps: false
       indent-output: true
   
-  # 文件上传配置
   servlet:
     multipart:
       max-file-size: 10MB
       max-request-size: 50MB
       file-size-threshold: 2MB
 
-# 服务器配置
 server:
   port: 8080
   servlet:
@@ -99,7 +86,6 @@ server:
     mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json,application/xml
     min-response-size: 1024
 
-# 日志配置
 logging:
   level:
     root: DEBUG
@@ -117,7 +103,6 @@ logging:
     max-history: 7
     total-size-cap: 1GB
 
-# MyBatis Plus 配置
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
@@ -139,16 +124,14 @@ mybatis-plus:
     banner: false
   type-aliases-package: com.yangshengzhou.gobang.entity
 
-# JWT 配置
 jwt:
   secret: come-xiaqi-jwt-secret-key-2024-dev-environment
-  expiration: 86400000 # 24小时
+  expiration: 86400000
   header: Authorization
   prefix: Bearer
   issuer: gobang-platform
   audience: gobang-users
 
-# 安全配置
 security:
   # 忽略认证的URL
   ignored:
@@ -165,23 +148,19 @@ security:
       - "/ws/**"
       - "/error"
   
-  # 加密配置
   password:
     encoder:
-      strength: 4 # 开发环境使用较低的BCrypt强度以提高性能
+      strength: 4
   
-  # 会话安全
   session:
     fixation-protection: true
     concurrency-control:
-      max-sessions: 10 # 开发环境允许多个会话
+      max-sessions: 10
       expired-url: /api/user/login?expired
     
-  # CSRF保护
   csrf:
-    enabled: false # 开发环境禁用CSRF以便测试
+    enabled: false
 
-# WebSocket 配置
 websocket:
   endpoint: /ws
   allowed-origins: "*"
@@ -193,11 +172,10 @@ websocket:
   so-backlog: 100
   so-timeout: 30000
 
-# 游戏配置
 game:
   # 匹配配置
   match:
-    timeout: 10 # 匹配超时时间（秒）- 开发环境较短
+    timeout: 10
     max-wait-time: 60 # 最大等待时间（秒）
     min-players: 2
     max-players: 2
