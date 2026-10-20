@@ -69,41 +69,45 @@ public class GameController extends TextWebSocketHandler {
 
         onlineUserManager.enterGameRoom(user.getUserId(), session);
 
-        synchronized (room) {
-            if (room.getUser1() == null) {
-                room.setUser1(user);
-                room.setWhiteUser(user);
-                System.out.println("玩家 " + user.getUsername() + " 已经准备就绪（先手）");
-                return;
-            }
-            if (room.getUser2() == null && room.getUser1().getUserId() != user.getUserId()) {
-                room.setUser2(user);
-                room.ensureGame();
-                System.out.println("玩家 " + user.getUsername() + " 已经准备就绪");
-
-                noticeGameReady(room, room.getUser1(), room.getUser2());
-                noticeGameReady(room, room.getUser2(), room.getUser1());
-                return;
-            }
+        // 房间在匹配时就已经确定双方并初始化棋盘，所以谁先连进来都能立刻拿到局面
+        room.ensureGame();
+        User other = room.otherUser(user);
+        if (other == null) {
+            resp.setOk(false);
+            resp.setReason("你不在这局游戏里");
+            send(session, resp);
+            return;
         }
 
-        resp.setOk(false);
-        resp.setReason("当前房间已满，您不能加入房间");
-        session.sendMessage(new TextMessage(objectMapper.writeValueAsString(resp)));
+        boolean bothOnline = onlineUserManager.getFromGameRoom(room.getUser1().getUserId()) != null
+                && onlineUserManager.getFromGameRoom(room.getUser2().getUserId()) != null;
+
+        noticeGameReady(room, user, other, bothOnline);
+        if (onlineUserManager.getFromGameRoom(other.getUserId()) != null) {
+            noticeGameReady(room, other, user, bothOnline);
+        }
+        System.out.println("玩家 " + user.getUsername() + " 进入 " + room.getGameType() + " 房间，双方在线=" + bothOnline);
     }
 
-    private void noticeGameReady(Room room, User thisUser, User thatUser) throws Exception {
+    private void send(WebSocketSession session, GameReadyResponse resp) throws Exception {
+        if (session != null && session.isOpen()) {
+            session.sendMessage(new TextMessage(objectMapper.writeValueAsString(resp)));
+        }
+    }
+
+    private void noticeGameReady(Room room, User thisUser, User thatUser, boolean bothReady) throws Exception {
         GameReadyResponse resp = new GameReadyResponse();
         resp.setMessage("gameReady");
         resp.setOk(true);
         resp.setReason("");
         resp.setRoomId(room.getRoomId());
         resp.setThisUserId(thisUser.getUserId());
-        resp.setThatUserId(thatUser.getUserId());
-        resp.setThatUsername(thatUser.getUsername());
+        resp.setThatUserId(thatUser == null ? 0 : thatUser.getUserId());
+        resp.setThatUsername(thatUser == null ? "" : thatUser.getUsername());
         resp.setWhiteUser(room.getWhiteUser() == null ? 0 : room.getWhiteUser().getUserId());
         resp.setGameType(room.getGameType());
         resp.setState(room.getInitialState());
+        resp.setBothReady(bothReady);
         WebSocketSession webSocketSession = onlineUserManager.getFromGameRoom(thisUser.getUserId());
         if (webSocketSession != null && webSocketSession.isOpen()) {
             webSocketSession.sendMessage(new TextMessage(objectMapper.writeValueAsString(resp)));

@@ -289,10 +289,15 @@ export default {
         if (data.state) {
           applyState(data.state)
         }
-        gameStatus.value = 'playing'
+        if (data.bothReady === false) {
+          gameStatus.value = 'waiting'
+          ElMessage.info('已进入房间，等待对手…')
+        } else {
+          gameStatus.value = 'playing'
+          ElMessage.success(`对局开始，你执${mySideText.value}（${gameTitle.value}）`)
+        }
         turn.value = 1
         sending.value = false
-        ElMessage.success(`对局开始，你执${mySideText.value}（${gameTitle.value}）`)
         return
       }
 

@@ -105,6 +105,10 @@ public class Matcher {
 
                 Room room = new Room();
                 room.setGameType(type);
+                room.setUser1(player1);
+                room.setUser2(player2);
+                room.setWhiteUser(player1);
+                room.ensureGame();
                 roomManager.add(room, player1.getUserId(), player2.getUserId());
 
                 MatchResponse response1 = new MatchResponse();

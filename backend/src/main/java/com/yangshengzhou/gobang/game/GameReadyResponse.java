@@ -16,6 +16,16 @@ public class GameReadyResponse {
     private String gameType;
     /** 开局局面 */
     private Map<String, Object> state;
+    /** 对手是否也已经进入房间 */
+    private boolean bothReady;
+
+    public boolean isBothReady() {
+        return bothReady;
+    }
+
+    public void setBothReady(boolean bothReady) {
+        this.bothReady = bothReady;
+    }
 
     public String getGameType() {
         return gameType;

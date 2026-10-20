@@ -248,6 +248,20 @@ public class Room {
         return user2;
     }
 
+    /** 房间里的另一方 */
+    public User otherUser(User user) {
+        if (user == null) {
+            return null;
+        }
+        if (user1 != null && user.getUserId() == user1.getUserId()) {
+            return user2;
+        }
+        if (user2 != null && user.getUserId() == user2.getUserId()) {
+            return user1;
+        }
+        return null;
+    }
+
     public void setUser2(User user2) {
         this.user2 = user2;
     }
