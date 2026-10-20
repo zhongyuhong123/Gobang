@@ -158,7 +158,7 @@ export const wsManager = {
   matchSocket: null,
   gameSocket: null,
 
-  connectMatchSocket: (userId, callbacks) => {
+  connectMatchSocket: (userId, gameMode, callbacks) => {
     if (wsManager.matchSocket && wsManager.matchSocket.readyState === WebSocket.OPEN) {
       return wsManager.matchSocket
     }
@@ -166,7 +166,8 @@ export const wsManager = {
     const token = localStorage.getItem('token')
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
     const host = process.env.VUE_APP_WS_BASE_URL ? process.env.VUE_APP_WS_BASE_URL.replace(/^https?:/, protocol) : 'ws://localhost:8080'
-    const wsUrl = `${host}/findMatch?userId=${userId}${token ? `&token=${token}` : ''}`
+    const mode = gameMode || 'gobang'
+    const wsUrl = `${host}/findMatch?userId=${userId}&gameMode=${encodeURIComponent(mode)}${token ? `&token=${token}` : ''}`
     wsManager.matchSocket = new WebSocket(wsUrl)
 
     wsManager.matchSocket.onopen = () => {

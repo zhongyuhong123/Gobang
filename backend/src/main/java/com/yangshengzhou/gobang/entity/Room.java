@@ -1,184 +1,223 @@
 package com.yangshengzhou.gobang.entity;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yangshengzhou.gobang.GobangApplication;
-import com.yangshengzhou.gobang.mapper.UserMapper;
+import com.yangshengzhou.gobang.game.GameResponse;
 import com.yangshengzhou.gobang.game.OnlineUserManager;
 import com.yangshengzhou.gobang.game.RoomManager;
-import com.yangshengzhou.gobang.game.GameRequest;
-import com.yangshengzhou.gobang.game.GameResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.yangshengzhou.gobang.game.games.Game;
+import com.yangshengzhou.gobang.game.games.GameFactory;
+import com.yangshengzhou.gobang.mapper.UserMapper;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.UUID;
 
-//这个类表示一个游戏房间
+/**
+ * 一个对局房间：负责玩家、连接、结算与消息广播；具体棋规交给 {@link Game} 实现。
+ *
+ * user1 恒为主队（五子棋执黑先手 / 象棋执红 / 军棋执红），user2 为客队。
+ */
 public class Room {
-    //使用字符串类型来表示，方便生成唯一值。final
+
     private String roomId;
+    private String gameType = GameFactory.GOBANG;
 
     private User user1;
     private User user2;
 
-    //先手的玩家（白子）
+    /** 先手玩家（五子棋里的黑棋） */
     private User whiteUser;
 
+    private final OnlineUserManager onlineUserManager;
+    private final RoomManager roomManager;
+    private final UserMapper userMapper;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
-    private OnlineUserManager onlineUserManager;
-    private RoomManager roomManager;
-    private UserMapper userMapper;
+    private Game game;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private boolean finished = false;
+    private final long startTime = System.currentTimeMillis();
 
-    private static final int MAX_COL = 15;
-    private static final int MAX_ROW = 15;
+    public Room() {
+        roomId = UUID.randomUUID().toString();
+        onlineUserManager = GobangApplication.context.getBean(OnlineUserManager.class);
+        roomManager = GobangApplication.context.getBean(RoomManager.class);
+        userMapper = GobangApplication.context.getBean(UserMapper.class);
+    }
 
-    //添加一个棋盘，使用二维数组来表示
-    //此处约定：
-    //  1）使用 0 表示当前位置未落子，一个刚 new 好的二维数组，默认全是 0，相对于是空棋盘
-    //  2）使用 1 表示 user1 的落子位置
-    //  3）使用 2 表示 user2 的落子位置
-    private int[][] board = new int[MAX_ROW][MAX_COL];
+    // ================= 开局 =================
 
-    public void putChess(String reqJson) throws IOException {
-//        System.out.println("收到落子响应"+reqJson);
-        //1.解析请求，并且记录落子的位置
-        GameRequest request = objectMapper.readValue(reqJson, GameRequest.class);
-        GameResponse response = new GameResponse();
-        int chess = request.getUserId() == user1.getUserId()? 1 : 2;//获取当前棋子
-        int row = request.getRow();
-        int col = request.getCol();
-        if(board[row][col] != 0) {
-            //当前位置有子了，不能重复落子。（客户端也判断过）
-            System.out.println("当前位置 ("+row+","+col+") 已经有子了！");
+    /** 双方都到齐后创建规则引擎（幂等） */
+    public synchronized void ensureGame() {
+        if (game == null && user1 != null && user2 != null) {
+            game = GameFactory.create(gameType, user1, user2);
+        }
+    }
+
+    public synchronized Map<String, Object> getInitialState() {
+        ensureGame();
+        return game == null ? new LinkedHashMap<>() : game.initialState();
+    }
+
+    public synchronized int getTurnUserId() {
+        return game == null ? 0 : game.getTurnUserId();
+    }
+
+    // ================= 走子 =================
+
+    public synchronized void putChess(User player, String reqJson) throws IOException {
+        if (player == null) {
             return;
         }
-        board[row][col] = chess;
-
-        //2.打印棋盘状态
-        //printBoard();
-
-        //3.判断当前是否分出胜负
-        int winner = checkWinner(row, col, chess);
-        if(winner == 1){
-            winner = user1.getUserId();
-        }else if(winner == 2){
-            winner = user2.getUserId();
+        if (finished) {
+            sendError(player, "本局已经结束");
+            return;
+        }
+        if (user1 == null || user2 == null) {
+            sendError(player, "对手还没有进入房间");
+            return;
+        }
+        ensureGame();
+        if (game == null) {
+            sendError(player, "对局尚未开始");
+            return;
         }
 
-        //4.返回响应，给房间中的所有客户端都返回响应
-        response.setMessage("putChess");
-        response.setUserId(request.getUserId());
-        response.setRow(row);
-        response.setCol(col);
-        response.setWinner(winner);
-
-        //通过 websocket 把上述响应给发送客户端
-        WebSocketSession session1 = onlineUserManager.getFromGameRoom(user1.getUserId());
-        WebSocketSession session2 = onlineUserManager.getFromGameRoom(user2.getUserId());
-
-        //玩家下线
-        if(session1 == null){
-            //玩家1下线，直接判定玩家2获胜
-            response.setWinner(user2.getUserId());
-            System.out.println("玩家1掉线");
-        }else if(session2 == null){
-            //玩家2下线，直接判定玩家1获胜
-            response.setWinner(user1.getUserId());
-            System.out.println("玩家2掉线");
+        JsonNode node;
+        try {
+            node = objectMapper.readTree(reqJson);
+        } catch (Exception e) {
+            sendError(player, "非法的请求");
+            return;
+        }
+        if (node == null || node.isMissingNode() || !node.isObject()) {
+            sendError(player, "非法的请求");
+            return;
         }
 
-        //5.把响应对象构造成 JSON 字符串，通过 session 对象进行传输
-        String respJson = objectMapper.writeValueAsString(response);
-        if(session1 != null){
-            session1.sendMessage(new TextMessage(respJson));
-        }
-        if(session2 != null){
-            session2.sendMessage(new TextMessage(respJson));
+        String error = game.applyMove(player, node);
+        if (error != null) {
+            sendError(player, error);
+            return;
         }
 
-        //6.如果胜负已分，房间就失去存在的意义了，可以销毁房间了
-        if(response.getWinner() != 0){
-            System.out.println("游戏结束！房间即将销毁！roomId"+roomId+" 获胜方为"+response.getWinner());
-            //更新获胜方和失败方的信息
-            int winUserId = response.getWinner();
-            int loseUserId = response.getWinner() == user1.getUserId()? user2.getUserId() : user1.getUserId();
-            userMapper.userWin(winUserId);
-            userMapper.userLose(loseUserId);
+        broadcast(game.buildUpdate(player));
 
-            //销毁房间
-            roomManager.remove(roomManager.getRoomByRoomId(roomId), user1.getUserId(), user2.getUserId());
+        if (game.isFinished()) {
+            finish(game.getWinnerId(), game.getEndReason());
         }
-
     }
 
-    private void printBoard() {
-        //todo  更好的做法，应该给每个房间的信息放到单独的日志文件中进行打印
-        System.out.println("[打印棋盘信息]  房间号："+roomId);
-        System.out.println("===============================");
-        for(int r = 0; r < MAX_ROW; r++) {
-            for(int c = 0; c < MAX_COL; c++){
-                System.out.print(board[r][c] + " ");
+    /** 主动认输：判对方获胜 */
+    public synchronized void surrender(User player) {
+        if (finished || player == null || user1 == null || user2 == null) {
+            return;
+        }
+        if (player.getUserId() != user1.getUserId() && player.getUserId() != user2.getUserId()) {
+            return;
+        }
+        User winner = (player.getUserId() == user1.getUserId()) ? user2 : user1;
+        finish(winner.getUserId(), "对手认输");
+    }
+
+    /** 掉线/离开：判另一方获胜 */
+    public synchronized void playerLeft(User leftUser) {
+        if (finished || leftUser == null) {
+            return;
+        }
+        if (user1 == null || user2 == null) {
+            finished = true;
+            roomManager.remove(this, leftUser.getUserId(), leftUser.getUserId());
+            return;
+        }
+        if (leftUser.getUserId() != user1.getUserId() && leftUser.getUserId() != user2.getUserId()) {
+            return;
+        }
+        User winner = (leftUser.getUserId() == user1.getUserId()) ? user2 : user1;
+        finish(winner.getUserId(), "对手已离开，你获胜");
+    }
+
+    private void finish(Integer winnerId, String reason) {
+        if (finished) {
+            return;
+        }
+        finished = true;
+
+        Map<String, Object> over = new LinkedHashMap<>();
+        over.put("message", "gameOver");
+        over.put("gameType", gameType);
+        over.put("winner", winnerId == null ? 0 : winnerId);
+        over.put("reason", reason);
+        broadcast(over);
+
+        try {
+            if (winnerId == null) {
+                userMapper.userDraw(user1.getUserId());
+                userMapper.userDraw(user2.getUserId());
+            } else {
+                int loserId = (winnerId == user1.getUserId()) ? user2.getUserId() : user1.getUserId();
+                userMapper.userWin(winnerId);
+                userMapper.userLose(loserId);
             }
-            System.out.println();
+        } catch (Exception e) {
+            System.err.println("[Room.finish] 更新战绩失败: " + e.getMessage());
         }
-        System.out.println("===============================");
+
+        System.out.println("[Room] " + gameType + " 房间 " + roomId + " 结束，用时 "
+                + (System.currentTimeMillis() - startTime) + "ms，"
+                + (winnerId == null ? "平局" : "赢家 userId=" + winnerId) + "（" + reason + "）");
+
+        roomManager.remove(this, user1.getUserId(), user2.getUserId());
     }
 
-    // 判断胜负
-    private int checkWinner(int row, int col, int chess) {
-        //定义两个指针从当前坐标(row, col)往两边数chess的数量
-        //  start：往左or上方找头（记录当前棋子到头方向棋子数量）
-        //  end： 往右or下方找尾（记录当前棋子到尾方向棋子数量）
+    // ================= 消息 =================
 
-        //检查横线
-        int start=0,end=0;
-        for(int r=row,c=col-1;c>=0 && board[r][c]==chess;c--){
-            start++;
+    private void broadcast(Map<String, Object> payload) {
+        String json;
+        try {
+            json = objectMapper.writeValueAsString(payload);
+        } catch (Exception e) {
+            System.err.println("[Room] 序列化消息失败: " + e.getMessage());
+            return;
         }
-        for(int r=row,c=col+1;c<MAX_COL && board[r][c]==chess;c++){
-            end++;
-        }
-        if(start+end+1==5) return chess;
+        send(user1, json);
+        send(user2, json);
+    }
 
-        //检查竖线
-        start=0;
-        end=0;
-        for(int r=row-1,c=col;r>=0 && board[r][c]==chess;r--){
-            start++;
+    private void sendError(User user, String reason) {
+        GameResponse response = new GameResponse();
+        response.setMessage("error");
+        response.setReason(reason);
+        try {
+            send(user, objectMapper.writeValueAsString(response));
+        } catch (Exception e) {
+            System.err.println("[Room] 发送错误消息失败: " + e.getMessage());
         }
-        for(int r=row+1,c=col;r<MAX_ROW && board[r][c]==chess;r++){
-            end++;
-        }
-        if(start+end+1==5) return chess;
+    }
 
-        //检查斜线（左上到右下）
-        start=0;
-        end=0;
-        for(int r=row-1,c=col-1;r>=0 && c>=0 && board[r][c]==chess;r--,c--){
-            start++;
+    private void send(User user, String json) {
+        if (user == null) {
+            return;
         }
-        for(int r=row+1,c=col+1;r<MAX_ROW && c<MAX_COL && board[r][c]==chess;r++,c++){
-            end++;
+        WebSocketSession session = onlineUserManager.getFromGameRoom(user.getUserId());
+        if (session != null && session.isOpen()) {
+            try {
+                session.sendMessage(new TextMessage(json));
+            } catch (IOException e) {
+                System.err.println("[Room] 发送消息给 " + user.getUsername() + " 失败: " + e.getMessage());
+            }
         }
-        if(start+end+1==5) return chess;
+    }
 
-        //检查反斜线（右上到左下）
-        start=0;
-        end=0;
-        for(int r=row-1,c=col+1;r>=0 && c<MAX_COL && board[r][c]==chess;r--,c++){
-            start++;
-        }
-        for(int r=row+1,c=col-1;r<MAX_ROW && c>=0 && board[r][c]==chess;r++,c--){
-            end++;
-        }
-        if(start+end+1==5) return chess;
+    // ================= getter / setter =================
 
-        //没有五子连珠
-        return 0;
+    public synchronized boolean isFinished() {
+        return finished;
     }
 
     public String getRoomId() {
@@ -189,12 +228,12 @@ public class Room {
         this.roomId = roomId;
     }
 
-    public User getUser2() {
-        return user2;
+    public String getGameType() {
+        return gameType;
     }
 
-    public void setUser2(User user2) {
-        this.user2 = user2;
+    public void setGameType(String gameType) {
+        this.gameType = GameFactory.normalize(gameType);
     }
 
     public User getUser1() {
@@ -205,30 +244,19 @@ public class Room {
         this.user1 = user1;
     }
 
+    public User getUser2() {
+        return user2;
+    }
+
+    public void setUser2(User user2) {
+        this.user2 = user2;
+    }
+
     public User getWhiteUser() {
         return whiteUser;
     }
 
     public void setWhiteUser(User user) {
-        whiteUser=user;
-    }
-
-
-
-    public Room() {
-       //构造Room 的时候生成一个唯一的字符串表示房间id
-        //使用UUID来作为房间id
-        roomId = UUID.randomUUID().toString();
-
-        //通过入口类中的 context 成员，手动获取到 RoomManager 和 OnlineUserManager
-        // 用这个方法来代替使用 @Autowired 交给 spring 来进行管理
-        onlineUserManager = GobangApplication.context.getBean(OnlineUserManager.class);
-        roomManager = GobangApplication.context.getBean(RoomManager.class);
-        userMapper = GobangApplication.context.getBean(UserMapper.class);
-    }
-
-    public static void main(String[] args) {
-        Room room = new Room();
-        System.out.println(room.roomId);
+        whiteUser = user;
     }
 }

@@ -1,11 +1,12 @@
 package com.yangshengzhou.gobang.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yangshengzhou.gobang.game.*;
-import com.yangshengzhou.gobang.entity.User;
 import com.yangshengzhou.gobang.entity.Room;
-import com.yangshengzhou.gobang.mapper.UserMapper;
+import com.yangshengzhou.gobang.entity.User;
+import com.yangshengzhou.gobang.game.GameReadyResponse;
+import com.yangshengzhou.gobang.game.GameResponse;
+import com.yangshengzhou.gobang.game.OnlineUserManager;
+import com.yangshengzhou.gobang.game.RoomManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -13,13 +14,18 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import jakarta.annotation.Resource;
 import java.io.IOException;
-import java.util.Map;
 
+/**
+ * 对局房间的 WebSocket 入口（/game）。
+ *
+ * 负责：把两个玩家安排进同一个 Room、把落子请求转给 Room、在掉线时判负。
+ * 具体的棋盘规则都在 Room 里实现。
+ */
 @Component
 public class GameController extends TextWebSocketHandler {
-    private ObjectMapper objectMapper = new ObjectMapper();
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
     private RoomManager roomManager;
@@ -27,15 +33,12 @@ public class GameController extends TextWebSocketHandler {
     @Autowired
     private OnlineUserManager onlineUserManager;
 
-    @Resource
-    private UserMapper userMapper;
-
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         GameReadyResponse resp = new GameReadyResponse();
 
         User user = (User) session.getAttributes().get("user");
-        if(user == null){
+        if (user == null) {
             resp.setOk(false);
             resp.setMessage("用户尚未登录");
             session.sendMessage(new TextMessage(objectMapper.writeValueAsString(resp)));
@@ -43,7 +46,7 @@ public class GameController extends TextWebSocketHandler {
         }
 
         Room room = roomManager.getRoomByUserId(user.getUserId());
-        if(room == null){
+        if (room == null) {
             resp.setOk(false);
             resp.setReason("用户尚未匹配到！");
             session.sendMessage(new TextMessage(objectMapper.writeValueAsString(resp)));
@@ -66,20 +69,20 @@ public class GameController extends TextWebSocketHandler {
 
         onlineUserManager.enterGameRoom(user.getUserId(), session);
 
-        synchronized (room){
-            if(room.getUser1() == null){
+        synchronized (room) {
+            if (room.getUser1() == null) {
                 room.setUser1(user);
                 room.setWhiteUser(user);
-                System.out.println("玩家 "+user.getUsername() + "已经准备就绪");
+                System.out.println("玩家 " + user.getUsername() + " 已经准备就绪（先手）");
                 return;
             }
-            if(room.getUser2() == null){
+            if (room.getUser2() == null && room.getUser1().getUserId() != user.getUserId()) {
                 room.setUser2(user);
-                System.out.println("玩家 "+user.getUsername() + "已经准备就绪");
+                room.ensureGame();
+                System.out.println("玩家 " + user.getUsername() + " 已经准备就绪");
 
                 noticeGameReady(room, room.getUser1(), room.getUser2());
                 noticeGameReady(room, room.getUser2(), room.getUser1());
-
                 return;
             }
         }
@@ -97,7 +100,10 @@ public class GameController extends TextWebSocketHandler {
         resp.setRoomId(room.getRoomId());
         resp.setThisUserId(thisUser.getUserId());
         resp.setThatUserId(thatUser.getUserId());
-        resp.setWhiteUser(room.getWhiteUser().getUserId());
+        resp.setThatUsername(thatUser.getUsername());
+        resp.setWhiteUser(room.getWhiteUser() == null ? 0 : room.getWhiteUser().getUserId());
+        resp.setGameType(room.getGameType());
+        resp.setState(room.getInitialState());
         WebSocketSession webSocketSession = onlineUserManager.getFromGameRoom(thisUser.getUserId());
         if (webSocketSession != null && webSocketSession.isOpen()) {
             webSocketSession.sendMessage(new TextMessage(objectMapper.writeValueAsString(resp)));
@@ -109,70 +115,80 @@ public class GameController extends TextWebSocketHandler {
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         User user = (User) session.getAttributes().get("user");
-        if(user == null){
+        if (user == null) {
             System.out.println("[handleTextMessage] 当前用户尚未登录");
             return;
         }
         Room room = roomManager.getRoomByUserId(user.getUserId());
-        if(room == null){
+        if (room == null) {
+            sendRoomError(session, "房间不存在或对局已结束");
             return;
         }
-        room.putChess(message.getPayload());
+
+        // 客户端消息一律不能让异常冒到容器：否则 Spring 会直接以 1011 关闭整条连接
+        try {
+            String payload = message.getPayload();
+            String type = null;
+            try {
+                type = objectMapper.readTree(payload).path("message").asText(null);
+            } catch (Exception ignored) {
+                // 交给 Room 去解析并返回错误
+            }
+            if ("surrender".equals(type)) {
+                room.surrender(user);
+                return;
+            }
+            room.putChess(user, payload);
+        } catch (Exception e) {
+            System.err.println("[GameController] 处理消息失败: " + e.getMessage());
+            sendRoomError(session, "非法的请求");
+        }
+    }
+
+    private void sendRoomError(WebSocketSession session, String reason) throws IOException {
+        GameResponse resp = new GameResponse();
+        resp.setMessage("error");
+        resp.setReason(reason);
+        if (session != null && session.isOpen()) {
+            session.sendMessage(new TextMessage(objectMapper.writeValueAsString(resp)));
+        }
     }
 
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
         User user = (User) session.getAttributes().get("user");
-        if(user == null){
+        if (user == null) {
             return;
         }
         WebSocketSession exitSession = onlineUserManager.getFromGameRoom(user.getUserId());
-        if(session==exitSession){
+        if (session == exitSession) {
             onlineUserManager.exitGameRoom(user.getUserId());
         }
-        System.out.println("当前用户 "+user.getUsername() + " 游戏房间连接异常");
-        noticeThatUserWin(user);
+        System.out.println("当前用户 " + user.getUsername() + " 游戏房间连接异常");
+        handlePlayerLeft(user);
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         User user = (User) session.getAttributes().get("user");
-        if(user == null){
+        if (user == null) {
             return;
         }
         WebSocketSession exitSession = onlineUserManager.getFromGameRoom(user.getUserId());
-        if(session==exitSession){
+        if (session == exitSession) {
             onlineUserManager.exitGameRoom(user.getUserId());
         }
-        System.out.println("当前用户 "+user.getUsername() + " 离开游戏房间");
-        noticeThatUserWin(user);
+        System.out.println("当前用户 " + user.getUsername() + " 离开游戏房间");
+        handlePlayerLeft(user);
     }
 
-    private void noticeThatUserWin(User user) throws IOException {
+    /** 玩家离开：房间还在就判对手获胜，房间已销毁则什么都不做 */
+    private void handlePlayerLeft(User user) {
         Room room = roomManager.getRoomByUserId(user.getUserId());
-        if(room == null){
-            System.out.println("用户 "+user.getUsername()+" 已经不在房间中");
+        if (room == null) {
+            System.out.println("用户 " + user.getUsername() + " 已经不在房间中");
             return;
         }
-        User thatUser = (user == room.getUser1()) ? room.getUser2() : room.getUser1();
-        if(thatUser == null){
-            System.out.println("在房间 "+room.getRoomId()+" 中找不到对手");
-            return;
-        }
-        WebSocketSession webSocketSession = onlineUserManager.getFromGameRoom(thatUser.getUserId());
-        if(webSocketSession == null){
-            System.out.println("对手 "+thatUser.getUsername()+" 不在线");
-            return;
-        }
-        GameResponse response = new GameResponse();
-        response.setMessage("putChess");
-        response.setUserId(thatUser.getUserId());
-        response.setWinner(thatUser.getUserId());
-        webSocketSession.sendMessage(new TextMessage(objectMapper.writeValueAsString(response)));
-        int winUserId = thatUser.getUserId();
-        int loseUserId = user.getUserId();
-        userMapper.userWin(winUserId);
-        userMapper.userLose(loseUserId);
-        roomManager.remove(room,room.getUser1().getUserId(),room.getUser2().getUserId());
+        room.playerLeft(user);
     }
 }

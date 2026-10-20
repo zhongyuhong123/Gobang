@@ -26,4 +26,11 @@
                         score = score - 5
         where user_id = #{userId}
     </update>
+
+    <update id = "userDraw">
+        update user set total_games = total_games + 1,
+                        draw_games = draw_games + 1,
+                        score = score + 2
+        where user_id = #{userId}
+    </update>
 </mapper>

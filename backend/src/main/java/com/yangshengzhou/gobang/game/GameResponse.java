@@ -7,6 +7,15 @@ public class GameResponse {
     private int row;
     private int col;
     private int winner;
+    private String reason;
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
 
     public String getMessage() {
         return message;

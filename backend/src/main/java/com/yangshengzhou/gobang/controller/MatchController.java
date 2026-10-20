@@ -69,10 +69,12 @@ public class MatchController extends TextWebSocketHandler {
         MatchRequest request = objectMapper.readValue(payload, MatchRequest.class);
         MatchResponse response = new MatchResponse();
         if(request.getMessage().equals("startMatch")) {
-            matcher.add(user);
+            onlineUserManager.setHallMode(user.getUserId(), request.getGameMode());
+            matcher.add(user, request.getGameMode());
             matchTimeoutService.recordMatchStart(user);
             response.setOk(true);
             response.setMessage("startMatch");
+            response.setGameType(com.yangshengzhou.gobang.game.games.GameFactory.normalize(request.getGameMode()));
         }else if(request.getMessage().equals("stopMatch")){
             matcher.remove(user);
             matchTimeoutService.removeMatchRecord(user);

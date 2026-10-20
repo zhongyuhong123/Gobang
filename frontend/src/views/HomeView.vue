@@ -483,11 +483,12 @@ export default {
       try {
         const userId = userInfo.value.userId
         
-        wsManager.connectMatchSocket(userId, {
+        wsManager.connectMatchSocket(userId, selectedGameMode.value, {
           onOpen: () => {
             console.log('匹配WebSocket连接成功')
             wsManager.matchSocket.send(JSON.stringify({
-              message: 'startMatch'
+              message: 'startMatch',
+              gameMode: selectedGameMode.value
             }))
           },
           onMessage: (data) => {
@@ -504,7 +505,7 @@ export default {
                   ElMessage.success('匹配成功！正在进入游戏...')
                   router.push({
                     path: '/game',
-                    query: { roomId: data.reason }
+                    query: { roomId: data.reason, gameType: data.gameType || selectedGameMode.value }
                   })
                 } else if (data.message === 'matchTimeout') {
                   stopMatchingTimer()

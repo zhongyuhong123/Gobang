@@ -34,27 +34,21 @@ public class GameStatsController {
     public Object getGameStats() {
         try {
             Map<String, Object> stats = new HashMap<>();
-            
-            Map<String, Object> gobangStats = new HashMap<>();
-            gobangStats.put("online", onlineUserManager.getGameHallUserCount());
-            gobangStats.put("activeGames", Math.max(0, onlineUserManager.getGameHallUserCount() / 2));
-            
-            Map<String, Object> militaryStats = new HashMap<>();
-            militaryStats.put("online", Math.max(0, onlineUserManager.getGameHallUserCount() - 5));
-            militaryStats.put("activeGames", Math.max(0, (onlineUserManager.getGameHallUserCount() - 5) / 2));
-            
-            Map<String, Object> chineseChessStats = new HashMap<>();
-            chineseChessStats.put("online", Math.max(0, onlineUserManager.getGameHallUserCount() - 10));
-            chineseChessStats.put("activeGames", Math.max(0, (onlineUserManager.getGameHallUserCount() - 10) / 2));
-            
-            stats.put("gobang", gobangStats);
-            stats.put("military", militaryStats);
-            stats.put("chineseChess", chineseChessStats);
-            
+            stats.put("gobang", modeStats("gobang"));
+            stats.put("military", modeStats("military"));
+            stats.put("chineseChess", modeStats("chinese-chess"));
             return new ApiResponse(true, "获取游戏统计成功", stats);
         } catch (Exception e) {
             return new ApiResponse(false, "获取游戏统计失败：" + e.getMessage(), null);
         }
+    }
+
+    /** 某个棋种的在线人数与进行中的对局数 */
+    private Map<String, Object> modeStats(String mode) {
+        Map<String, Object> m = new HashMap<>();
+        m.put("online", onlineUserManager.countHallUsers(mode) + roomManager.countUsers(mode));
+        m.put("activeGames", roomManager.countRooms(mode));
+        return m;
     }
 
     @PostMapping("/room/create")
@@ -73,6 +67,7 @@ public class GameStatsController {
             String roomId = UUID.randomUUID().toString();
             Room room = new Room();
             room.setRoomId(roomId);
+            room.setGameType(request.getGameMode());
             room.setUser1(user);
             room.setWhiteUser(user);
             

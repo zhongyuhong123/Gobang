@@ -3,18 +3,24 @@ package com.yangshengzhou.gobang.controller;
 import com.yangshengzhou.gobang.entity.User;
 import com.yangshengzhou.gobang.game.Matcher;
 import com.yangshengzhou.gobang.game.OnlineUserManager;
-import com.yangshengzhou.gobang.game.RoomManager;
-import com.yangshengzhou.gobang.entity.Room;
+import com.yangshengzhou.gobang.game.games.GameFactory;
 import com.yangshengzhou.gobang.mapper.UserMapper;
 import com.yangshengzhou.gobang.util.JwtTokenUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
+/**
+ * 通过 REST 主动加入匹配队列。
+ *
+ * 匹配成功仍然通过 /findMatch 这条 WebSocket 通知，所以要求用户已经连上匹配 socket。
+ */
 @RestController
 @RequestMapping("/game/match")
 public class QuickMatchController {
@@ -26,9 +32,6 @@ public class QuickMatchController {
     private Matcher matcher;
 
     @Autowired
-    private RoomManager roomManager;
-
-    @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
     @Autowired
@@ -38,55 +41,27 @@ public class QuickMatchController {
     public Object quickMatch(@RequestBody QuickMatchRequest request, HttpServletRequest httpRequest) {
         try {
             User user = getUserFromToken(httpRequest);
-            
             if (user == null) {
                 return new ApiResponse(false, "用户未登录", null);
             }
-
             if (onlineUserManager.getFromGameRoom(user.getUserId()) != null) {
                 return new ApiResponse(false, "用户已在游戏中", null);
             }
+            if (onlineUserManager.getFromGameHall(user.getUserId()) == null) {
+                return new ApiResponse(false, "请先连接匹配服务（WebSocket）", null);
+            }
 
-            if (matcher.isInMatchQueue(user)) {
+            String mode = GameFactory.normalize(request.getGameMode());
+            if (matcher.isInMatchQueue(user, mode)) {
                 return new ApiResponse(false, "用户已在匹配队列中", null);
             }
 
-            matcher.add(user);
+            onlineUserManager.setHallMode(user.getUserId(), mode);
+            matcher.add(user, mode);
 
-            try {
-                Thread.sleep(1000);
-                
-                User matchedUser = matcher.findOpponent(user, request.getGameMode());
-                
-                if (matchedUser != null) {
-                    String roomId = UUID.randomUUID().toString();
-                    Room room = new Room();
-                    room.setRoomId(roomId);
-                    room.setUser1(user);
-                    room.setUser2(matchedUser);
-                    room.setWhiteUser(user);
-                    
-                    roomManager.add(room, user.getUserId(), matchedUser.getUserId());
-                    
-                    matcher.remove(user);
-                    matcher.remove(matchedUser);
-                    
-                    Map<String, Object> result = new HashMap<>();
-                    result.put("gameId", roomId);
-                    result.put("roomId", roomId);
-                    result.put("matchedUser", matchedUser.getUsername());
-                    
-                    return new ApiResponse(true, "匹配成功", result);
-                } else {
-                    // 没有找到对手，继续等待
-                    return new ApiResponse(true, "正在匹配中，请稍后...", null);
-                }
-                
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                return new ApiResponse(false, "匹配过程被中断", null);
-            }
-
+            Map<String, Object> data = new HashMap<>();
+            data.put("gameMode", mode);
+            return new ApiResponse(true, "已加入匹配队列，匹配成功后会通过 WebSocket 通知", data);
         } catch (Exception e) {
             return new ApiResponse(false, "快速匹配失败：" + e.getMessage(), null);
         }
@@ -108,7 +83,6 @@ public class QuickMatchController {
         return null;
     }
 
-    // 内部请求类
     public static class QuickMatchRequest {
         private String gameMode;
 
@@ -121,7 +95,6 @@ public class QuickMatchController {
         }
     }
 
-    // 内部响应类
     private static class ApiResponse {
         private boolean success;
         private String message;

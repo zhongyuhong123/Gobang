@@ -1,22 +1,28 @@
 package com.yangshengzhou.gobang.game;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yangshengzhou.gobang.entity.User;
 import com.yangshengzhou.gobang.entity.Room;
+import com.yangshengzhou.gobang.entity.User;
+import com.yangshengzhou.gobang.game.games.GameFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
-import java.io.IOException;
+import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * 匹配器：按棋种分队列，每种棋一个工作线程，凑够两人就开房。
+ */
 @Component
 public class Matcher {
-    private Queue<User> normalQueue = new LinkedList<>();
-    private Queue<User> highQueue = new LinkedList<>();
-    private Queue<User> veryHighQueue = new LinkedList<>();
+
+    private final Map<String, Queue<User>> queues = new ConcurrentHashMap<>();
 
     @Autowired
     private OnlineUserManager onlineUserManager;
@@ -24,165 +30,113 @@ public class Matcher {
     @Autowired
     private RoomManager roomManager;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public void add(User user) {
-        if(user.getScore()<2000){
-            synchronized (normalQueue) {
-                normalQueue.add(user);
-                normalQueue.notify();
-            }
-            System.out.println("把玩家 " + user.getUsername() + " 加入到了normalQueue中！");
-        }else if(user.getScore()>=2000 && user.getScore()<3000){
-            synchronized (highQueue) {
-                highQueue.add(user);
-                highQueue.notify();
-            }
-            System.out.println("把玩家 " + user.getUsername() + " 加入到了highQueue中！");
-        }else{
-            synchronized (veryHighQueue) {
-                veryHighQueue.add(user);
-                veryHighQueue.notify();
-            }
-            System.out.println("把玩家 " + user.getUsername() + " 加入到了veryHighQueue中！");
+    public Matcher() {
+        for (String type : Arrays.asList(GameFactory.GOBANG, GameFactory.MILITARY, GameFactory.CHINESE_CHESS)) {
+            Queue<User> queue = new LinkedList<>();
+            queues.put(type, queue);
+            startWorker(type, queue);
         }
+    }
+
+    private void startWorker(String type, Queue<User> queue) {
+        Thread t = new Thread(() -> {
+            while (true) {
+                handlerMatch(type, queue);
+            }
+        }, "matcher-" + type);
+        t.setDaemon(true);
+        t.start();
+    }
+
+    public void add(User user, String mode) {
+        String type = GameFactory.normalize(mode);
+        Queue<User> queue = queues.get(type);
+        synchronized (queue) {
+            if (queue.contains(user)) {
+                return;
+            }
+            queue.add(user);
+            queue.notifyAll();
+        }
+        System.out.println("把玩家 " + user.getUsername() + " 加入 " + type + " 匹配队列，当前人数 " + queue.size());
     }
 
     public void remove(User user) {
-        if(user.getScore()<2000){
-            synchronized (normalQueue) {
-                normalQueue.remove(user);
-            }
-            System.out.println("把玩家"+user.getUsername()+"移除出normalQueue!");
-        }else if(user.getScore()>=2000 && user.getScore()<3000){
-            synchronized (highQueue) {
-                highQueue.remove(user);
-            }
-            System.out.println("把玩家"+user.getUsername()+"移除出highQueue!");
-        }else{
-            synchronized (veryHighQueue) {
-                veryHighQueue.remove(user);
-            }
-            System.out.println("把玩家"+user.getUsername()+"移除出veryHighQueue!");
-        }
-    }
-
-    public boolean isInMatchQueue(User user) {
-        if(user.getScore()<2000){
-            synchronized (normalQueue) {
-                return normalQueue.contains(user);
-            }
-        }else if(user.getScore()>=2000 && user.getScore()<3000){
-            synchronized (highQueue) {
-                return highQueue.contains(user);
-            }
-        }else{
-            synchronized (veryHighQueue) {
-                return veryHighQueue.contains(user);
+        for (Queue<User> queue : queues.values()) {
+            synchronized (queue) {
+                queue.remove(user);
             }
         }
     }
 
-    public User findOpponent(User user, String gameMode) {
-        Queue<User> targetQueue;
-        if(user.getScore()<2000){
-            targetQueue = normalQueue;
-        }else if(user.getScore()>=2000 && user.getScore()<3000){
-            targetQueue = highQueue;
-        }else{
-            targetQueue = veryHighQueue;
+    public boolean isInMatchQueue(User user, String mode) {
+        Queue<User> queue = queues.get(GameFactory.normalize(mode));
+        synchronized (queue) {
+            return queue.contains(user);
         }
-
-        synchronized (targetQueue) {
-            for (User candidate : targetQueue) {
-                if (!candidate.equals(user) && onlineUserManager.getFromGameHall(candidate.getUserId()) != null) {
-                    // 找到合适的对手，从队列中移除并返回
-                    targetQueue.remove(candidate);
-                    return candidate;
-                }
-            }
-        }
-        return null;
     }
 
-    //构造方法中创建线程，分别针对三个匹配队列，进行操作
-    public Matcher(){
-        Thread t1 = new Thread(){
-            @Override
-            public void run() {
-                //扫描 normalQueue
-                while(true){
-                    handlerMatch(normalQueue);
-                }
-            }
-        };
-        t1.start();
-
-        Thread t2 = new Thread(){
-            @Override
-            public void run() {
-                while(true){
-                    handlerMatch(highQueue);
-                }
-            }
-        };
-        t2.start();
-
-        Thread t3 = new Thread(){
-            @Override
-            public void run() {
-                while(true){
-                    handlerMatch(veryHighQueue);
-                }
-            }
-        };
-        t3.start();
-    }
-
-    private void handlerMatch(Queue<User> matchQueue) {
+    private void handlerMatch(String type, Queue<User> matchQueue) {
         synchronized (matchQueue) {
-            try{
-                while(matchQueue.size()<2){
+            try {
+                while (matchQueue.size() < 2) {
                     matchQueue.wait();
                 }
                 User player1 = matchQueue.poll();
                 User player2 = matchQueue.poll();
-                System.out.println("匹配出两个玩家：" + player1.getUsername() + ", " + player2.getUsername());
+                System.out.println("[" + type + "] 匹配出两个玩家：" + player1.getUsername() + ", " + player2.getUsername());
+
                 WebSocketSession session1 = onlineUserManager.getFromGameHall(player1.getUserId());
                 WebSocketSession session2 = onlineUserManager.getFromGameHall(player2.getUserId());
-                if(session1==null){
+                if (session1 == null) {
                     matchQueue.offer(player2);
                     return;
                 }
-                if(session2==null){
+                if (session2 == null) {
                     matchQueue.offer(player1);
                     return;
                 }
-                //判断两个队列是否相等
-                if(session1==session2){
+                if (session1 == session2) {
                     matchQueue.offer(player1);
                     return;
                 }
 
                 Room room = new Room();
+                room.setGameType(type);
                 roomManager.add(room, player1.getUserId(), player2.getUserId());
+
                 MatchResponse response1 = new MatchResponse();
                 response1.setOk(true);
                 response1.setMessage("matchSuccess");
-                response1.setReason(room.getRoomId()); // 使用reason字段传递房间ID
-                String json1 = objectMapper.writeValueAsString(response1);
-                session1.sendMessage(new TextMessage(json1));
+                response1.setReason(room.getRoomId());
+                response1.setGameType(type);
+                session1.sendMessage(new TextMessage(objectMapper.writeValueAsString(response1)));
 
                 MatchResponse response2 = new MatchResponse();
                 response2.setOk(true);
                 response2.setMessage("matchSuccess");
-                response2.setReason(room.getRoomId()); // 使用reason字段传递房间ID
-                String json2 = objectMapper.writeValueAsString(response2);
-                session2.sendMessage(new TextMessage(json2));
+                response2.setReason(room.getRoomId());
+                response2.setGameType(type);
+                session2.sendMessage(new TextMessage(objectMapper.writeValueAsString(response2)));
 
-            }catch (IOException | InterruptedException e){
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    /** 当前各棋种排队人数（统计用） */
+    public List<String> queueSnapshot() {
+        List<String> lines = new LinkedList<>();
+        for (Map.Entry<String, Queue<User>> entry : queues.entrySet()) {
+            synchronized (entry.getValue()) {
+                lines.add(entry.getKey() + "=" + entry.getValue().size());
+            }
+        }
+        return lines;
     }
 }
