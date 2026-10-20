@@ -138,6 +138,12 @@ export default {
       if (websocket.value) {
         websocket.value.close()
       }
+
+      // 进入房间前确保匹配连接已断开（后端会把仍在大厅的连接视为多开）
+      if (wsManager.matchSocket) {
+        wsManager.matchSocket.close()
+        wsManager.matchSocket = null
+      }
       
       const currentUser = JSON.parse(localStorage.getItem('userInfo') || '{}')
       const userId = currentUser.userId

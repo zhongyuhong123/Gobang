@@ -50,8 +50,13 @@ public class GameController extends TextWebSocketHandler {
             return;
         }
 
-        if(onlineUserManager.getFromGameHall(user.getUserId()) != null
-                || onlineUserManager.getFromGameRoom(user.getUserId()) != null){
+        // 进入对局时先把大厅里的残留连接清掉：匹配成功后前端可能还没来得及关闭匹配连接，
+        // 旧逻辑会因此误判为“多开”而拒绝进入房间。
+        if (onlineUserManager.getFromGameHall(user.getUserId()) != null) {
+            onlineUserManager.exitGameHall(user.getUserId());
+        }
+
+        if (onlineUserManager.getFromGameRoom(user.getUserId()) != null) {
             resp.setOk(true);
             resp.setReason("禁止多开游戏页面");
             resp.setMessage("repeatConnection");

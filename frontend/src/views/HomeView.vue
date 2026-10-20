@@ -496,10 +496,15 @@ export default {
                 if (data.message === 'matchSuccess') {
                   console.log('匹配成功！房间ID:', data.reason)
                   stopMatchingTimer()
+                  // 进入对局前主动断开匹配连接，避免后端判定为多开
+                  if (wsManager.matchSocket) {
+                    wsManager.matchSocket.close()
+                    wsManager.matchSocket = null
+                  }
                   ElMessage.success('匹配成功！正在进入游戏...')
                   router.push({
                     path: '/game',
-                    query: { gameId: data.reason }
+                    query: { roomId: data.reason }
                   })
                 } else if (data.message === 'matchTimeout') {
                   stopMatchingTimer()
@@ -543,7 +548,10 @@ export default {
         if (response.success) {
           if (response.data && response.data.roomId) {
             ElMessage.success('房间创建成功')
-            router.push(`/room/${response.data.roomId}`)
+            router.push({
+              path: '/game',
+              query: { roomId: response.data.roomId }
+            })
           } else {
             ElMessage.error('创建房间响应数据异常')
           }

@@ -27,10 +27,13 @@ public class WebSocketConfig implements WebSocketConfigurer{
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(testController,"/test");
+        registry.addHandler(testController,"/test")
+                .setAllowedOrigins("*");
         registry.addHandler(matchController,"/findMatch")
+                .setAllowedOrigins("*")
                 .addInterceptors(jwtHandshakeInterceptor);
         registry.addHandler(gameController,"/game")
+                .setAllowedOrigins("*")
                 .addInterceptors(jwtHandshakeInterceptor);
     }
 }

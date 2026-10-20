@@ -14,15 +14,16 @@
 
 
     <update id = "userWin">
-        update user set totalCount = totalCount + 1,
-                        winCount = winCount + 1,
+        update user set total_games = total_games + 1,
+                        win_games = win_games + 1,
                         score = score + 10
-        where userId = #{userId}
+        where user_id = #{userId}
     </update>
 
     <update id = "userLose">
-        update user set totalCount = totalCount + 1,
+        update user set total_games = total_games + 1,
+                        lose_games = lose_games + 1,
                         score = score - 5
-        where userId = #{userId}
+        where user_id = #{userId}
     </update>
 </mapper>
